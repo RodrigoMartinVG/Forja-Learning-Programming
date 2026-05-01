@@ -1,0 +1,16 @@
+id: custom-iterator
+codename: custom-iterator
+title: "custom-iterator"
+type: focused
+anchor_level: L4
+display_levels: [L4]
+required_levels: [L4]
+expansion_levels: []
+languages: [rust]
+dir: content/projects/focused/custom-iterator
+stages:
+  - id: custom-iterator-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L4]
+    unlock_level: L4

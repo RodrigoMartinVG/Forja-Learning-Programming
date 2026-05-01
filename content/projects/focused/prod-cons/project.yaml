@@ -1,0 +1,16 @@
+id: prod-cons
+codename: prod-cons
+title: "prod-cons"
+type: focused
+anchor_level: L9
+display_levels: [L9]
+required_levels: [L9]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/prod-cons
+stages:
+  - id: prod-cons-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L9]
+    unlock_level: L9

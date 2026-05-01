@@ -1,0 +1,16 @@
+id: mini-tcpdump
+codename: mini-tcpdump
+title: "mini-tcpdump"
+type: focused
+anchor_level: L16
+display_levels: [L16]
+required_levels: [L16]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/mini-tcpdump
+stages:
+  - id: mini-tcpdump-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L16]
+    unlock_level: L16

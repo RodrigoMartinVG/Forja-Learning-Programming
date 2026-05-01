@@ -1,0 +1,16 @@
+id: devcontainer-setup
+codename: devcontainer-setup
+title: "Devcontainer Setup"
+type: focused
+anchor_level: L0
+display_levels: [L0]
+required_levels: [L0]
+expansion_levels: []
+languages: []
+dir: content/projects/focused/devcontainer-setup
+stages:
+  - id: devcontainer-setup-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L0]
+    unlock_level: L0

@@ -1,0 +1,16 @@
+id: kvolt
+codename: kvolt
+title: "KVolt"
+type: integrating
+anchor_level: L15
+display_levels: [L15]
+required_levels: [L15]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/kvolt
+stages:
+  - id: kvolt-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L15]
+    unlock_level: L15

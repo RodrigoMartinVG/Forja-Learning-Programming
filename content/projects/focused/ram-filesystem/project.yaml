@@ -1,0 +1,16 @@
+id: ram-filesystem
+codename: ram-filesystem
+title: "RAM-FileSystem"
+type: focused
+anchor_level: L23
+display_levels: [L23]
+required_levels: [L23]
+expansion_levels: []
+languages: [c]
+dir: content/projects/focused/ram-filesystem
+stages:
+  - id: ram-filesystem-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L23]
+    unlock_level: L23

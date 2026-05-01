@@ -1,0 +1,16 @@
+id: ffi-demo
+codename: ffi-demo
+title: "ffi-demo"
+type: focused
+anchor_level: L4
+display_levels: [L4]
+required_levels: [L4]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/ffi-demo
+stages:
+  - id: ffi-demo-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L4]
+    unlock_level: L4

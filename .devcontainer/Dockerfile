@@ -49,6 +49,5 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable \
       fi \
     && curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | sh \
     && for crate in cargo-expand flamegraph cargo-audit cbindgen bindgen-cli; do \
-        cargo binstall --no-confirm --disable-strategies compile "$crate" \
-        || cargo install --locked "$crate"; \
+                if ! cargo binstall --no-confirm --disable-strategies compile "$crate"; then cargo install --locked "$crate"; fi; \
     done

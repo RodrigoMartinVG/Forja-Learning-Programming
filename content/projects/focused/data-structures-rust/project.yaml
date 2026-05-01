@@ -1,0 +1,16 @@
+id: data-structures-rust
+codename: data-structures-rust
+title: "data-structures-rust"
+type: focused
+anchor_level: L3b
+display_levels: [L3b]
+required_levels: [L3b]
+expansion_levels: []
+languages: [rust]
+dir: content/projects/focused/data-structures-rust
+stages:
+  - id: data-structures-rust-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L3b]
+    unlock_level: L3b

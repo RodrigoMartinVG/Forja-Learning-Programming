@@ -1,0 +1,16 @@
+id: hello-c
+codename: hello-c
+title: "hello-c"
+type: focused
+anchor_level: L1a
+display_levels: [L1a]
+required_levels: [L1a]
+expansion_levels: []
+languages: [c]
+dir: content/projects/focused/hello-c
+stages:
+  - id: hello-c-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L1a]
+    unlock_level: L1a

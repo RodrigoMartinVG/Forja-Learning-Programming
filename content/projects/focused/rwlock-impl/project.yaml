@@ -1,0 +1,16 @@
+id: rwlock-impl
+codename: rwlock-impl
+title: "rwlock-impl"
+type: focused
+anchor_level: L9
+display_levels: [L9]
+required_levels: [L9]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/rwlock-impl
+stages:
+  - id: rwlock-impl-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L9]
+    unlock_level: L9

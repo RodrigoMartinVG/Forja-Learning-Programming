@@ -6,7 +6,7 @@ Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, R
 
 - Base 0 completada: estructura inicial del repo y convenciones de contenido
 - Base 1 completada: devcontainer, script de verificacion y tooling comun
-- Base 2 pendiente: metadata base, plantillas y web minima
+- Base 2 en curso: metadata local/global, plantillas y web minima ya sembradas
 
 ## Documentos fuente
 
@@ -17,20 +17,25 @@ Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, R
 ## Estructura actual
 
 - `docs/`: documentos maestros del proyecto
-- `.devcontainer/`: laboratorio Linux reproducible
-- `verify-setup.sh`: verificacion comun del entorno
+- `.devcontainer/`: laboratorio Linux reproducible para C, Rust y herramientas de sistemas
+- `verify-setup.sh`: verificacion comun del laboratorio C/Rust
+- `scripts/forja.py`: scaffolder de Base 2 para niveles, proyectos y metadata base
 - `content/`: track teorico y track practico
-- `metadata/`: relaciones globales reservadas para Base 2
-- `web/`: futura aplicacion React + TypeScript + Vite
+- `metadata/`: metadata global base (`paths.yaml` y `cross-refs.yaml`)
+- `web/`: app React + TypeScript + Vite del MVP, a ejecutar desde el host
 - `libros-consulta/`: carpeta local para referencias privadas, ignorada por Git
 
-## Que todavia no existe
+## Entornos de trabajo
 
-Base 2 sigue pendiente. Todavia no se incluyen:
+- Dev container: compilar, depurar y experimentar C/Rust dentro de un Linux reproducible.
+- Host del usuario: instalar dependencias de la web y correr `npm run dev`, `npm run build` y `npm run preview`.
+- Si el repo se abre desde WSL o dentro del devcontainer, ese terminal no ve el Node instalado en Windows. La web debe correrse desde el host que tenga Node disponible.
 
-- `meta.yaml` ni `project.yaml`
-- `paths.yaml` ni `cross-refs.yaml`
-- `package.json`, `vite.config.ts` ni app web ejecutable
+## Que sigue pendiente
+
+- completar el contenido real de niveles y proyectos sobre el esqueleto de Base 2
+- validar la web minima desde un host con Node disponible
+- cerrar Base 2 con betatest de navegacion, metadata y comandos documentados
 
 ## Convenciones
 

@@ -8,7 +8,6 @@
     }
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "bash ./verify-setup.sh",
   "containerEnv": {
     "CARGO_HOME": "/home/vscode/.cargo",
     "RUSTUP_HOME": "/home/vscode/.rustup"

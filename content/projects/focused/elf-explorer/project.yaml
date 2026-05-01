@@ -1,0 +1,16 @@
+id: elf-explorer
+codename: elf-explorer
+title: "elf-explorer"
+type: focused
+anchor_level: L1b
+display_levels: [L1b]
+required_levels: [L1b]
+expansion_levels: []
+languages: [c]
+dir: content/projects/focused/elf-explorer
+stages:
+  - id: elf-explorer-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L1b]
+    unlock_level: L1b

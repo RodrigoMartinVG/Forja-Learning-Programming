@@ -1,0 +1,17 @@
+paths:
+  - id: path-1
+    title: "Solo C"
+    description: "Para quien quiere sistemas primero, sin la friccion del borrow checker."
+    levels: [L0, L1a, L1b, L2, L5, L6, L7, L8, L9, L10, L11, L16, L17, L19, L20, L21, L23]
+  - id: path-2
+    title: "Dual C+Rust"
+    description: "El camino completo. Recomendado para la mayoria."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23]
+  - id: path-3
+    title: "Compiladorista"
+    description: "Sistemas como base y foco en compiladores, lenguajes y teoria."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L12, L13, L14, L22]
+  - id: path-4
+    title: "Integrador"
+    description: "Mezcla sistemas y compiladores siguiendo las dependencias naturales entre proyectos."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L12, L7, L8, L9, L10, L11, L13, L14, L15, L16, L17, L18, L19, L20, L22, L23]

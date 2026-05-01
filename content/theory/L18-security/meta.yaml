@@ -1,0 +1,8 @@
+id: L18
+title: "Seguridad y criptografia"
+slug: "l18-security"
+domain: systems
+order: 21
+theory_dir: content/theory/L18-security
+projects: [tinyssh, impl_script]
+prerequisites: [L17]

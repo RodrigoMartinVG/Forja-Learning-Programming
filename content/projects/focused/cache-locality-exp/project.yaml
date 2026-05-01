@@ -1,0 +1,16 @@
+id: cache-locality-exp
+codename: cache-locality-exp
+title: "cache-locality-exp"
+type: focused
+anchor_level: L17
+display_levels: [L17]
+required_levels: [L17]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/cache-locality-exp
+stages:
+  - id: cache-locality-exp-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L17]
+    unlock_level: L17

@@ -1,0 +1,16 @@
+id: word-count
+codename: word-count
+title: "word-count"
+type: focused
+anchor_level: L1a
+display_levels: [L1a]
+required_levels: [L1a]
+expansion_levels: []
+languages: [c]
+dir: content/projects/focused/word-count
+stages:
+  - id: word-count-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L1a]
+    unlock_level: L1a

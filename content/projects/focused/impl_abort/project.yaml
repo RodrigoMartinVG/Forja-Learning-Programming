@@ -1,0 +1,16 @@
+id: impl_abort
+codename: impl_abort
+title: "impl_abort"
+type: focused
+anchor_level: L6
+display_levels: [L6]
+required_levels: [L6]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/impl_abort
+stages:
+  - id: impl-abort-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L6]
+    unlock_level: L6

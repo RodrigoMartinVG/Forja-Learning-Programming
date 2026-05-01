@@ -1,0 +1,8 @@
+id: L11
+title: "IPC y comunicacion entre procesos"
+slug: "l11-ipc"
+domain: systems
+order: 14
+theory_dir: content/theory/L11-ipc
+projects: [named-pipe-sem, ipc-explorer, miniqueue, mish]
+prerequisites: [L10]

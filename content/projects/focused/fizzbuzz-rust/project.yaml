@@ -1,0 +1,16 @@
+id: fizzbuzz-rust
+codename: fizzbuzz-rust
+title: "fizzbuzz-rust"
+type: focused
+anchor_level: L3a
+display_levels: [L3a]
+required_levels: [L3a]
+expansion_levels: []
+languages: [rust]
+dir: content/projects/focused/fizzbuzz-rust
+stages:
+  - id: fizzbuzz-rust-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L3a]
+    unlock_level: L3a

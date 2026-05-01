@@ -1,0 +1,8 @@
+id: L9
+title: "Concurrencia: threads y primitivas de sincronizacion"
+slug: "l9-concurrency"
+domain: systems
+order: 12
+theory_dir: content/theory/L9-concurrency
+projects: [thread-pool, prod-cons, rwlock-impl]
+prerequisites: [L8]

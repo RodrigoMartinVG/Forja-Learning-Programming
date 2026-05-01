@@ -1,0 +1,16 @@
+id: regex-engine
+codename: regex-engine
+title: "regex-engine"
+type: focused
+anchor_level: L12
+display_levels: [L12]
+required_levels: [L12]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/regex-engine
+stages:
+  - id: regex-engine-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L12]
+    unlock_level: L12

@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Verify setup",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "./verify-setup.sh"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

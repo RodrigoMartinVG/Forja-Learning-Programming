@@ -1,0 +1,8 @@
+id: L6
+title: "Procesos y senales"
+slug: "l6-processes-signals"
+domain: systems
+order: 9
+theory_dir: content/theory/L6-processes-signals
+projects: [spl_pstree, impl_abort, impl_alarm, scheduler-sim, mini-debugger, mish]
+prerequisites: [L5]

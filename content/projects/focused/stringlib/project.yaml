@@ -1,0 +1,16 @@
+id: stringlib
+codename: stringlib
+title: "stringlib"
+type: focused
+anchor_level: L1b
+display_levels: [L1b]
+required_levels: [L1b]
+expansion_levels: []
+languages: [c]
+dir: content/projects/focused/stringlib
+stages:
+  - id: stringlib-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L1b]
+    unlock_level: L1b

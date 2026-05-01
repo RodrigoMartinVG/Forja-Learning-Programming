@@ -1,0 +1,16 @@
+id: dynamic-array
+codename: dynamic-array
+title: "dynamic-array"
+type: focused
+anchor_level: L2
+display_levels: [L2]
+required_levels: [L2]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/dynamic-array
+stages:
+  - id: dynamic-array-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L2]
+    unlock_level: L2

@@ -1,0 +1,21 @@
+id: tcp-ip-stack
+codename: tcp-ip-stack
+title: "TCP/IP stack"
+type: integrating
+anchor_level: L16
+display_levels: [L16, L21]
+required_levels: [L16]
+expansion_levels: [L21]
+languages: [c, rust]
+dir: content/projects/integrating/tcp-ip-stack
+stages:
+  - id: tcp-ip-stack-l16
+    label: "Tramo L16"
+    kind: project-stage
+    required_levels: [L16]
+    unlock_level: L16
+  - id: tcp-ip-stack-l21
+    label: "Tramo L21"
+    kind: project-stage
+    required_levels: [L16, L21]
+    unlock_level: L21

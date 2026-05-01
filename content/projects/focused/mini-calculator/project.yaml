@@ -1,0 +1,16 @@
+id: mini-calculator
+codename: mini-calculator
+title: "mini-calculator"
+type: focused
+anchor_level: L3a
+display_levels: [L3a]
+required_levels: [L3a]
+expansion_levels: []
+languages: [rust]
+dir: content/projects/focused/mini-calculator
+stages:
+  - id: mini-calculator-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L3a]
+    unlock_level: L3a

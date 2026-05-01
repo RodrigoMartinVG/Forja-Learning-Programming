@@ -1,0 +1,16 @@
+id: mini-dns-resolver
+codename: mini-dns-resolver
+title: "mini-dns-resolver"
+type: focused
+anchor_level: L16
+display_levels: [L16]
+required_levels: [L16]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/mini-dns-resolver
+stages:
+  - id: mini-dns-resolver-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L16]
+    unlock_level: L16

@@ -1,0 +1,10 @@
+id: L1b
+title: "C: fundamentos profundos"
+slug: "l1b-c-deep-fundamentals"
+domain: languages
+group: L1
+sublevel_order: 2
+order: 3
+theory_dir: content/theory/L1b-c-deep-fundamentals
+projects: [stringlib, elf-explorer]
+prerequisites: [L1a]

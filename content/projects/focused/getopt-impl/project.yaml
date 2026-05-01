@@ -1,0 +1,16 @@
+id: getopt-impl
+codename: getopt-impl
+title: "getopt-impl"
+type: focused
+anchor_level: L2
+display_levels: [L2]
+required_levels: [L2]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/getopt-impl
+stages:
+  - id: getopt-impl-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L2]
+    unlock_level: L2

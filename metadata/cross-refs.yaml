@@ -1,0 +1,12 @@
+cross_refs:
+  - theory: L7-virtual-memory-elf
+    projects: [mini-linker, vma-explorer, cow-demo, spl_cp, mini-debugger]
+  - theory: L8-allocators
+    projects: [custom-malloc, logico]
+    note: "El GC de Logico usa custom-malloc."
+  - theory: L11-ipc
+    projects: [named-pipe-sem, ipc-explorer, miniqueue, mish]
+    note: "mish reaparece en L11 para pipes, redirecciones y job control."
+  - theory: L21-orchestration
+    projects: [orquestador, tcp-ip-stack]
+    note: "TCP/IP stack vuelve a abrirse en L21 para integrarse con el orquestador."

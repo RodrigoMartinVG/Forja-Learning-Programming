@@ -1,0 +1,8 @@
+id: L17
+title: "Performance Engineering"
+slug: "l17-performance"
+domain: systems
+order: 20
+theory_dir: content/theory/L17-performance
+projects: [perf-benchmarks, flamegraph-lab, cache-locality-exp, false-sharing-exp]
+prerequisites: [L16]

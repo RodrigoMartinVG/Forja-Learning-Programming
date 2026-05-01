@@ -1,0 +1,16 @@
+id: impl_script
+codename: impl_script
+title: "impl_script"
+type: focused
+anchor_level: L18
+display_levels: [L18]
+required_levels: [L18]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/impl_script
+stages:
+  - id: impl-script-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L18]
+    unlock_level: L18

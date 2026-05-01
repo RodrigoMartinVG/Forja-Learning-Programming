@@ -1,0 +1,16 @@
+id: named-pipe-sem
+codename: named-pipe-sem
+title: "named-pipe-sem"
+type: focused
+anchor_level: L11
+display_levels: [L11]
+required_levels: [L11]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/named-pipe-sem
+stages:
+  - id: named-pipe-sem-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L11]
+    unlock_level: L11

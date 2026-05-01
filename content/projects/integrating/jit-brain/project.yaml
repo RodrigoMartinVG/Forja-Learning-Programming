@@ -1,0 +1,16 @@
+id: jit-brain
+codename: jit-brain
+title: "JIT-Brain"
+type: integrating
+anchor_level: L22
+display_levels: [L22]
+required_levels: [L22]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/jit-brain
+stages:
+  - id: jit-brain-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L22]
+    unlock_level: L22

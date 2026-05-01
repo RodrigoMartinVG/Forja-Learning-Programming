@@ -1,0 +1,16 @@
+id: flamegraph-lab
+codename: flamegraph-lab
+title: "flamegraph-lab"
+type: focused
+anchor_level: L17
+display_levels: [L17]
+required_levels: [L17]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/flamegraph-lab
+stages:
+  - id: flamegraph-lab-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L17]
+    unlock_level: L17

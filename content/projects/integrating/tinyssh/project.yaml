@@ -1,0 +1,16 @@
+id: tinyssh
+codename: tinyssh
+title: "tinyssh"
+type: integrating
+anchor_level: L18
+display_levels: [L18]
+required_levels: [L18]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/tinyssh
+stages:
+  - id: tinyssh-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L18]
+    unlock_level: L18

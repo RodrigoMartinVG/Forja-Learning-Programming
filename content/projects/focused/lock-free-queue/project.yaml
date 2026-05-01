@@ -1,0 +1,16 @@
+id: lock-free-queue
+codename: lock-free-queue
+title: "lock-free-queue"
+type: focused
+anchor_level: L10
+display_levels: [L10]
+required_levels: [L10]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/lock-free-queue
+stages:
+  - id: lock-free-queue-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L10]
+    unlock_level: L10

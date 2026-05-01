@@ -1,0 +1,8 @@
+id: L14
+title: "Sistemas de tipos e inferencia"
+slug: "l14-type-systems"
+domain: compilers
+order: 17
+theory_dir: content/theory/L14-type-systems
+projects: [semtex, logico]
+prerequisites: [L13]

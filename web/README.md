@@ -1,15 +1,31 @@
 # Web
 
-Este directorio queda reservado para la futura aplicacion web de Forja.
+Este directorio contiene la app web minima de Forja para navegar contenido y metadata de Base 2.
 
-## Alcance en Base 0
+## Separacion de entornos
 
-- existe la carpeta raiz `web/`
-- no existe todavia una aplicacion ejecutable
-- no existen todavia `package.json`, `vite.config.ts` ni `src/`
+- La web se corre desde el host del usuario.
+- El devcontainer no instala Node ni npm a proposito. Ese entorno queda reservado para C, Rust y tooling de sistemas.
+- Si abriste el repo desde WSL o dentro del devcontainer, ese terminal no ve el Node de Windows. Para usar el Node de Windows, abre una terminal del host o una ventana de VS Code abierta desde Windows.
 
-## Objetivo futuro
+## Requisitos del host
 
-La implementacion prevista en la arquitectura es React + TypeScript + Vite, con despliegue estatico y progreso en `localStorage`.
+- Node.js instalado en el host.
+- npm disponible en `PATH`.
 
-La web se materializa recien en Base 2, cuando ya haga falta leer y navegar contenido real.
+## Comandos
+
+```sh
+cd web
+npm install
+npm run dev
+npm run build
+npm run preview
+```
+
+## Alcance actual
+
+- React + TypeScript + Vite para navegacion estatica.
+- Carga de `meta.yaml`, `project.yaml`, `paths.yaml` y `cross-refs.yaml`.
+- Render de Markdown para teoria y proyectos.
+- Sin backend, sin auth y sin servicios remotos.

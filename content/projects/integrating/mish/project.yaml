@@ -1,0 +1,21 @@
+id: mish
+codename: mish
+title: "mish"
+type: integrating
+anchor_level: L6
+display_levels: [L6, L11]
+required_levels: [L6]
+expansion_levels: [L11]
+languages: [c, rust]
+dir: content/projects/integrating/mish
+stages:
+  - id: mish-l6
+    label: "Tramo L6"
+    kind: project-stage
+    required_levels: [L6]
+    unlock_level: L6
+  - id: mish-l11
+    label: "Tramo L11"
+    kind: project-stage
+    required_levels: [L6, L11]
+    unlock_level: L11

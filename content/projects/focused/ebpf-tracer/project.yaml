@@ -1,0 +1,16 @@
+id: ebpf-tracer
+codename: ebpf-tracer
+title: "ebpf-tracer"
+type: focused
+anchor_level: L23
+display_levels: [L23]
+required_levels: [L23]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/focused/ebpf-tracer
+stages:
+  - id: ebpf-tracer-main
+    label: "Fase unica"
+    kind: project-stage
+    required_levels: [L23]
+    unlock_level: L23

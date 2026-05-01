@@ -1,0 +1,16 @@
+id: orquestador
+codename: orquestador
+title: "orquestador"
+type: integrating
+anchor_level: L21
+display_levels: [L21]
+required_levels: [L21]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/orquestador
+stages:
+  - id: orquestador-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L21]
+    unlock_level: L21

@@ -1,0 +1,8 @@
+id: L8
+title: "Allocators"
+slug: "l8-allocators"
+domain: systems
+order: 11
+theory_dir: content/theory/L8-allocators
+projects: [custom-malloc]
+prerequisites: [L7]

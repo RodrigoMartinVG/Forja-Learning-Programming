@@ -1,0 +1,8 @@
+id: L21
+title: "Orquestacion y sistemas distribuidos"
+slug: "l21-orchestration"
+domain: systems
+order: 24
+theory_dir: content/theory/L21-orchestration
+projects: [orquestador, tcp-ip-stack]
+prerequisites: [L20]
