@@ -1,6 +1,8 @@
 # Forja — Arquitectura de la Plataforma
 
 > Este documento describe cómo se construye Forja: la estructura del repositorio, la arquitectura de la web, el modelo de contenido, el devcontainer y el alcance del MVP. No contiene contenido curricular — eso está en `forja-contenido.md`.
+>
+> La dinámica operativa de construcción — orden de trabajo, slices, betatesting y criterio de avance — vive en `forja-construccion.md`.
 
 ---
 
@@ -15,6 +17,7 @@
 | Tracking de progreso | `localStorage` exclusivamente |
 | Acceso al contenido | Doble: web como interfaz de navegación + repo como fuente directa |
 | Organización de fases | Directorios por fase dentro de cada proyecto |
+| Fuente de verdad de metadata | Local al contenido: `meta.yaml` por nivel y `project.yaml` por proyecto |
 
 ---
 
@@ -129,11 +132,9 @@ forja/
 │           ├── jit-brain/
 │           └── kvm-mini-hypervisor/
 │
-├── metadata/                          # Fuente de verdad del grafo
-│   ├── levels.yaml                    # Los 24 niveles (L0–L23)
-│   ├── projects.yaml                  # Todos los proyectos con metadatos
+├── metadata/                          # Relaciones globales no derivables del contenido local
 │   ├── paths.yaml                     # Los 4 caminos de navegación
-│   └── cross-refs.yaml               # Relaciones teoría ↔ proyectos
+│   └── cross-refs.yaml                # Relaciones teoría ↔ proyectos y notas transversales
 │
 └── web/                               # Aplicación React
     ├── src/
@@ -221,63 +222,102 @@ Algunos proyectos son single-language por naturaleza del dominio:
 
 ## Modelo de metadata YAML
 
-### `metadata/levels.yaml`
+### `meta.yaml` dentro de cada unidad teórica
 
 ```yaml
-levels:
-  - id: L0
-    title: "Entorno y Toolchain"
-    slug: "l0-environment"
-    domain: languages
-    theory_dir: content/theory/L0-environment
-    projects: [devcontainer-setup]
-    prerequisites: []
+id: L1a
+title: "C: primer contacto"
+slug: "l1a-c-first-contact"
+domain: languages
+group: L1
+sublevel_order: 1
+order: 2
+theory_dir: content/theory/L1a-c-first-contact
+projects: [hello-c, caesar-cipher, word-count]
+prerequisites: [L0]
 
-  - id: L1a
-    title: "C: primer contacto"
-    slug: "l1a-c-first-contact"
-    domain: languages
-    theory_dir: content/theory/L1a-c-first-contact
-    projects: [hello-c, caesar-cipher, word-count]
-    prerequisites: [L0]
+---
 
-  - id: L6
-    title: "Procesos y señales"
-    slug: "l6-processes-signals"
-    domain: systems
-    theory_dir: content/theory/L6-processes-signals
-    projects: [spl_pstree, impl_abort, impl_alarm, scheduler-sim, mish, mini-debugger]
-    prerequisites: [L5]
+id: L6
+title: "Procesos y señales"
+slug: "l6-processes-signals"
+domain: systems
+order: 9
+theory_dir: content/theory/L6-processes-signals
+projects: [spl_pstree, impl_abort, impl_alarm, scheduler-sim, mish, mini-debugger]
+prerequisites: [L5]
 ```
 
-### `metadata/projects.yaml`
+Los niveles navegables del sistema son nodos planos: `L0`, `L1a`, `L1b`, `L2`, ..., `L23`. Los casos como `L1a/L1b` y `L3a/L3b` no se modelan como árboles de subniveles dentro del grafo, sino como niveles normales con un campo opcional `group` para presentación y orden visual. Esto evita complejidad innecesaria en dependencias, rutas, progreso y paths, pero mantiene la agrupación cuando hace falta en la UI.
+
+### `project.yaml` dentro de cada proyecto
 
 ```yaml
-projects:
-  - id: mish
-    codename: mish
-    title: "Mini Shell"
-    type: integrating
-    levels: [L6, L11]
-    languages: [c, rust]
-    phases:
-      c: 4
-      rust: 4
-    equivalent: "bash, zsh, dash"
-    dir: content/projects/integrating/mish
+id: mish
+codename: mish
+title: "Mini Shell"
+type: integrating
+anchor_level: L6
+display_levels: [L6, L11]
+required_levels: [L6]
+expansion_levels: [L11]
+languages: [c, rust]
+equivalent: "bash, zsh, dash"
+dir: content/projects/integrating/mish
+stages:
+  - id: mish-l6
+    label: "Tramo L6"
+    kind: project-stage
+    required_levels: [L6]
+    unlock_level: L6
+    covers_impl_phases:
+      c: [1, 2]
+      rust: [1, 2]
 
-  - id: spl_stat
-    codename: spl_stat
-    title: "spl_stat"
-    type: focused
-    levels: [L5]
-    languages: [c, rust]
-    phases:
-      c: 1
-      rust: 1
-    equivalent: "stat(1)"
-    dir: content/projects/focused/spl_stat
+  - id: mish-l11
+    label: "Tramo L11"
+    kind: project-stage
+    required_levels: [L6, L11]
+    unlock_level: L11
+    covers_impl_phases:
+      c: [3, 4]
+      rust: [3, 4]
+
+---
+
+id: spl_stat
+codename: spl_stat
+title: "spl_stat"
+type: focused
+anchor_level: L5
+display_levels: [L5]
+required_levels: [L5]
+expansion_levels: []
+languages: [c, rust]
+equivalent: "stat(1)"
+dir: content/projects/focused/spl_stat
+stages:
+  - id: spl-stat-main
+    label: "Fase única"
+    kind: project-stage
+    required_levels: [L5]
+    unlock_level: L5
+    covers_impl_phases:
+      c: [1]
+      rust: [1]
 ```
+
+Campos recomendados de `project.yaml`:
+
+- `anchor_level`: nivel donde el proyecto aparece por primera vez
+- `display_levels`: niveles con los que el proyecto se muestra asociado en la UI y en documentos
+- `required_levels`: prerequisitos reales para abrir el proyecto por primera vez
+- `expansion_levels`: niveles donde el proyecto vuelve a abrirse con un tramo nuevo
+- `stages`: tramos macro del proyecto usados por el plan de construcción
+
+La distinción clave es esta: `display_levels` no reemplaza a `required_levels`. La primera sirve para representar el proyecto en el mapa del plan; la segunda resuelve dependencias reales de construcción.
+
+Para proyectos focalizados, `stages` suele tener un solo elemento. Para proyectos integradores, `stages` modela los reaparecidos del proyecto a lo largo del plan.
 
 ### `metadata/paths.yaml`
 
@@ -306,20 +346,11 @@ cross_refs:
     note: "El GC de Lógico usa custom-malloc"
 ```
 
-### `meta.yaml` dentro de cada unidad teórica
+### Índices generados en build time
 
-```yaml
-level: L6
-title: "Procesos y señales"
-domain: systems
-prerequisites: [L5]
-key_projects: [mish, mini-debugger, scheduler-sim]
-references:
-  - book: OSTEP
-    chapters: [7, 8, 9]
-  - book: TLPI
-    chapters: [24, 25, 26]
-```
+La web no edita ni mantiene índices globales a mano. En build time, escanea todos los `content/theory/*/meta.yaml` y `content/projects/**/project.yaml`, construye un índice en memoria, y con eso genera navegación, paths, búsqueda y vistas del grafo. Si en algún momento conviene materializar ese índice en JSON para acelerar el build, ese archivo debe ser generado y no editado manualmente.
+
+La resolución de dependencias de proyectos respecto a niveles sale de `project.yaml`, no de inferir prose ni de parsear la tabla de `forja-contenido.md`. La tabla sirve como documento humano del plan; `project.yaml` sirve como contrato estructurado para repo y web.
 
 ---
 
@@ -344,7 +375,7 @@ La web convierte la estructura del repo en una experiencia de navegación. El us
 
 ### Procesamiento en build time
 
-Vite procesa el contenido en build time — los archivos Markdown y YAML se importan durante el build y el resultado es un sitio estático. El servidor no hace nada en runtime.
+Vite procesa el contenido en build time — los archivos Markdown y YAML se importan durante el build y el resultado es un sitio estático. El servidor no hace nada en runtime. La web trata `meta.yaml` y `project.yaml` como la fuente de verdad del contenido; `metadata/paths.yaml` y `metadata/cross-refs.yaml` complementan solo la parte relacional global.
 
 ```ts
 // vite.config.ts — importar todos los README.md de theory/
@@ -483,40 +514,46 @@ Un usuario puede clonar el repo y usarlo completamente sin la web — los `READM
 
 ---
 
-## MVP — Alcance mínimo lanzable
+## Estrategia de construcción y MVP
 
-### Contenido del MVP
+Forja no debería construirse ni puramente por levels ni puramente por projects. La unidad sana de construcción es el slice vertical: un tramo corto del camino real del usuario que incluya teoría, proyectos focalizados, al menos una fase integradora habilitada por ese tramo, y navegación web suficiente para recorrerlo.
 
-| Componente | Estado |
-|---|---|
-| Devcontainer funcionando + script verify-setup | Completo |
-| L0 teoría | Completo |
-| L1a teoría + `hello-c`, `caesar-cipher`, `word-count` | Completo |
-| L1b teoría + `stringlib`, `elf-explorer` | Completo |
-| L2 teoría + `getopt-impl`, `dynamic-array` | Completo |
-| L5 teoría + `spl_stat`, `spl_ls`, `spl_du`, `file-monitor` | Completo |
-| L6 teoría + `spl_pstree`, `impl_abort`, `impl_alarm`, `scheduler-sim` | Completo |
-| `mish` completo — 4 fases en C, con tests, STUDY_GUIDE, IMPROVEMENTS | Completo |
-| Resto del contenido | Estructura de directorios con README placeholder |
+### Regla de construcción
 
-El "resto" tiene la carpeta y un `README.md` que dice qué viene — el plan completo es visible aunque el contenido no esté escrito.
+Cada slice que se da por terminado debe cumplir cuatro cosas:
+
+- Los niveles teóricos del tramo están completos y se pueden leer de punta a punta
+- Los proyectos focalizados asociados a ese tramo están presentes con código, tests y guía
+- Existe al menos una fase ejecutable del proyecto integrador que ese tramo habilita
+- La web ya puede navegar ese contenido sin rutas rotas ni metadata incompleta
+
+### Ruta piloto para betatesting
+
+La estrategia recomendada es construir siguiendo un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1:
+
+1. Infraestructura base: repo, devcontainer, modelo de metadata, web mínima
+2. `L0 → L1a → L1b → L2`: lenguaje C + proyectos focalizados iniciales
+3. `L5 → L6`: primer tramo real de sistemas con archivos, procesos y señales
+4. `mish` Fase 1 y Fase 2: primer integrador usable
+5. `L11` + `mish` Fase 3 y Fase 4: cerrar pipes, redirecciones y job control
+
+Este orden permite que actúes como betatester del curso real, no solo del contenido aislado. Cada bloque nuevo se valida recorriéndolo como usuario, no solo leyéndolo como autor.
+
+### MVP como criterio, no como lista cerrada
+
+El MVP no queda fijado todavía como un conjunto definitivo de niveles. El criterio correcto es este: Forja tiene MVP cuando existe al menos una ruta corta, coherente y autocontenida que pueda recorrerse end-to-end desde `L0` hasta un primer proyecto integrador útil, con repo, web y laboratorio funcionando como sistema único.
 
 ### Web del MVP
 
+La web del MVP sí debería resolver lo esencial de lectura y navegación:
+
 - Home page con qué es Forja y cómo empezar
-- Navegación por niveles y proyectos (páginas renderizadas desde Markdown)
-- Lista de los 4 caminos
-- Sin mapa visual interactivo (viene después del MVP)
-- Sin tracking de progreso (viene después del MVP)
+- Navegación por niveles y proyectos renderizados desde Markdown
+- Links claros entre teoría, proyectos y fases
+- Lista de caminos sugeridos
 - Deploy estático en GitHub Pages o Vercel
 
-### Lo que el MVP excluye
-
-- Contenido de L3 en adelante (excepto estructura vacía)
-- Implementaciones en Rust de proyectos C
-- Mapa visual del grafo
-- Tracking de progreso
-- Búsqueda full-text
+El mapa interactivo, la búsqueda full-text y el tracking de progreso pueden existir después. Arquitectónicamente están contemplados desde el principio, pero no son requisito de la primera versión usable.
 
 ---
 
