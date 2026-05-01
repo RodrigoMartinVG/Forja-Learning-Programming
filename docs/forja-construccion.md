@@ -213,8 +213,8 @@ Después de las fases base, el orden queda fijado así:
 | `L18` | `tinyssh`, `impl_script` |
 | `L19` | `async-runtime`, `io_uring-echo` |
 | `L20` | `minidocker` |
-| `L21` | `TCP/IP stack` (tramo `L21`), `orquestador` |
-| `L22` | `Lógico` (tramo `L22`), `JIT-Brain` |
+| `L21` | `orquestador`, `TCP/IP stack` (tramo `L21`) |
+| `L22` | `JIT-Brain`, `Lógico` (tramo `L22`) |
 | `L23` | `char-driver`, `RAM-FileSystem`, `KVM mini-hypervisor`, `ebpf-tracer` |
 
 ### 5.3 Notas sobre el orden maestro

@@ -55,8 +55,15 @@ run_check "cargo audit" "cargo audit --version"
 run_check "cargo flamegraph" "cargo flamegraph --version"
 run_check "cbindgen" "cbindgen --version"
 run_check "bindgen" "bindgen --version"
-run_check "nightly toolchain" "rustup toolchain list | grep -q '^nightly'"
-run_check "miri" "rustup run nightly cargo miri --version"
+
+if rustup toolchain list | grep -q '^nightly'; then
+  run_check "nightly toolchain" "rustup toolchain list | grep -q '^nightly'"
+  run_check "miri" "rustup run nightly cargo miri --version"
+else
+  printf '%-22s [skip] not installed in base profile\n' "nightly toolchain"
+  printf '%-22s [skip] not installed in base profile\n' "miri"
+fi
+
 run_check "liburing" "pkg-config --exists liburing"
 run_check "libseccomp" "pkg-config --exists libseccomp"
 run_check "linux headers" "ls /usr/src | grep -q '^linux-headers-'"

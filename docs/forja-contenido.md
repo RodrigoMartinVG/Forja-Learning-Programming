@@ -155,9 +155,11 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: Hacerse dueño del ambiente de trabajo antes de escribir una línea de sistema. No se aprende a programar aquí; se aprende a usar las herramientas que van a estar presentes en todo el plan.
 
-**Unidades teóricas**: el modelo de compilación de C (preprocesador → compilador → assembler → linker); el sistema de módulos de Cargo y cómo resuelve dependencias; qué es un sanitizer y cuándo usar cada uno; cómo leer output de valgrind y de ASan; qué hace perf y cómo interpretar un flamegraph básico; qué es strace y cómo se usa para entender syscalls de un programa desconocido. Representación de enteros en hardware — complemento a dos (two's complement), por qué los enteros con signo no pueden hacer overflow sin UB en C mientras que los enteros sin signo sí pueden wrappear; qué es un registro de CPU y por qué hay un número fijo de ellos; cómo leer assembly x86-64 básico — no para escribirlo sino para entender lo que el debugger muestra y por qué el compilador toma las decisiones que toma; el stack frame en hardware — cómo `rsp` y `rbp` definen el frame de cada función en la convención de llamada x86-64.
+**Unidades teóricas**: el modelo de compilación de C (preprocesador → compilador → assembler → linker); el sistema de módulos de Cargo y cómo resuelve dependencias; qué es un sanitizer y cuándo usar cada uno; cómo leer output de valgrind y de ASan; qué hace perf y cómo interpretar un flamegraph básico; qué es strace y cómo se usa para entender syscalls de un programa desconocido. Representación de enteros en hardware — complemento a dos (two's complement), por qué los enteros con signo no pueden hacer overflow sin UB en C mientras que los enteros sin signo sí pueden wrappear; qué es un registro de CPU y por qué hay un número fijo de ellos; cómo leer assembly x86-64 básico — no para escribirlo como lenguaje principal sino para entender lo que el debugger muestra y por qué el compilador toma las decisiones que toma; el stack frame en hardware — cómo `rsp` y `rbp` definen el frame de cada función en la convención de llamada x86-64; caller-saved vs callee-saved registers; el flujo básico de una llamada a función (`call`, prólogo, cuerpo, epílogo, `ret`); y una primera explicación concreta de la syscall cruda en Linux x86_64: número de syscall en `rax`, argumentos en `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9`, instrucción `syscall`, retorno en `rax`, y por qué `rcx` y `r11` quedan clobbered.
 
 **Proyectos**: setup del laboratorio Linux con devcontainer. El resultado es un ambiente reproducible con todas las herramientas instaladas y verificadas.
+
+**Mini-lab opcional de alfabetización assembly**: compilar un programa pequeño con `-S`, leer el `.s` emitido, comparar `-O0` vs `-O2`, ubicar prólogo y epílogo de una función, seguir una llamada simple con `gdb`, y contrastar una llamada a `write()` vía libc con una syscall cruda hecha con `syscall(2)` o con un stub mínimo en assembly. No es un proyecto nuevo del plan: es un laboratorio corto dentro de L0.
 
 **Equivalente industrial**: Docker Desktop, Nix, distrobox, dev containers de VSCode.
 
@@ -196,7 +198,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Proyectos focalizados**:
 - `stringlib`: reimplementación de funciones de `<string.h>` (`memcpy`, `strlen`, `strtok`, `strdup`) — punteros en práctica
-- `elf-explorer`: usar `nm`, `objdump -d`, `readelf -a` para inspeccionar un ejecutable compilado — ver secciones, símbolos, assembly generado, y la tabla de strings. Este proyecto es de observación, no de implementación; el objetivo es desarrollar el modelo mental del formato binario antes de implementar el linker (que llega en L7).
+- `elf-explorer`: usar `nm`, `objdump -d`, `readelf -a` para inspeccionar un ejecutable compilado — ver secciones, símbolos, assembly generado, tabla de strings, prólogos y epílogos, instrucciones `call`/`ret`, y stubs del PLT. Este proyecto es de observación, no de implementación; el objetivo es desarrollar el modelo mental del formato binario antes de implementar el linker (que llega en L7).
 
 **Errores típicos**: olvidar el `break` en switch; confundir `sizeof(array)` en un puntero vs en el array real; comparar `char *` con `==`; olvidar `\0`; modificar un string literal; macro sin paréntesis que se expande incorrectamente.
 
@@ -266,7 +268,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas — Rust para el sistema operativo**: `std::fs` y sus tipos — `File`, `OpenOptions`, `DirEntry`, `Metadata`; `std::os::unix::fs::MetadataExt` — el trait de extensión Unix para uid, gid, inodo y otros campos que `std` abstrae; `std::path::Path` y `PathBuf` — la API de paths en Rust, por qué no es simplemente `String`; `OsString` y `OsStr` — por qué existen (los filesystems pueden tener nombres que no son UTF-8 válido), cuándo aparecen; `std::os::unix::io::RawFd` — cómo Rust expone los file descriptors numéricos cuando se necesita interactuar con syscalls directamente; el crate `nix` — qué syscalls expone que `std` no expone (inotify, señales POSIX, ptrace, namespaces, setuid); el crate `libc` — el mínimo común denominador para syscalls; diferencia entre `nix` (API ergonómica y segura) y `libc` (API C literal, todo `unsafe`).
 
-**Herramientas**: rustup, cargo (build, test, bench, doc, clippy, fmt, expand); rust-analyzer; miri (detección de UB en código unsafe); cargo-audit.
+**Herramientas**: rustup, cargo (build, test, bench, doc, clippy, fmt, expand); rust-analyzer; miri (detección de UB en código unsafe, cuando se habilita nightly); cargo-audit.
 
 **Proyectos focalizados**:
 - `custom-iterator`: iterador personalizado con estado — implementa el trait `Iterator` con tipo asociado `Item` y lógica de avance no trivial (e.g., Fibonacci, chunks de slice, zip-con-transformación)
@@ -297,7 +299,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: El proceso como unidad de ejecución. Cómo se crean, cómo se terminan, cómo se comunican a través de señales, y cómo el kernel registra su existencia.
 
-**Unidades teóricas**: el proceso como contexto de ejecución — espacio de memoria, tabla de FDs, señales pendientes, credenciales; `fork()` y copy-on-write — qué se comparte y qué se copia; la familia `exec` — cómo se reemplaza el image del proceso; `wait()` y `waitpid()` — por qué los zombies existen y cómo evitarlos; señales como interrupciones asíncronas — `sigaction`, máscaras, `SA_RESTART`; `SIGCHLD`, `SIGPIPE`, `SIGSEGV` — qué significan en la práctica; `/proc` como vista del árbol de procesos; introducción a `ptrace(2)` — la syscall que hace posible gdb, strace, ltrace, rr y los sanitizers. Teoría de scheduling — política vs mecanismo; scheduling FIFO y Round-Robin — el caso base y sus tradeoffs de fairness vs throughput; MLFQ (Multi-Level Feedback Queue) — múltiples colas de prioridad, reglas de boost/degrade, por qué el aging evita starvation; el Completely Fair Scheduler (CFS) de Linux como referencia del estado del arte — virtual runtime y árbol rojo-negro (se profundiza en L23); métricas de scheduling — turnaround time, response time, fairness; por qué un scheduler de propósito general es un ejercicio de tradeoffs sin solución perfecta.
+**Unidades teóricas**: el proceso como contexto de ejecución — espacio de memoria, tabla de FDs, señales pendientes, credenciales; `fork()` y copy-on-write — qué se comparte y qué se copia; la familia `exec` — cómo se reemplaza el image del proceso; `wait()` y `waitpid()` — por qué los zombies existen y cómo evitarlos; señales como interrupciones asíncronas — `sigaction`, máscaras, `SA_RESTART`; `SIGCHLD`, `SIGPIPE`, `SIGSEGV` — qué significan en la práctica; `/proc` como vista del árbol de procesos; introducción a `ptrace(2)` — la syscall que hace posible gdb, strace, ltrace, rr y los sanitizers. La frontera userspace↔kernel en Linux x86_64 — qué pasos concretos sigue una syscall: código C o Rust llama a un wrapper, el wrapper prepara registros, ejecuta `syscall`, el kernel entra por su entry stub, guarda contexto mínimo, despacha por número de syscall, ejecuta el handler y retorna a user space. Qué hace típicamente libc arriba de esa frontera — adaptar la interfaz C, traducir retornos negativos a `errno`, reiniciar algunas syscalls interrumpidas cuando corresponde, y actuar a veces como cancellation point; diferencia entre llamar vía libc, vía `syscall(2)`, vía `libc` crate, vía `nix`, o escribir un stub mínimo en assembly. Teoría de scheduling — política vs mecanismo; scheduling FIFO y Round-Robin — el caso base y sus tradeoffs de fairness vs throughput; MLFQ (Multi-Level Feedback Queue) — múltiples colas de prioridad, reglas de boost/degrade, por qué el aging evita starvation; el Completely Fair Scheduler (CFS) de Linux como referencia del estado del arte — virtual runtime y árbol rojo-negro (se profundiza en L23); métricas de scheduling — turnaround time, response time, fairness; por qué un scheduler de propósito general es un ejercicio de tradeoffs sin solución perfecta.
 
 **Proyectos focalizados**:
 - `spl_pstree`: árbol de procesos desde /proc
@@ -571,7 +573,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Unidades teóricas**: el modelo de computación distribuida — qué es diferente cuando los procesos no comparten memoria; el problema de la consistencia — CAP theorem como marco conceptual; el reconciliation loop como patrón de control — estado deseado vs estado actual, apply del diff; scheduling de tareas — bin-packing, round-robin, constraints de recursos; networking entre contenedores — veth pairs, Linux bridge, iptables para NAT y routing; service discovery — cómo un contenedor encuentra a otro; healthchecks — diferencia entre liveness y readiness; gRPC y Protocol Buffers como protocolo de comunicación entre servicios — encoding binario eficiente frente a JSON sobre HTTP; comparación de formatos de wire encoding: protobuf, capnproto, flatbuffers.
 
 **Proyectos**:
-- `orquestador` — scheduler + red via veth pairs + API HTTP REST + reconciliation loop + healthchecks + service discovery.
+- `orquestador` — scheduler + red via veth pairs + API HTTP REST + comunicación interna gRPC + reconciliation loop + healthchecks + service discovery.
 - `TCP/IP stack` (Fase L21): integración de la pila TCP/IP implementada en L16 con la red del orquestador — los contenedores se comunican a través de la pila propia en lugar del stack del kernel.
 
 **Nota**: el orquestador usa minidocker (o cualquier runtime compatible OCI) como dependencia. Comunicación interna recomendada: gRPC sobre HTTP/2.
@@ -584,9 +586,9 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: El último arco de compiladores. Emitir código máquina en tiempo de ejecución. IR, análisis de flujo de datos, asignación de registros, páginas ejecutables. JIT-Brain cierra el ciclo que empezó en L12.
 
-**Unidades teóricas**: representación intermedia (IR) — qué es SSA (Static Single Assignment) y por qué facilita optimizaciones; análisis de flujo de datos — liveness analysis, reaching definitions — los fundamentos formales de toda optimización real; asignación de registros — linear scan como algoritmo práctico; graph coloring (Chaitin-Briggs) como el algoritmo que usa LLVM — por qué es óptimo pero costoso; selección de instrucciones x86_64 — encodings de opcode, ModRM byte, prefijos REX; mmap con `PROT_READ|PROT_WRITE|PROT_EXEC` para páginas ejecutables — y por qué W^X existe como protección de seguridad; calling convention x86_64 System V ABI; JIT vs AOT — cuándo conviene compilar en tiempo de ejecución; LLVM IR como camino alternativo al JIT hand-rolled — escribir un compilador que emite LLVM IR en lugar de x86_64 directamente es más práctico para proyectos reales (tutorial Kaleidoscope de llvm.org como referencia); WebAssembly (WASM) como target de compilación — portable, con sandbox de seguridad, ejecución en browsers y servidores via WASI — una fase del compilador Lógico que emita WASM en lugar de x86_64 lo hace más moderno y abre conversaciones sobre wasmtime y Cranelift.
+**Unidades teóricas**: representación intermedia (IR) — qué es SSA (Static Single Assignment) y por qué facilita optimizaciones; análisis de flujo de datos — liveness analysis, reaching definitions — los fundamentos formales de toda optimización real; asignación de registros — linear scan como algoritmo práctico; graph coloring (Chaitin-Briggs) como el algoritmo que usa LLVM — por qué es óptimo pero costoso; selección de instrucciones x86_64 — encodings de opcode, ModRM byte, prefijos REX; mmap con `PROT_READ|PROT_WRITE|PROT_EXEC` para páginas ejecutables — y por qué W^X existe como protección de seguridad; calling convention x86_64 System V ABI; la relación entre assembly legible y bytes reales emitidos — verificar manualmente unas pocas instrucciones simples (`mov`, `add`, `call`, `ret`) contra el disassembly para cerrar el círculo entre lectura de assembly y codegen; JIT vs AOT — cuándo conviene compilar en tiempo de ejecución; LLVM IR como camino alternativo al JIT hand-rolled — escribir un compilador que emite LLVM IR en lugar de x86_64 directamente es más práctico para proyectos reales (tutorial Kaleidoscope de llvm.org como referencia); WebAssembly (WASM) como target de compilación — portable, con sandbox de seguridad, ejecución en browsers y servidores via WASI — una fase del compilador Lógico que emita WASM en lugar de x86_64 lo hace más moderno y abre conversaciones sobre wasmtime y Cranelift.
 
-**Proyectos**: `JIT-Brain` — IR simplificado + selección de instrucciones x86_64 + páginas PROT_EXEC + compilación de un subconjunto de Lógico a código nativo. Extensión: fase de emisión WASM.
+**Proyectos**: `JIT-Brain` — IR simplificado + selección de instrucciones x86_64 + páginas PROT_EXEC + compilación de un subconjunto de Lógico a código nativo. El arranque didáctico del proyecto debería validar byte a byte un bloque mínimo de instrucciones simples antes de pasar a fragmentos más complejos. Extensión: fase de emisión WASM.
 
 **Equivalentes industriales**: LLVM, Cranelift (Wasmtime), libgccjit, QBE, MIR (GCC).
 
@@ -615,7 +617,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 - `KVM mini-hypervisor`: VCPU + carga de código en modo real + manejo de VM exits — en C
 - `ebpf-tracer` (focalizado): un programa kprobe que traza syscalls de un proceso por PID + un programa XDP que filtra paquetes por protocolo. En C con libbpf, en Rust con aya. Implementación dual. Equivalente industrial: BPFTrace, bcc tools, Cilium, Falco.
 
-**Nota**: char-driver, RAM-FS y KVM son C exclusivamente dado el estado actual de los Rust kernel bindings. ebpf-tracer tiene implementación dual C/Rust — aya en Rust es production-ready.
+**Nota**: char-driver, RAM-FileSystem y KVM mini-hypervisor son C exclusivamente dado el estado actual de los Rust kernel bindings. ebpf-tracer tiene implementación dual C/Rust — aya en Rust es production-ready.
 
 **Equivalentes industriales**: Linux kernel, FUSE (user-space filesystem alternativo), QEMU/KVM, Firecracker, Cloud Hypervisor, seL4, Cilium.
 
@@ -705,7 +707,7 @@ Cada proyecto menciona su equivalente industrial por una razón específica: mos
 | `regex-engine` | Focalizado | L12 | Compiladores I |
 | `expr-parser` | Focalizado | L12 | Compiladores I |
 | `Semtex` | Integrador | L12, L13, L14 | Compiladores |
-| `Lógico` | Integrador | L12, L13, L14, L8, L22 | Compiladores |
+| `Lógico` | Integrador | L12, L13, L14, L22 | Compiladores |
 | `KVolt` | Integrador | L15 | Persistencia |
 | `MiniSQL` | Integrador | L15 | Persistencia |
 | `HTTP server` | Integrador | L16 | Redes |
@@ -765,10 +767,10 @@ Niveles: L12, L13, L14. Equivalente: pandoc, pulldown-cmark, tree-sitter.
 Fase 1 (L12): Lexer. Fase 2 (L13): AST completo. Fase 3 (L13): validación semántica estructural. Fase 4 (L14): inferencia de tipos con HM + emitter HTML/MathML. Enseña el pipeline completo de compilación sin la complejidad de un lenguaje de propósito general.
 
 ### `Lógico` — Intérprete Lisp
-Niveles: L12, L13, L14, L8, L22. Equivalente: Guile, Chicken Scheme, Janet.
+Niveles: L12, L13, L14, L22. Equivalente: Guile, Chicken Scheme, Janet.
 Reader de S-expressions → evaluador con entornos y closures → GC mark-and-sweep (usa custom-malloc de L8) → inferencia de tipos HM (L14) → compilación JIT (usa JIT-Brain de L22). El proyecto que atraviesa más niveles del plan.
 
-### `HTTP Server` — Servidor HTTP
+### `HTTP server` — Servidor HTTP
 Niveles: L16. Equivalente: nginx, hyper.
 Secuencial → thread pool → epoll → HTTP/1.1 completo con keep-alive y chunked encoding. Revisitable en L19 para agregar una fase io_uring.
 
@@ -790,13 +792,13 @@ pivot_root + namespaces → cgroups v2 → OverlayFS → seccomp + capabilities.
 
 ### `orquestador` — Orquestador de Contenedores
 Niveles: L21. Equivalente: Kubernetes, Nomad.
-Modelo de datos (Pod/Container/Node) → scheduler → red via veth pairs → reconciliation loop + API HTTP/gRPC → healthchecks + service discovery.
+Modelo de datos (Pod/Container/Node) → scheduler → red via veth pairs → API HTTP REST + comunicación interna gRPC → reconciliation loop + healthchecks + service discovery.
 
 ### `JIT-Brain` — Compilador JIT
 Niveles: L22. Equivalente: Cranelift, libgccjit.
 IR simplificado → selección de instrucciones x86_64 → páginas PROT_EXEC → compilación de un subconjunto de Lógico a código nativo. Extensión: emisión WASM.
 
-### `TCP/IP Stack` — Pila TCP/IP en User Space
+### `TCP/IP stack` — Pila TCP/IP en User Space
 Niveles: L16, L21. Equivalente: smoltcp, lwIP.
 Interfaz TUN/TAP → decodificación Ethernet + ARP → IPv4 con checksums → máquina de estados TCP completa.
 
@@ -819,7 +821,7 @@ Las diferencias de diseño entre las dos implementaciones son material pedagógi
 `gcc` y `clang` y sus flags; `make` y `cmake`; `gdb`; `valgrind` (memcheck, callgrind, massif); ASan, UBSan, MSan; `perf`; `strace`; `ltrace`; `gprof`; `nm`, `objdump`, `readelf`; `ar` y `ranlib` para librerías estáticas; `ldd` para ver dependencias dinámicas.
 
 **Herramientas de Rust que se aprenden en el camino**:
-`rustup` y toolchains; `cargo` (build, test, bench, doc, clippy, fmt, expand, flamegraph); `rust-analyzer`; `miri`; `cargo-audit`; `cargo-deny`; `cbindgen` para exponer Rust a C; `bindgen` para usar C desde Rust.
+`rustup` y toolchains (stable por defecto; nightly para labs avanzados); `cargo` (build, test, bench, doc, clippy, fmt, expand, flamegraph); `rust-analyzer`; `miri` cuando se habilita nightly; `cargo-audit`; `cargo-deny`; `cbindgen` para exponer Rust a C; `bindgen` para usar C desde Rust.
 
 ---
 
@@ -941,7 +943,6 @@ Nota: L12 se adelanta antes de L7 para que, al llegar a L8 (custom-malloc), ya e
 | **Systems Performance** — Brendan Gregg (2da ed., 2020) | Performance engineering | Pago |
 | **The Art of Writing Efficient Programs** — Fedor Pikus (2021) | Performance a nivel de código | Pago |
 | **High Performance Browser Networking** — Ilya Grigorik | Networking moderno | Gratis (hpbn.co) |
-| **Beej's Guide to Network Programming** — Brian Hall | Sockets + Networking | Gratis (beej.us) |
 | **Designing Data-Intensive Applications** — Kleppmann | Storage + distribuido | Pago |
 | **Modern Compiler Implementation in C** — Andrew Appel | Compiladores | Pago |
 | **The Art of Multiprocessor Programming** — Herlihy & Shavit | Algoritmos concurrentes | Pago |

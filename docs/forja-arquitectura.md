@@ -2,7 +2,7 @@
 
 > Este documento describe cómo se construye Forja: la estructura del repositorio, la arquitectura de la web, el modelo de contenido, el devcontainer y el alcance del MVP. No contiene contenido curricular — eso está en `forja-contenido.md`.
 >
-> La dinámica operativa de construcción — orden de trabajo, slices, betatesting y criterio de avance — vive en `forja-construccion.md`.
+> La dinámica operativa de construcción — orden de trabajo, fases, betatesting y criterio de avance — vive en `forja-construccion.md`.
 
 ---
 
@@ -26,6 +26,16 @@
 ```text
 forja/
 ├── README.md                          # Punto de entrada — qué es Forja, cómo empezar
+├── .gitignore
+├── .gitattributes
+├── .editorconfig
+├── CONVENTIONS.md
+├── docs/                              # Documentación fuente del proyecto
+│   ├── README.md
+│   ├── forja-contenido.md
+│   ├── forja-arquitectura.md
+│   └── forja-construccion.md
+├── verify-setup.sh                    # Verificación común del entorno
 ├── .devcontainer/                     # Laboratorio Linux reproducible
 │   ├── devcontainer.json
 │   └── Dockerfile
@@ -471,9 +481,9 @@ Vive en `.devcontainer/` en la raíz del repo. Compatible con VS Code Remote Con
 - `libseccomp-dev` (para L20 minidocker)
 
 **Rust**:
-- `rustup` con toolchain stable + nightly
+- `rustup` con toolchain stable por defecto; nightly opcional para labs avanzados
 - `cargo` con extensiones: `clippy`, `rustfmt`, `cargo-expand`, `cargo-flamegraph`, `cargo-audit`
-- `miri` (detección de UB)
+- `miri` (detección de UB, cuando se habilita nightly)
 - `cbindgen`, `bindgen`
 
 **Utilidades**:
@@ -505,7 +515,7 @@ El repo es la fuente de verdad. La web es un lector del repo.
 |---|---|---|
 | Contenido teórico | Markdown en `content/theory/` | Renderizado como páginas |
 | Código de proyectos | Directorios en `content/projects/` | Listado con links a GitHub |
-| Grafo de dependencias | YAML en `metadata/` | Visualización interactiva |
+| Grafo de dependencias | YAML local (`meta.yaml` y `project.yaml`) + relaciones globales en `metadata/` | Visualización interactiva |
 | Progreso del usuario | No existe | localStorage |
 | Uso sin conexión | Clonar el repo y leer con el editor | No aplicable |
 | Contribuciones | Pull requests al repo | — |
@@ -516,32 +526,32 @@ Un usuario puede clonar el repo y usarlo completamente sin la web — los `READM
 
 ## Estrategia de construcción y MVP
 
-Forja no debería construirse ni puramente por levels ni puramente por projects. La unidad sana de construcción es el slice vertical: un tramo corto del camino real del usuario que incluya teoría, proyectos focalizados, al menos una fase integradora habilitada por ese tramo, y navegación web suficiente para recorrerlo.
+La arquitectura no redefine la unidad de avance: esa unidad ya está fijada en `forja-construccion.md` y es la fase lineal del orden maestro. Este documento solo fija cómo repo, metadata y web acompañan cada fase para que el sistema siga navegable mientras crece.
 
-### Regla de construcción
+### Regla de alineación
 
-Cada slice que se da por terminado debe cumplir cuatro cosas:
+Cada fase que se da por terminada debe dejar cuatro cosas coherentes:
 
-- Los niveles teóricos del tramo están completos y se pueden leer de punta a punta
-- Los proyectos focalizados asociados a ese tramo están presentes con código, tests y guía
-- Existe al menos una fase ejecutable del proyecto integrador que ese tramo habilita
-- La web ya puede navegar ese contenido sin rutas rotas ni metadata incompleta
+- El contenido de la fase existe y es navegable en el repo
+- La metadata local (`meta.yaml` y `project.yaml`) y la metadata global mínima quedan actualizadas
+- La web puede renderizar esa fase sin rutas rotas ni referencias huérfanas
+- El recorrido real desde el nivel que la habilita hasta el proyecto correspondiente sigue siendo claro
 
 ### Ruta piloto para betatesting
 
-La estrategia recomendada es construir siguiendo un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1:
+La estrategia recomendada sigue siendo priorizar un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1, ejecutado según el orden maestro de fases:
 
-1. Infraestructura base: repo, devcontainer, modelo de metadata, web mínima
-2. `L0 → L1a → L1b → L2`: lenguaje C + proyectos focalizados iniciales
-3. `L5 → L6`: primer tramo real de sistemas con archivos, procesos y señales
-4. `mish` Fase 1 y Fase 2: primer integrador usable
-5. `L11` + `mish` Fase 3 y Fase 4: cerrar pipes, redirecciones y job control
+1. `Base 0`, `Base 1`, `Base 2`
+2. `L0` + `devcontainer-setup`, luego `L1a`, `L1b` y `L2` con sus proyectos focalizados
+3. `L5` y `L6` con sus proyectos focalizados
+4. `mish` (tramo `L6`) como primer integrador usable
+5. `L11` + `mish` (tramo `L11`) para cerrar pipes, redirecciones y job control
 
-Este orden permite que actúes como betatester del curso real, no solo del contenido aislado. Cada bloque nuevo se valida recorriéndolo como usuario, no solo leyéndolo como autor.
+Este orden permite betatestear el curso real sin apartarse de la secuencia de `forja-construccion.md`. Cada bloque nuevo se valida recorriéndolo como usuario, no solo leyéndolo como autor.
 
 ### MVP como criterio, no como lista cerrada
 
-El MVP no queda fijado todavía como un conjunto definitivo de niveles. El criterio correcto es este: Forja tiene MVP cuando existe al menos una ruta corta, coherente y autocontenida que pueda recorrerse end-to-end desde `L0` hasta un primer proyecto integrador útil, con repo, web y laboratorio funcionando como sistema único.
+El MVP no queda fijado todavía como un conjunto definitivo de niveles. El criterio correcto es este: Forja tiene MVP cuando las fases base y una ruta corta, coherente y autocontenida de fases de nivel y de proyecto pueden recorrerse end-to-end desde `L0` hasta un primer proyecto integrador útil, con repo, web y laboratorio funcionando como sistema único.
 
 ### Web del MVP
 
@@ -566,5 +576,5 @@ El mapa interactivo, la búsqueda full-text y el tracking de progreso pueden exi
 | Markdown rendering | MDX vs remark/rehype plano | Bajo — ambos funcionan bien con Vite |
 | Design system / UI | Tailwind + Radix UI vs shadcn/ui vs CSS modules custom | Medio — afecta velocidad de desarrollo |
 | Despliegue inicial | GitHub Pages vs Vercel | Bajo — ambos son gratuitos para este caso |
-| Los proyectos L23 (kernel) — ¿tienen implementación Rust? | Solo C por ahora, Rust "cuando los bindings maduren" | Bajo — ya documentado en forja-contenido.md |
+| ¿Qué proyectos de L23 quedan solo en C? | `char-driver`, `RAM-FileSystem` y `KVM mini-hypervisor` solo C; `ebpf-tracer` tiene implementación dual C/Rust | Bajo — ya cerrado en forja-contenido.md |
 | ¿Las mejoras propuestas de una fase desbloquean la siguiente? | Opcionales vs requeridas | Alto — afecta el modelo pedagógico completo |

@@ -1,0 +1,15 @@
+# Biblioteca local no versionada
+/libros-consulta/
+
+# Dependencias y builds futuras de la web
+/web/node_modules/
+/web/dist/
+/web/.vite/
+
+# Logs y artefactos locales
+*.log
+coverage/
+
+# Basura comun del sistema
+.DS_Store
+Thumbs.db
