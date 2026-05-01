@@ -20,17 +20,17 @@
   - [L0 — Entorno y Toolchain](#l0--entorno-y-toolchain)
   - [L1a — C: primer contacto](#l1a--c-primer-contacto)
   - [L1b — C: fundamentos profundos](#l1b--c-fundamentos-profundos)
-  - [L2 — C: memoria y gestión manual](#l2--c-como-lenguaje-memoria-y-gestión-manual)
+  - [L2 — C como lenguaje: memoria y gestión manual](#l2--c-como-lenguaje-memoria-y-gestión-manual)
   - [L3a — Rust: primer contacto](#l3a--rust-primer-contacto)
   - [L3b — Rust: ownership y borrowing](#l3b--rust-ownership-y-borrowing)
-  - [L4 — Rust: tipos, traits, FFI y sistema operativo](#l4--rust-como-lenguaje-tipos-traits-ffi-y-sistema-operativo)
+  - [L4 — Rust como lenguaje: tipos, traits, FFI y sistema operativo](#l4--rust-como-lenguaje-tipos-traits-ffi-y-sistema-operativo)
   - **Sistemas**
   - [L5 — POSIX: archivos, metadatos y el filesystem](#l5--posix-archivos-metadatos-y-el-filesystem)
   - [L6 — Procesos y señales](#l6--procesos-y-señales)
   - [L7 — Memoria virtual y formato ELF](#l7--memoria-virtual-y-formato-elf)
   - [L8 — Allocators](#l8--allocators)
-  - [L9 — Concurrencia: threads y sincronización](#l9--concurrencia-threads-y-primitivas-de-sincronización)
-  - [L10 — Concurrencia avanzada: atomics y lock-free](#l10--concurrencia-avanzada-atomics-lock-free-y-memory-ordering)
+  - [L9 — Concurrencia: threads y primitivas de sincronización](#l9--concurrencia-threads-y-primitivas-de-sincronización)
+  - [L10 — Concurrencia avanzada: atomics, lock-free y memory ordering](#l10--concurrencia-avanzada-atomics-lock-free-y-memory-ordering)
   - [L11 — IPC y comunicación entre procesos](#l11--ipc-y-comunicación-entre-procesos)
   - **Compiladores**
   - [L12 — Lexers y parsers](#l12--lexers-y-parsers)
@@ -195,7 +195,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Herramientas**: make y cmake básico; flags de compilación importantes (`-O2`, `-fsanitize=address`, `-std=c11`); clang-format y clang-tidy; cppcheck.
 
 **Proyectos focalizados**:
-- Reimplementación de funciones de `<string.h>` (`memcpy`, `strlen`, `strtok`, `strdup`) — punteros en práctica
+- `stringlib`: reimplementación de funciones de `<string.h>` (`memcpy`, `strlen`, `strtok`, `strdup`) — punteros en práctica
 - `elf-explorer`: usar `nm`, `objdump -d`, `readelf -a` para inspeccionar un ejecutable compilado — ver secciones, símbolos, assembly generado, y la tabla de strings. Este proyecto es de observación, no de implementación; el objetivo es desarrollar el modelo mental del formato binario antes de implementar el linker (que llega en L7).
 
 **Errores típicos**: olvidar el `break` en switch; confundir `sizeof(array)` en un puntero vs en el array real; comparar `char *` con `==`; olvidar `\0`; modificar un string literal; macro sin paréntesis que se expande incorrectamente.
@@ -211,8 +211,8 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Unidades teóricas**: layout de memoria de un proceso (text, data, bss, heap, stack); stack frames y cómo crece el stack en cada llamada; `malloc`/`free`/`realloc`/`calloc` — qué garantizan, qué no; por qué free no devuelve memoria al SO inmediatamente; las tres categorías de error de memoria (use-after-free, double-free, buffer overflow) y cómo ASan los detecta; valgrind memcheck — cómo interpretar cada tipo de error; el modelo de ownership conceptual (antes de Rust): "quien lo alloca, lo libera". El modelo de manejo de errores en C — retornar `-1` y setear `errno` para indicar fallos; `perror()` y `strerror()` como forma de traducir un código de error a texto legible; por qué `errno` es thread-local desde POSIX (cada thread tiene el suyo); el patrón de retornar `NULL` en funciones que devuelven puntero; el patrón `goto cleanup` para liberar recursos ante fallo sin repetición de código — la forma idiomática de C ante errores; `assert()` vs error handling real — cuándo cada uno es apropiado.
 
 **Proyectos focalizados**:
-- Un parser de argumentos de línea de comando desde cero (tipo `getopt`)
-- Un vector dinámico genérico con `void *` y punteros a función
+- `getopt-impl`: parser de argumentos de línea de comando desde cero (tipo `getopt`)
+- `dynamic-array`: vector dinámico genérico con `void *` y punteros a función
 
 **Herramientas**: valgrind memcheck, ASan, UBSan. Se usan en cada proyecto de aquí en adelante.
 
@@ -245,7 +245,8 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas**: ownership como invariante del compilador — una sola variable es dueña de un valor a la vez; move semantics — qué ocurre cuando se asigna un valor a otra variable o se pasa a una función; copy semantics — tipos que implementan `Copy` (escalares, referencias) vs tipos que se mueven (`String`, `Vec`, structs custom); borrowing — referencias compartidas (`&T`, solo lectura, múltiples simultáneas) y exclusivas (`&mut T`, lectura/escritura, solo una a la vez); las reglas del borrow checker y por qué garantizan ausencia de data races en compile time; lifetimes como región de validez de una referencia — cuándo el compilador los infiere y cuándo hace falta anotarlos explícitamente; notación `'a` — cómo leer y escribir lifetime parameters; `Clone` vs `Copy` — cuándo implementar cada uno; `Drop` como destructor garantizado — qué ocurre cuando un valor sale de scope; `String` vs `&str` — por qué existen dos tipos de string, cuándo usar cada uno; slices — `&[T]` y `&str` como vistas de una secuencia contigua sin tomar ownership.
 
-**Proyectos focalizados**: reimplementación de estructuras de datos en Rust — linked list (el proyecto clásico que fuerza entender lifetimes y `Box<T>`), binary search tree, stack con genéricos.
+**Proyectos focalizados**:
+- `data-structures-rust`: reimplementación de estructuras de datos en Rust — linked list (el proyecto clásico que fuerza entender lifetimes y `Box<T>`), binary search tree, stack con genéricos.
 
 **Errores típicos**: mover un valor y seguir usándolo (el error más frecuente de principiantes); borrow inmutable mientras existe un borrow mutable al mismo scope; retornar una referencia a una variable local; usar `clone()` innecesariamente como escape hatch (señal de no haber entendido ownership todavía); confundir el lifetime del valor con el lifetime de la referencia.
 
@@ -339,7 +340,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Proyectos**:
 - `custom-malloc v1`: sbrk + free list + first-fit + coalescencia
 - `custom-malloc v2`: segregated bins + thread-safety + benchmarks vs glibc malloc
-- El GC mark-and-sweep para el intérprete Lógico (se conecta con L13 — primera conexión explícita entre proyectos de distintos dominios)
+- El GC mark-and-sweep para el intérprete Lógico (anticipa la conexión con L13 — la primera conexión explícita entre proyectos de distintos dominios del plan se materializa allí)
 
 **Equivalentes industriales**: jemalloc, mimalloc, tcmalloc, snmalloc, Hoard, ptmalloc2 (glibc).
 
@@ -353,10 +354,10 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas**: thread como flujo de ejecución dentro de un proceso — qué comparte, qué no; `pthread_create`, `pthread_join`, `pthread_detach`; data race como UB en C y como error de compilación en Rust; mutex — acquire/release, el invariante que protege; condition variables — espera sin busy-wait, el patrón `while(!cond) wait()`; semáforos — `sem_post` y `sem_wait`; deadlock — las cuatro condiciones de Coffman; `futex(2)` como primitiva subyacente; el modelo de memoria de C11/C++11 — `atomic_t`, ordering (sequentially consistent, acquire/release, relaxed); el modelo de memoria de hardware — store buffers y load buffers, por qué los procesadores modernos requieren barreras de memoria; el protocolo MESI de coherencia de cache y qué implica para el programador; por qué x86-64 es TSO (Total Store Order) y ARM es más débil — por qué código portable necesita barreras explícitas.
 
-**Proyectos**:
-- Thread pool con queue de trabajo y condition variable
-- Productor-consumidor con buffer acotado
-- Implementación de un rwlock desde cero sobre mutex + condvar
+**Proyectos focalizados**:
+- `thread-pool`: thread pool con queue de trabajo y condition variable
+- `prod-cons`: productor-consumidor con buffer acotado
+- `rwlock-impl`: implementación de un rwlock desde cero sobre mutex + condvar
 
 **Equivalentes industriales**: OpenMP, Intel TBB, rayon (Rust), Java ExecutorService.
 
@@ -388,8 +389,8 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Unidades teóricas**: pipes anónimas — `pipe(2)`, heredar FDs en fork, cerrar el extremo no usado; FIFOs nombradas — `mkfifo`, apertura bloqueante; POSIX shared memory — `shm_open`, `ftruncate`, `mmap`; semáforos POSIX nombrados vs de memoria compartida; System V IPC — msgsnd/msgrcv, shmget/shmat, semop — por qué existe y por qué POSIX IPC es preferible hoy; diseño de un protocolo de wire format — header + payload, serialización, framing.
 
 **Proyectos focalizados**:
-- Semáforo binario sobre named pipes
-- Explorador de objetos IPC del sistema (tipo `ipcs(1)`)
+- `named-pipe-sem`: semáforo binario sobre named pipes
+- `ipc-explorer`: explorador de objetos IPC del sistema (tipo `ipcs(1)`)
 
 **Proyectos integradores que empiezan aquí**: `miniqueue` (message queue tipo RabbitMQ).
 
@@ -406,7 +407,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 **Proyectos focalizados**:
 - `regex-engine`: NFA construction por Thompson + subset construction + DFA minimizado + motor de backtracking opcional. Implementación dual C/Rust. Es el proyecto que cubre en profundidad los autómatas que el lexer de Semtex solo toca superficialmente — NFA, DFA, y por qué los regex de Python son lentos y los de Go/Rust son rápidos. Equivalente industrial: PCRE2, RE2, regex crate.
 - Lexer de un lenguaje de marcado simple (Semtex, Fase 1)
-- Parser de expresiones aritméticas con precedencia correcta (Pratt parsing)
+- `expr-parser`: parser de expresiones aritméticas con precedencia correcta (Pratt parsing)
 
 **Proyectos integradores que empiezan aquí**: `Semtex` (parser semántico); `Lógico` (intérprete Lisp — empieza el lexer/reader aquí).
 
@@ -422,7 +423,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas**: el ciclo read-eval-print (REPL) como estructura de un intérprete; evaluación por recursión sobre el AST — el modelo de árbol sintáctico como programa; entornos como estructuras de datos — tablas de símbolos encadenadas (frame → parent); scope léxico vs dinámico — por qué el scope léxico es más fácil de razonar; closures — capturar el entorno en tiempo de definición, no de ejecución; tail call optimization — por qué importa en lenguajes funcionales; semántica operacional — big-step vs small-step, reglas de evaluación en notación formal — el vocabulario que permite razonar sobre si una implementación es correcta; Continuation-Passing Style (CPS) — transformación a CPS, su relación con tail calls y con lazy evaluation, cómo los compiladores de lenguajes funcionales representan el control flow.
 
-**Proyectos**: `Lógico v1` (intérprete Lisp completo con closures y recursión); `Semtex` Fase 2 (AST completo) y Fase 3 (validación semántica).
+**Proyectos**: `Lógico v1` (intérprete Lisp completo con closures y recursión); `Semtex` Fase 2 (AST completo) y Fase 3 (validación semántica estructural — sin type checking).
 
 **Nota**: el garbage collector mark-and-sweep de Lógico se implementa usando el allocator de L8 — primera conexión explícita entre proyectos de distintos dominios.
 
@@ -436,7 +437,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas**: tipos simples — tau ::= Int | Bool | tau → tau; variables de tipo como incógnitas; constraints de tipo — ecuaciones entre tipos generadas durante el análisis; el algoritmo de unificación de Robinson — cómo se resuelven ecuaciones de tipos; union-find (Tarjan) como estructura eficiente para unificación; el algoritmo W de Damas-Milner para inferencia con polimorfismo; let-generalización y cuantificación universal; por qué Rust no tiene HM completo (las implicaciones de traits y coherencia); polimorfismo de subtipos vs polimorfismo paramétrico.
 
-**Proyectos**: `Lógico v2` — agregar inferencia de tipos HM al intérprete; `Semtex` Fase 3 — validación semántica de tipos en el AST.
+**Proyectos**: `Lógico v2` — agregar inferencia de tipos HM al intérprete; `Semtex` Fase 4 — inferencia de tipos y validación semántica completa con HM.
 
 **Referencia clave**: Engineering a Compiler (Cooper & Torczon, 2ed) para el capítulo de inferencia de tipos; Types and Programming Languages (Pierce) como referencia formal.
 
@@ -480,6 +481,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 - `mini-tcpdump` (focalizado): captura paquetes con AF_PACKET, parsea headers Ethernet + IP + TCP/UDP, filtra por protocolo/puerto. Equivalente industrial: tcpdump, Wireshark, libpcap.
 - `http2-server` (focalizado, extensión): HTTP/2 sobre TLS usando el crate `h2` en Rust. Demuestra multiplexing de streams y HPACK. Contrasta con el HTTP/1.1 implementado desde cero.
 - `websocket-server` (focalizado): WebSocket desde HTTP/1.1 — framing binario, handshake de upgrade, masking. Alta densidad de aprendizaje sobre protocolos con extensión de framing.
+- `TCP/IP stack` (integrador, L16+L21): pila TCP/IP en user space sobre interfaz TUN/TAP — decodificación Ethernet + ARP → IPv4 con checksums → máquina de estados TCP completa. La parte L21 integra la pila con el orquestador. Equivalente industrial: smoltcp, lwIP.
 
 **Equivalentes industriales**: nginx, Apache, hyper (Rust), axum, actix-web, rsync, rclone, syncthing, dnsmasq, Wireshark.
 
@@ -500,10 +502,10 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 - La metodología: hipótesis → medición → análisis → cambio → re-medición. No optimizar sin medir. No medir sin hipótesis.
 
 **Proyectos**:
-- Benchmarks comparativos de los allocators de L8 (custom-malloc vs glibc vs jemalloc vs mimalloc) usando mimalloc-bench como harness
-- Perfilado del HTTP server de L16 — identificar el bottleneck real con flamegraph, medir el impacto de un fix específico
-- Experimento de cache locality: comparar AoS vs SoA en un loop de procesamiento intensivo, medir con `perf stat`
-- Experimento de contención en estructuras concurrentes: medir false sharing con `perf c2c`
+- `perf-benchmarks`: benchmarks comparativos de los allocators de L8 (custom-malloc vs glibc vs jemalloc vs mimalloc) usando mimalloc-bench como harness
+- `flamegraph-lab`: perfilado del HTTP server de L16 — identificar el bottleneck real con flamegraph, medir el impacto de un fix específico
+- `cache-locality-exp`: experimento de cache locality — comparar AoS vs SoA en un loop de procesamiento intensivo, medir con `perf stat`
+- `false-sharing-exp`: experimento de contención en estructuras concurrentes — medir false sharing con `perf c2c`
 
 **Equivalentes industriales**: Linux perf, Brendan Gregg's bpftrace scripts, Instruments (macOS), Intel VTune, Cachegrind/Callgrind (Valgrind).
 
@@ -524,7 +526,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Nota sobre librerías**: tinyssh usa `ring` (Rust) o libsodium (C) para las primitivas criptográficas — el objetivo pedagógico es entender SSH, no re-implementar AES-GCM.
 
-**Equivalentes industriales**: OpenSSH, rustls, ring (BoringSSL bindings), openssl.
+**Equivalentes industriales**: OpenSSH, rustls, ring (Rust crypto, inspirado en BoringSSL), openssl.
 
 ---
 
@@ -568,7 +570,9 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Unidades teóricas**: el modelo de computación distribuida — qué es diferente cuando los procesos no comparten memoria; el problema de la consistencia — CAP theorem como marco conceptual; el reconciliation loop como patrón de control — estado deseado vs estado actual, apply del diff; scheduling de tareas — bin-packing, round-robin, constraints de recursos; networking entre contenedores — veth pairs, Linux bridge, iptables para NAT y routing; service discovery — cómo un contenedor encuentra a otro; healthchecks — diferencia entre liveness y readiness; gRPC y Protocol Buffers como protocolo de comunicación entre servicios — encoding binario eficiente frente a JSON sobre HTTP; comparación de formatos de wire encoding: protobuf, capnproto, flatbuffers.
 
-**Proyectos**: `orquestador` — scheduler + red via veth pairs + API HTTP REST + reconciliation loop + healthchecks + service discovery.
+**Proyectos**:
+- `orquestador` — scheduler + red via veth pairs + API HTTP REST + reconciliation loop + healthchecks + service discovery.
+- `TCP/IP stack` (Fase L21): integración de la pila TCP/IP implementada en L16 con la red del orquestador — los contenedores se comunican a través de la pila propia en lugar del stack del kernel.
 
 **Nota**: el orquestador usa minidocker (o cualquier runtime compatible OCI) como dependencia. Comunicación interna recomendada: gRPC sobre HTTP/2.
 
@@ -603,7 +607,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 - El CFS (Completely Fair Scheduler) de Linux: árbol rojo-negro con virtual runtime, fairness, control groups y CPU quotas — conexión directa con minidocker (cgroups) de L20 y con el scheduler-sim de L6.
 - eBPF como alternativa moderna a los módulos de kernel: eBPF ejecuta código verificado en el kernel sin escribir módulos. Desde 2016 es la tecnología que define observabilidad, networking y seguridad en Linux moderno. Un programa eBPF de kprobe + mapa BPF + lector en user space es más accesible que un módulo de kernel y tiene aplicaciones inmediatas en producción. Referencia: libbpf (C) y aya (Rust). XDP (eXpress Data Path) para procesamiento de paquetes en el driver de red antes del stack de red del kernel.
 - Rust en el kernel Linux: desde Linux 6.1 (2022), Rust es un lenguaje oficial del kernel. Hay drivers escritos en Rust en producción. Los proyectos de este nivel siguen siendo mayoritariamente C, pero el estado del campo ya no es "los módulos de kernel son C por definición".
-- Secure Boot y UEFI: el microkernel arranca en QEMU donde Secure Boot puede deshabilitarse para el laboratorio. En hardware real en 2025, Secure Boot y UEFI reemplazan a BIOS — el bootloader del proyecto no funcionaría en una laptop real sin modificaciones UEFI y firma de código.
+- Secure Boot y UEFI: los módulos de kernel y el mini-hypervisor se desarrollan y prueban dentro de una VM QEMU donde Secure Boot puede deshabilitarse para el laboratorio. En hardware real en 2025, Secure Boot y UEFI reemplazan a BIOS — un módulo sin firma o un binario bare-metal no arrancaría en una laptop real sin modificaciones UEFI.
 
 **Proyectos**:
 - `char-driver`: módulo de kernel Linux con lectura/escritura/ioctl en `/dev/` — en C
@@ -715,6 +719,7 @@ Cada proyecto menciona su equivalente industrial por una razón específica: mos
 | `perf-benchmarks` | Focalizado | L17 | Performance |
 | `flamegraph-lab` | Focalizado | L17 | Performance |
 | `cache-locality-exp` | Focalizado | L17 | Performance |
+| `false-sharing-exp` | Focalizado | L17 | Performance |
 | `tinyssh` | Integrador | L18 | Seguridad |
 | `impl_script` | Focalizado | L18 | Seguridad |
 | `async-runtime` | Integrador | L19 | I/O Asíncrono |
@@ -757,7 +762,7 @@ Parser SQL (recursive descent) → planner con estimación de costo → joins (n
 
 ### `Semtex` — Parser de Marcado
 Niveles: L12, L13, L14. Equivalente: pandoc, pulldown-cmark, tree-sitter.
-Lexer → AST → validación semántica → emitter HTML/MathML. Enseña el pipeline completo de compilación sin la complejidad de un lenguaje de propósito general.
+Fase 1 (L12): Lexer. Fase 2 (L13): AST completo. Fase 3 (L13): validación semántica estructural. Fase 4 (L14): inferencia de tipos con HM + emitter HTML/MathML. Enseña el pipeline completo de compilación sin la complejidad de un lenguaje de propósito general.
 
 ### `Lógico` — Intérprete Lisp
 Niveles: L12, L13, L14, L8, L22. Equivalente: Guile, Chicken Scheme, Janet.
@@ -795,7 +800,7 @@ IR simplificado → selección de instrucciones x86_64 → páginas PROT_EXEC �
 Niveles: L16, L21. Equivalente: smoltcp, lwIP.
 Interfaz TUN/TAP → decodificación Ethernet + ARP → IPv4 con checksums → máquina de estados TCP completa.
 
-### `char-driver` + `RAM-FS` + `KVM hypervisor`
+### `char-driver` + `RAM-FileSystem` + `KVM mini-hypervisor`
 Nivel: L23. Los tres proyectos de kernel space. En C exclusivamente.
 
 ---
@@ -864,8 +869,8 @@ Forja tiene cuatro caminos explícitos. Todos parten de L0. Ninguno es el único
 
 `L0 → L1a → L1b → L2 → L5 → L6 → L7 → L8 → L9 → L10 → L11 → L16 → L17 → L19 → L20 → L21 → L23`
 
-Proyectos clave: mish, mini-debugger, HTTP server (C), custom-malloc, tinyssh, orquestador.
-No incluye: Rust, compiladores, bases de datos, seguridad formal. Esos se pueden agregar con L3-L4 y el arco de compiladores en cualquier punto.
+Proyectos clave: mish, mini-debugger, HTTP server (C), custom-malloc, orquestador.
+No incluye: Rust, compiladores, bases de datos, seguridad formal — estos se pueden agregar con L3-L4 y el arco de compiladores en cualquier punto. `tinyssh` (L18) no está en este camino — quien quiera seguridad puede agregar L18 después de L17.
 **Nota sobre L19**: L19 es mayoritariamente Rust (async/await, tokio, Pin/Unpin). En el Camino 1, se recomienda limitar L19 a la teoría de io_uring y al proyecto `io_uring-echo` en C con liburing, omitiendo las unidades de async Rust idiomático y el proyecto `async-runtime`. El track C completo del nivel es el estudio de libuv como caso de referencia.
 
 ---
@@ -888,6 +893,7 @@ Duración estimada: el más largo — diseñado para 2-3 años de trabajo serio.
 `L0 → L1a → L1b → L2 → L3a → L3b → L4 → L12 → L13 → L14 → L22 → (L5 → L6 → L7 como complemento opcional)`
 
 Proyectos clave: Lógico (intérprete Lisp con GC), Semtex (parser semántico), JIT-Brain (compilador JIT), regex-engine.
+**Nota sobre Lógico y el GC**: el garbage collector de Lógico usa el allocator de L8, que no está en este camino. En Camino 3, el GC de Lógico puede implementarse usando `malloc` estándar en primera instancia — quien quiera cerrar el círculo puede agregar L8 como nivel opcional después de L2.
 Puede hacerse el arco de compiladores entero antes de tocar procesos, redes o contenedores.
 
 ---
@@ -898,8 +904,8 @@ Puede hacerse el arco de compiladores entero antes de tocar procesos, redes o co
 
 `L0 → L1a → L1b → L2 → L3a → L3b → L4 → L5 → L6 → L12 → L7 → L8 → L9 → L10 → L11 → L13 → L14 → L15 → L16 → L17 → L18 → L19 → L20 → L22 → L23`
 
-Proyectos clave: todos los integradores (mish, mini-debugger, Lógico con GC, KVolt, tinyssh, orquestador, JIT-Brain).
-Nota: L12 se adelanta antes de L7 para que el allocator del GC (L13) tenga base teórica de compiladores cuando llegue L8.
+Proyectos clave: todos los integradores excepto `orquestador` (mish, mini-debugger, Lógico con GC, KVolt, tinyssh, JIT-Brain). L21 no está en este camino — `orquestador` requiere L21.
+Nota: L12 se adelanta antes de L7 para que, al llegar a L8 (custom-malloc), ya exista contexto de para qué sirve ese allocator — el GC de Lógico en L13 lo usará.
 
 ---
 
@@ -935,12 +941,15 @@ Nota: L12 se adelanta antes de L7 para que el allocator del GC (L13) tenga base 
 | **Systems Performance** — Brendan Gregg (2da ed., 2020) | Performance engineering | Pago |
 | **The Art of Writing Efficient Programs** — Fedor Pikus (2021) | Performance a nivel de código | Pago |
 | **High Performance Browser Networking** — Ilya Grigorik | Networking moderno | Gratis (hpbn.co) |
+| **Beej's Guide to Network Programming** — Brian Hall | Sockets + Networking | Gratis (beej.us) |
 | **Designing Data-Intensive Applications** — Kleppmann | Storage + distribuido | Pago |
 | **Modern Compiler Implementation in C** — Andrew Appel | Compiladores | Pago |
 | **The Art of Multiprocessor Programming** — Herlihy & Shavit | Algoritmos concurrentes | Pago |
 | **Writing an OS in Rust** — Philipp Oppermann | Kernel en Rust | Gratis (os.phil-opp.com) |
 | **Linkers and Loaders** — John Levine (2000) | Linking + ELF | Pago |
 | **Is Parallel Programming Hard?** — Paul McKenney | Concurrencia (RCU) | Gratis |
+| **Types and Programming Languages** — Benjamin Pierce (TAPL) | Teoría de tipos | Pago |
+| **Structure and Interpretation of Computer Programs** — Abelson & Sussman (SICP) | Lenguajes + Compiladores | Gratis (mitpress.mit.edu) |
 
 ### Recursos online gratuitos de alta calidad
 
