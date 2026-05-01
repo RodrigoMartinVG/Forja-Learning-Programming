@@ -7,7 +7,6 @@ import {
   findLevelById,
   findLevelBySlug,
   findProjectById,
-  listCrossRefsForLevel,
   listProjectsForLevel,
   type LevelEntry,
 } from "@/lib/catalog";
@@ -16,8 +15,8 @@ function isLevelEntry(level: LevelEntry | undefined): level is LevelEntry {
   return Boolean(level);
 }
 
-function joinOrFallback(values: string[], fallback: string) {
-  return values.length > 0 ? values.join(" · ") : fallback;
+function joinValues(values: string[], fallback: string) {
+  return values.length > 0 ? values.join(" / ") : fallback;
 }
 
 export function WorkspacePage() {
@@ -25,7 +24,6 @@ export function WorkspacePage() {
   const defaultPath = catalog.paths[1] ?? catalog.paths[0];
   const activeMode: WorkspaceMode = searchParams.get("mode") === "focus" ? "focus" : "browse";
   const activePath = catalog.paths.find((path) => path.id === searchParams.get("path")) ?? defaultPath ?? null;
-
   const rootLevel = catalog.levels[0];
 
   if (!rootLevel) {
@@ -34,7 +32,7 @@ export function WorkspacePage() {
 
   const activePathLevels = activePath
     ? activePath.levels.map(findLevelById).filter(isLevelEntry)
-    : catalog.levels.slice(0, 8);
+    : catalog.levels;
 
   const selectedProject = searchParams.get("project") ? findProjectById(searchParams.get("project")!) : undefined;
   const fallbackLevel = activePathLevels[0] ?? rootLevel;
@@ -45,15 +43,14 @@ export function WorkspacePage() {
     ? { kind: "project", project: selectedProject }
     : { kind: "level", level: selectedLevel ?? rootLevel };
 
-  const activePhase =
+  const selectedPhase =
     selection.kind === "project"
       ? selection.project.phases.find(
           (phase) => phase.language === searchParams.get("lang") && phase.phase === searchParams.get("phase"),
-        )
+        ) ?? selection.project.phases[0]
       : undefined;
 
   const levelProjects = selection.kind === "level" ? listProjectsForLevel(selection.level.id) : [];
-  const levelCrossRefs = selection.kind === "level" ? listCrossRefsForLevel(selection.level) : [];
   const projectLevels =
     selection.kind === "project" ? selection.project.display_levels.map(findLevelById).filter(isLevelEntry) : [];
   const projectRequiredLevels =
@@ -63,18 +60,18 @@ export function WorkspacePage() {
     selection.kind === "level"
       ? [
           selection.level.prerequisites.length > 0
-            ? `Verifica prerequisitos: ${selection.level.prerequisites.join(" · ")}.`
+            ? `Verifica prerequisitos: ${selection.level.prerequisites.join(" / ")}.`
             : "No hay prerequisitos declarados; puedes entrar directo.",
-          `Lee el README de ${selection.level.id} y extrae el lenguaje tecnico dominante de la unidad.`,
-          `Resuelve los ejercicios reservados y enlaza ${levelProjects.length} proyecto(s) del tramo.`,
+          `Lee el README de ${selection.level.id} y fija los conceptos tecnicos de la unidad.`,
+          `Resuelve ejercicios y conecta ${levelProjects.length} proyecto(s) del tramo.`,
         ]
       : [
           selection.project.required_levels.length > 0
-            ? `Confirma los niveles requeridos: ${selection.project.required_levels.join(" · ")}.`
+            ? `Confirma niveles requeridos: ${selection.project.required_levels.join(" / ")}.`
             : "El proyecto no declara niveles extra por fuera de su ancla.",
-          `Usa el README del proyecto para fijar alcance, restricciones y lenguaje(s) de implementacion.`,
+          `Usa el README para fijar alcance, restricciones y lenguaje(s) de implementacion.`,
           selection.project.phases.length > 0
-            ? `Elige una fase material y convierte el workspace en una sesion de ejecucion. Hay ${selection.project.phases.length} fase(s) detectadas.`
+            ? `Trabaja una fase material y usa el contenido asociado como guia de ejecucion.`
             : `Todavia no hay fases materiales; trabaja sobre el contrato de ${selection.project.stages.length} stage(s).`,
         ];
 
@@ -120,7 +117,7 @@ export function WorkspacePage() {
     }
 
     const nextPathLevels = nextPath.levels.map(findLevelById).filter(isLevelEntry);
-    const nextDefaultLevel = nextPathLevels[0] ?? catalog.levels[0];
+    const nextDefaultLevel = nextPathLevels[0] ?? rootLevel;
     const keepProject =
       selection.kind === "project" && selection.project.display_levels.some((levelId) => nextPath.levels.includes(levelId));
     const keepLevel = selection.kind === "level" && nextPath.levels.includes(selection.level.id);
@@ -148,60 +145,58 @@ export function WorkspacePage() {
 
   return (
     <div className="workspace-shell">
-      <header className="workspace-topbar">
-        <div className="workspace-brand">
-          <Link className="brand-mark" to="/">
+      <aside className="workspace-index">
+        <div className="workspace-index-head">
+          <Link className="workspace-mark" to="/">
             FORJA
           </Link>
-          <div className="workspace-brand-copy">
-            <p className="eyebrow">Workspace</p>
-            <h1>Atlas curricular con mapa y foco</h1>
-          </div>
+
+          {catalog.paths.length > 0 ? (
+            <label className="workspace-select-field">
+              <span>Trayecto</span>
+              <select
+                className="workspace-select"
+                value={activePath?.id ?? ""}
+                onChange={(event) => handlePathSelect(event.target.value)}
+              >
+                {catalog.paths.map((path) => (
+                  <option key={path.id} value={path.id}>
+                    {path.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
         </div>
 
-        <div className="workspace-actions">
-          <Link className="button-link button-link-ghost" to="/">
-            Volver a landing
+        <CurriculumMap
+          levels={catalog.levels}
+          projects={catalog.projects}
+          activePathLevels={activePathLevels}
+          mode={activeMode}
+          selection={selection}
+          onSelectLevel={handleSelectLevel}
+          onSelectProject={handleSelectProject}
+        />
+      </aside>
+
+      <main className="workspace-document">
+        <div className="document-topbar">
+          <Link className="document-back" to="/">
+            Volver
           </Link>
-          <button className="button-link button-link-muted" type="button" onClick={() => updateParams({ mode: "focus" })}>
-            Entrar a focus
-          </button>
-        </div>
-      </header>
 
-      <section className="workspace-stat-strip" aria-label="Resumen del tablero">
-        <article className="workspace-stat-card">
-          <span>Path activo</span>
-          <strong>{activePath?.title ?? "Vista completa"}</strong>
-        </article>
-        <article className="workspace-stat-card">
-          <span>Niveles visibles</span>
-          <strong>{activePathLevels.length}</strong>
-        </article>
-        <article className="workspace-stat-card">
-          <span>Catalogo</span>
-          <strong>{catalog.stats.projects} proyectos</strong>
-        </article>
-        <article className="workspace-stat-card workspace-stat-card-accent">
-          <span>Modo</span>
-          <strong>{activeMode === "focus" ? "Focus" : "Navegar"}</strong>
-        </article>
-      </section>
-
-      <section className="workspace-toolbar">
-        <div className="workspace-toolbar-block">
-          <p className="eyebrow">Modo</p>
-          <div className="workspace-mode-switch" role="group" aria-label="Cambiar modo de trabajo">
+          <div className="document-mode-switch" role="group" aria-label="Cambiar modo de lectura">
             <button
               type="button"
-              className={`mode-chip${activeMode === "browse" ? " is-active" : ""}`}
+              className={`mode-toggle${activeMode === "browse" ? " is-active" : ""}`}
               onClick={() => updateParams({ mode: "browse" })}
             >
               Navegar
             </button>
             <button
               type="button"
-              className={`mode-chip${activeMode === "focus" ? " is-active" : ""}`}
+              className={`mode-toggle${activeMode === "focus" ? " is-active" : ""}`}
               onClick={() => updateParams({ mode: "focus" })}
             >
               Focus
@@ -209,288 +204,233 @@ export function WorkspacePage() {
           </div>
         </div>
 
-        <div className="workspace-toolbar-block workspace-toolbar-block-wide">
-          <p className="eyebrow">Paths</p>
-          <div className="path-switcher" role="group" aria-label="Cambiar path del workspace">
-            {catalog.paths.map((path) => (
-              <button
-                key={path.id}
-                type="button"
-                className={`path-chip${activePath?.id === path.id ? " is-active" : ""}`}
-                onClick={() => handlePathSelect(path.id)}
-              >
-                {path.title}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+        <header className="document-header">
+          <p className="eyebrow">
+            {selection.kind === "level"
+              ? selection.level.id
+              : selection.project.type === "integrating"
+                ? "Proyecto integrador"
+                : "Proyecto focalizado"}
+          </p>
+          <h1 className="document-title">
+            {selection.kind === "level" ? selection.level.title : selection.project.title}
+          </h1>
+          <p className="document-meta">
+            {selection.kind === "level"
+              ? `${selection.level.id} / ${selection.level.domain} / prerequisitos: ${joinValues(selection.level.prerequisites, "ninguno")}`
+              : `${selection.project.anchor_level} / ${joinValues(selection.project.languages, "infraestructura")} / ${selection.project.stages.length} stage(s)`}
+          </p>
+        </header>
 
-      <div className="workspace-grid">
-        <section className="workspace-map-frame">
-          <div className="workspace-panel-head">
-            <div>
-              <p className="eyebrow">Mapa vivo</p>
-              <h2 className="workspace-title">Niveles al centro, proyectos orbitando arriba y abajo.</h2>
-              <p className="workspace-subcopy">
-                El path activo dibuja una cinta de avance. En modo focus, el mapa baja la saturacion de lo irrelevante
-                y deja visibles solo el tramo y las dependencias cercanas.
-              </p>
+        <div className="document-scroll">
+          <section className="document-section document-section-intro">
+            <div className="document-status-line">
+              <span>{activePath ? activePath.title : "Catalogo completo"}</span>
+              <span>{activeMode === "focus" ? "Modo focus" : "Modo navegar"}</span>
             </div>
 
-            <div className="workspace-map-legend" aria-label="Leyenda del mapa">
-              <span className="legend-pill legend-level">Nivel</span>
-              <span className="legend-pill legend-focused">Proyecto focalizado</span>
-              <span className="legend-pill legend-integrating">Proyecto integrador</span>
-            </div>
-          </div>
-
-          <div className="workspace-map-scroll">
-            <CurriculumMap
-              levels={catalog.levels}
-              projects={catalog.projects}
-              activePathLevels={activePathLevels}
-              mode={activeMode}
-              selection={selection}
-              onSelectLevel={handleSelectLevel}
-              onSelectProject={handleSelectProject}
-            />
-          </div>
-        </section>
-
-        <aside className={`workspace-inspector is-${activeMode}`}>
-          <div className="workspace-panel-head">
-            <div>
-              <p className="eyebrow">{activeMode === "focus" ? "Focus" : "Navegacion"}</p>
-              <h2 className="workspace-title">{selection.kind === "level" ? selection.level.title : selection.project.title}</h2>
-              <p className="workspace-subcopy">
-                {selection.kind === "level"
-                  ? `${selection.level.id} · ${selection.level.domain} · ${joinOrFallback(selection.level.prerequisites, "sin prerequisitos")}`
-                  : `${selection.project.type === "integrating" ? "Proyecto integrador" : "Proyecto focalizado"} · ancla ${selection.project.anchor_level}`}
-              </p>
-            </div>
-          </div>
-
-          <div className="workspace-card-grid">
-            <article className="workspace-card workspace-card-accent">
-              <p className="eyebrow">Contexto activo</p>
-              <h3>{activePath?.title ?? "Vista total"}</h3>
-              <p>
-                {activeMode === "focus"
-                  ? "El inspector se transforma en una sesion de estudio: prerequisitos, contenido y siguiente paso concreto."
-                  : "El inspector te deja leer el nodo actual sin perder el mapa general del curriculum."}
-              </p>
-
-              <div className="workspace-pill-row">
-                {selection.kind === "level" ? (
-                  <>
-                    <span className="meta-pill">{selection.level.id}</span>
-                    <span className="meta-pill">{selection.level.projects.length} proyectos</span>
-                    <span className="meta-pill">{selection.level.domain}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="meta-pill">{selection.project.anchor_level}</span>
-                    <span className="meta-pill">{selection.project.stages.length} stage(s)</span>
-                    <span className="meta-pill">
-                      {selection.project.languages.length > 0 ? selection.project.languages.join(" + ") : "infra"}
-                    </span>
-                  </>
-                )}
-              </div>
-            </article>
-
-            <article className="workspace-card">
-              <p className="eyebrow">Saltos rapidos</p>
-              <h3>{selection.kind === "level" ? "Proyectos del tramo" : "Niveles relacionados"}</h3>
-
-              <div className="workspace-list">
-                {selection.kind === "level"
-                  ? levelProjects.slice(0, 6).map((project) => (
+            <div className="document-inline-links">
+              {selection.kind === "level"
+                ? levelProjects.length > 0
+                  ? levelProjects.map((project) => (
                       <button
                         key={project.id}
-                        className="workspace-list-button"
                         type="button"
+                        className="document-link"
                         onClick={() => handleSelectProject(project.id)}
                       >
-                        <strong>{project.title}</strong>
-                        <span>{project.type === "integrating" ? "Integrador" : "Focalizado"}</span>
+                        {project.title}
                       </button>
                     ))
-                  : projectLevels.map((level) => (
+                  : [
+                      <span key="empty-level-projects" className="document-empty">
+                        Sin proyectos visibles para este nivel.
+                      </span>,
+                    ]
+                : projectLevels.length > 0
+                  ? projectLevels.map((level) => (
                       <button
                         key={level.id}
-                        className="workspace-list-button"
                         type="button"
+                        className="document-link"
                         onClick={() => handleSelectLevel(level.slug)}
                       >
-                        <strong>{level.id}</strong>
-                        <span>{level.title}</span>
+                        {level.id}
                       </button>
-                    ))}
-              </div>
-
-              {selection.kind === "level" && levelProjects.length === 0 ? <p className="workspace-empty">No hay proyectos visibles para este nivel.</p> : null}
-            </article>
-          </div>
+                    ))
+                  : [
+                      <span key="empty-project-levels" className="document-empty">
+                        Sin niveles relacionados.
+                      </span>,
+                    ]}
+            </div>
+          </section>
 
           {activeMode === "browse" ? (
-            <>
-              <article className="workspace-card">
-                <p className="eyebrow">Contenido</p>
-                <h3>{selection.kind === "level" ? "README del nivel" : "README del proyecto"}</h3>
-                <MarkdownArticle content={selection.kind === "level" ? selection.level.readme : selection.project.readme} />
-              </article>
+            selection.kind === "level" ? (
+              <>
+                <section className="document-section">
+                  <h2>Resumen</h2>
+                  <MarkdownArticle content={selection.level.readme} />
+                </section>
 
-              <article className="workspace-card">
-                <p className="eyebrow">Contexto extendido</p>
-                <h3>{selection.kind === "level" ? "Ejercicios y cross refs" : "Stages y fases"}</h3>
+                <section className="document-section">
+                  <h2>Ejercicios</h2>
+                  <MarkdownArticle content={selection.level.exercises} />
+                </section>
+              </>
+            ) : (
+              <>
+                <section className="document-section">
+                  <h2>Brief</h2>
+                  <MarkdownArticle content={selection.project.readme} />
+                </section>
 
-                {selection.kind === "level" ? (
-                  <>
-                    <MarkdownArticle content={selection.level.exercises} />
-                    {levelCrossRefs.length > 0 ? (
-                      <div className="workspace-pill-row">
-                        {levelCrossRefs.map((crossRef) => (
-                          <span key={`${crossRef.theory}-${crossRef.projects.join("-")}`} className="meta-pill">
-                            {crossRef.projects.join(" · ")}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </>
-                ) : (
-                  <>
-                    <div className="workspace-pill-row">
-                      {selection.project.stages.map((stage) => (
-                        <span key={stage.id} className="meta-pill">
-                          {stage.label} · {stage.unlock_level}
-                        </span>
-                      ))}
-                    </div>
-                    {selection.project.phases.length > 0 ? (
-                      <div className="workspace-phase-grid">
+                <section className="document-section">
+                  <h2>Stages</h2>
+                  <ul className="document-list">
+                    {selection.project.stages.map((stage) => (
+                      <li key={stage.id}>
+                        <strong>{stage.label}</strong>
+                        <span>unlock: {stage.unlock_level}</span>
+                        <span>required: {joinValues(stage.required_levels, "ninguno")}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section className="document-section">
+                  <h2>Fases</h2>
+
+                  {selection.project.phases.length > 0 ? (
+                    <>
+                      <div className="document-phase-tabs">
                         {selection.project.phases.map((phase) => (
                           <button
                             key={`${phase.language}-${phase.phase}`}
                             type="button"
-                            className={`phase-chip${activePhase?.language === phase.language && activePhase.phase === phase.phase ? " is-selected" : ""}`}
+                            className={`phase-tab${selectedPhase?.language === phase.language && selectedPhase.phase === phase.phase ? " is-selected" : ""}`}
                             onClick={() => handlePhaseSelect(phase.language, phase.phase)}
                           >
                             {phase.language} / {phase.phase}
                           </button>
                         ))}
                       </div>
-                    ) : (
-                      <p className="workspace-empty">No hay fases materiales cargadas todavia.</p>
-                    )}
-                  </>
-                )}
-              </article>
-            </>
-          ) : (
+
+                      {selectedPhase ? (
+                        <div className="document-phase-content">
+                          <MarkdownArticle content={selectedPhase.readme} />
+                          {selectedPhase.studyGuide ? <MarkdownArticle content={selectedPhase.studyGuide} /> : null}
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    <p className="document-empty">Todavia no hay fases materiales en este proyecto.</p>
+                  )}
+                </section>
+              </>
+            )
+          ) : selection.kind === "level" ? (
             <>
-              <article className="workspace-card">
-                <p className="eyebrow">Plan de sesion</p>
-                <h3>{selection.kind === "level" ? "Como estudiar esta unidad" : "Como atacar este proyecto"}</h3>
-                <ol className="workspace-bullets">
+              <section className="document-section">
+                <h2>Ruta de estudio</h2>
+                <ol className="focus-list">
                   {focusPlan.map((step) => (
                     <li key={step}>{step}</li>
                   ))}
                 </ol>
-              </article>
+              </section>
 
-              {selection.kind === "level" ? (
-                <>
-                  <article className="workspace-card">
-                    <p className="eyebrow">Lectura base</p>
-                    <h3>README del nivel</h3>
-                    <MarkdownArticle content={selection.level.readme} />
-                  </article>
+              <section className="document-section">
+                <h2>Material base</h2>
+                <MarkdownArticle content={selection.level.readme} />
+              </section>
 
-                  <article className="workspace-card">
-                    <p className="eyebrow">Trabajo activo</p>
-                    <h3>Ejercicios y proyectos desbloqueados</h3>
-                    <MarkdownArticle content={selection.level.exercises} />
+              <section className="document-section">
+                <h2>Ejercicios</h2>
+                <MarkdownArticle content={selection.level.exercises} />
+              </section>
+            </>
+          ) : (
+            <>
+              <section className="document-section">
+                <h2>Plan de ataque</h2>
+                <ol className="focus-list">
+                  {focusPlan.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+              </section>
 
-                    <div className="workspace-list">
-                      {levelProjects.map((project) => (
+              <section className="document-section">
+                <h2>Brief</h2>
+                <MarkdownArticle content={selection.project.readme} />
+              </section>
+
+              <section className="document-section">
+                <h2>Requisitos</h2>
+
+                <div className="document-inline-links">
+                  {projectRequiredLevels.length > 0 ? (
+                    projectRequiredLevels.map((level) => (
+                      <button
+                        key={level.id}
+                        type="button"
+                        className="document-link"
+                        onClick={() => handleSelectLevel(level.slug)}
+                      >
+                        {level.id}
+                      </button>
+                    ))
+                  ) : (
+                    <span className="document-empty">Sin niveles adicionales.</span>
+                  )}
+                </div>
+
+                <ul className="document-list">
+                  {selection.project.stages.map((stage) => (
+                    <li key={stage.id}>
+                      <strong>{stage.label}</strong>
+                      <span>unlock: {stage.unlock_level}</span>
+                      <span>required: {joinValues(stage.required_levels, "ninguno")}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="document-section">
+                <h2>Fases</h2>
+
+                {selection.project.phases.length > 0 ? (
+                  <>
+                    <div className="document-phase-tabs">
+                      {selection.project.phases.map((phase) => (
                         <button
-                          key={project.id}
-                          className="workspace-list-button"
+                          key={`${phase.language}-${phase.phase}`}
                           type="button"
-                          onClick={() => handleSelectProject(project.id)}
+                          className={`phase-tab${selectedPhase?.language === phase.language && selectedPhase.phase === phase.phase ? " is-selected" : ""}`}
+                          onClick={() => handlePhaseSelect(phase.language, phase.phase)}
                         >
-                          <strong>{project.title}</strong>
-                          <span>{project.display_levels.join(" · ")}</span>
+                          {phase.language} / {phase.phase}
                         </button>
                       ))}
                     </div>
-                  </article>
-                </>
-              ) : (
-                <>
-                  <article className="workspace-card">
-                    <p className="eyebrow">Brief</p>
-                    <h3>README del proyecto</h3>
-                    <MarkdownArticle content={selection.project.readme} />
-                  </article>
 
-                  <article className="workspace-card">
-                    <p className="eyebrow">Condiciones de entrada</p>
-                    <h3>Niveles requeridos y stages</h3>
-                    <div className="workspace-pill-row">
-                      {projectRequiredLevels.length > 0 ? (
-                        projectRequiredLevels.map((level) => (
-                          <button key={level.id} type="button" className="meta-pill" onClick={() => handleSelectLevel(level.slug)}>
-                            {level.id}
-                          </button>
-                        ))
-                      ) : (
-                        <span className="meta-pill">Sin niveles extra</span>
-                      )}
-                    </div>
-
-                    <div className="workspace-pill-row">
-                      {selection.project.stages.map((stage) => (
-                        <span key={stage.id} className="meta-pill">
-                          {stage.label} · {stage.required_levels.join(" · ")}
-                        </span>
-                      ))}
-                    </div>
-                  </article>
-
-                  {selection.project.phases.length > 0 ? (
-                    <article className="workspace-card">
-                      <p className="eyebrow">Fases</p>
-                      <h3>{activePhase ? `${activePhase.language} / ${activePhase.phase}` : "Selecciona una fase"}</h3>
-                      <div className="workspace-phase-grid">
-                        {selection.project.phases.map((phase) => (
-                          <button
-                            key={`${phase.language}-${phase.phase}`}
-                            type="button"
-                            className={`phase-chip${activePhase?.language === phase.language && activePhase.phase === phase.phase ? " is-selected" : ""}`}
-                            onClick={() => handlePhaseSelect(phase.language, phase.phase)}
-                          >
-                            {phase.language} / {phase.phase}
-                          </button>
-                        ))}
+                    {selectedPhase ? (
+                      <div className="document-phase-content">
+                        <MarkdownArticle content={selectedPhase.readme} />
+                        {selectedPhase.studyGuide ? <MarkdownArticle content={selectedPhase.studyGuide} /> : null}
                       </div>
-
-                      {activePhase ? (
-                        <div className="workspace-focus-phase">
-                          <MarkdownArticle content={activePhase.readme} />
-                          <MarkdownArticle content={activePhase.studyGuide} />
-                        </div>
-                      ) : null}
-                    </article>
-                  ) : null}
-                </>
-              )}
+                    ) : null}
+                  </>
+                ) : (
+                  <p className="document-empty">Todavia no hay fases materiales en este proyecto.</p>
+                )}
+              </section>
             </>
           )}
-        </aside>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

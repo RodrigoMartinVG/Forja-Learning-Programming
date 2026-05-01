@@ -155,17 +155,17 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: Hacerse dueño del ambiente de trabajo antes de escribir una línea de sistema. No se aprende a programar aquí; se aprende a usar las herramientas que van a estar presentes en todo el plan.
 
-**Unidades teóricas**: el modelo de compilación de C (preprocesador → compilador → assembler → linker); el sistema de módulos de Cargo y cómo resuelve dependencias; qué es un sanitizer y cuándo usar cada uno; cómo leer output de valgrind y de ASan; qué hace perf y cómo interpretar un flamegraph básico; qué es strace y cómo se usa para entender syscalls de un programa desconocido. Representación de enteros en hardware — complemento a dos (two's complement), por qué los enteros con signo no pueden hacer overflow sin UB en C mientras que los enteros sin signo sí pueden wrappear; qué es un registro de CPU y por qué hay un número fijo de ellos; cómo leer assembly x86-64 básico — no para escribirlo como lenguaje principal sino para entender lo que el debugger muestra y por qué el compilador toma las decisiones que toma; el stack frame en hardware — cómo `rsp` y `rbp` definen el frame de cada función en la convención de llamada x86-64; caller-saved vs callee-saved registers; el flujo básico de una llamada a función (`call`, prólogo, cuerpo, epílogo, `ret`); y una primera explicación concreta de la syscall cruda en Linux x86_64: número de syscall en `rax`, argumentos en `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9`, instrucción `syscall`, retorno en `rax`, y por qué `rcx` y `r11` quedan clobbered.
+**Unidades teóricas**: el modelo de compilación de C (preprocesador → compilador → assembler → linker); el sistema de módulos de Cargo y cómo resuelve dependencias; qué es un sanitizer y cuándo usar cada uno; cómo leer output de valgrind y de ASan; qué hace perf y cómo interpretar un flamegraph básico; qué es strace y cómo se usa para entender syscalls de un programa desconocido. Representación de enteros en hardware — complemento a dos (two's complement), por qué los enteros con signo no pueden hacer overflow sin UB en C mientras que los enteros sin signo sí pueden wrappear; qué es un registro de CPU y por qué hay un número fijo de ellos; una intuición mínima de assembly x86-64 como output del compilador — reconocer que una función compilada termina en instrucciones, que `-S` produce un `.s`, que existen `call` y `ret`, y que el debugger y el disassembler muestran una capa real debajo del código fuente; una preview instrumental de la frontera userspace↔kernel — strace muestra las syscalls que hace un programa, pero el protocolo completo de registros, ABI y `syscall` se desarrolla más adelante en L6.
 
 **Proyectos**: setup del laboratorio Linux con devcontainer. El resultado es un ambiente reproducible con todas las herramientas instaladas y verificadas.
 
-**Mini-lab opcional de alfabetización assembly**: compilar un programa pequeño con `-S`, leer el `.s` emitido, comparar `-O0` vs `-O2`, ubicar prólogo y epílogo de una función, seguir una llamada simple con `gdb`, y contrastar una llamada a `write()` vía libc con una syscall cruda hecha con `syscall(2)` o con un stub mínimo en assembly. No es un proyecto nuevo del plan: es un laboratorio corto dentro de L0.
+**Mini-lab opcional de alfabetización assembly**: compilar un programa pequeño con `-S`, comprobar que el compilador emite un `.s`, reconocer una vez `call` y `ret` en una función simple, y usar `strace` para ver que una llamada de biblioteca termina cruzando la frontera de syscall. No es un proyecto nuevo del plan: es un laboratorio corto dentro de L0. La lectura fuerte de assembly, la comparación `-O0` vs `-O2` y el seguimiento fino con `gdb` se mueven a L1b.
 
 **Equivalente industrial**: Docker Desktop, Nix, distrobox, dev containers de VSCode.
 
 **Nota sobre el ambiente**: el laboratorio vive en un contenedor Linux. Esto sirve tanto para usuarios con Linux nativo (evitar romper el sistema con módulos de kernel o experimentos de cgroups) como para usuarios en macOS o Windows (via WSL2). El mismo devcontainer funciona en cualquier máquina.
 
-**Referencia asignada para la unidad de arquitectura**: CS:APP (Bryant & O'Hallaron), capítulos 2 (representación de información) y 3 (assembly x86-64 — lectura). Estos dos capítulos dan el modelo mental de hardware que subyace a todo lo que sigue.
+**Referencia asignada para la unidad de arquitectura**: CS:APP (Bryant & O'Hallaron), capítulo 2 (representación de información) como lectura asignada. El capítulo 3 (assembly x86-64 — lectura) queda como adelantada opcional aquí y como lectura central de L1b.
 
 ---
 
@@ -184,7 +184,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Errores típicos de primer contacto**: `=` vs `==` en condiciones; olvidar `\0` al construir strings manualmente; comparar strings con `==` en lugar de `strcmp`; `scanf("%s")` sin límite de tamaño (buffer overflow clásico); mezclar `int` con `char` en comparaciones sin pensar en el signo.
 
-**Referencia clave**: The C Programming Language (Kernighan & Ritchie, 2da ed.) capítulos 1–4 — la referencia canónica del lenguaje, densa y precisa. Complemento: CS:APP capítulo 3 como lectura paralela para entender qué genera el compilador.
+**Referencia clave**: The C Programming Language (Kernighan & Ritchie, 2da ed.) capítulos 1–4 — la referencia canónica del lenguaje, densa y precisa. Complemento: CS:APP capítulo 2 como lectura paralela para fijar representación de datos y tamaños de tipos.
 
 ---
 
@@ -192,9 +192,11 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: Las características de C que lo distinguen de todo otro lenguaje y que son la base de todo lo que sigue. Punteros como aritmética, alineación, preprocesador y undefined behavior. No es posible programar sistemas en C sin dominar este nivel.
 
-**Unidades teóricas**: tipos enteros y su tamaño real — `int` no es siempre 32 bits, `stdint.h` existe por eso, `size_t` para tamaños de objetos; punteros como valores numéricos — aritmética de punteros, punteros a punteros, punteros a función, la relación real entre arrays y punteros (decay); structs y alineación — padding implícito, `__attribute__((packed))`, cómo verificar el layout con `offsetof`; unions — su uso legítimo para type punning y variantes discriminadas; enums — cómo los representa el compilador (son `int`); el preprocesador como sustitución textual — macros de función, guards de inclusión, por qué las macros sin paréntesis son peligrosas; `const` correctness — `const char *` vs `char * const` vs `const char * const`; `restrict` como hint de no-aliasing para el compilador; `static` e `inline` en sus distintos contextos; linkage — `static` en file scope vs función scope, `extern`; undefined behavior como categoría formal — por qué no es "comportamiento aleatorio" sino un contrato roto entre el programador y el compilador, con ejemplos concretos (signed overflow, null pointer deref, strict aliasing).
+**Unidades teóricas**: tipos enteros y su tamaño real — `int` no es siempre 32 bits, `stdint.h` existe por eso, `size_t` para tamaños de objetos; punteros como valores numéricos — aritmética de punteros, punteros a punteros, punteros a función, la relación real entre arrays y punteros (decay); structs y alineación — padding implícito, `__attribute__((packed))`, cómo verificar el layout con `offsetof`; unions — su uso legítimo para type punning y variantes discriminadas; enums — cómo los representa el compilador (son `int`); el preprocesador como sustitución textual — macros de función, guards de inclusión, por qué las macros sin paréntesis son peligrosas; `const` correctness — `const char *` vs `char * const` vs `const char * const`; `restrict` como hint de no-aliasing para el compilador; `static` e `inline` en sus distintos contextos; linkage — `static` en file scope vs función scope, `extern`; undefined behavior como categoría formal — por qué no es "comportamiento aleatorio" sino un contrato roto entre el programador y el compilador, con ejemplos concretos (signed overflow, null pointer deref, strict aliasing). Modelo de ejecución del código compilado — registros generales x86-64 (`rax`, `rbx`, `rcx`, `rdx`, `rsi`, `rdi`, `rsp`, `rbp`, `r8`–`r15`) y `rip`; el stack como memoria que crece hacia abajo; calling convention System V AMD64 ABI — argumentos enteros en registros, retorno en `rax`, caller-saved vs callee-saved; el stack frame — qué hacen `call`, prólogo, epílogo y `ret`; lectura de assembly generado por el compilador — reconocer `mov`, `lea`, `push`, `pop`, `cmp`, `jmp`, `call`, `ret`, distinguir sintaxis AT&T de Intel, y ver qué cambia entre `-O0` y `-O2` cuando una variable desaparece, se mueve a registros o se inlinea.
 
 **Herramientas**: make y cmake básico; flags de compilación importantes (`-O2`, `-fsanitize=address`, `-std=c11`); clang-format y clang-tidy; cppcheck.
+
+**Mini-lab de lectura de assembly**: compilar un programa con `-S`, leer el `.s`, comparar `-O0` vs `-O2`, ubicar prólogo y epílogo, seguir una llamada con `gdb` (`disas`, `stepi`, `info registers`, `x/8gx $rsp`) y contrastar `write()` vía libc con `syscall(2)` como antesala del modelo completo que se cierra en L6.
 
 **Proyectos focalizados**:
 - `stringlib`: reimplementación de funciones de `<string.h>` (`memcpy`, `strlen`, `strtok`, `strdup`) — punteros en práctica
@@ -202,7 +204,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Errores típicos**: olvidar el `break` en switch; confundir `sizeof(array)` en un puntero vs en el array real; comparar `char *` con `==`; olvidar `\0`; modificar un string literal; macro sin paréntesis que se expande incorrectamente.
 
-**Referencia clave**: K&R capítulos 5–8; CS:APP capítulo 7 (linking) como lectura anticipada que cobrará sentido en L7.
+**Referencia clave**: K&R capítulos 5–8. Complemento fuerte: CS:APP capítulo 3 como acompañamiento directo del mini-lab y del `elf-explorer`; CS:APP capítulo 7 (linking) como lectura anticipada que cobrará sentido en L7.
 
 ---
 
@@ -299,7 +301,7 @@ Dentro de cada nivel conviven unidades teóricas y proyectos del tipo correspond
 
 **Foco**: El proceso como unidad de ejecución. Cómo se crean, cómo se terminan, cómo se comunican a través de señales, y cómo el kernel registra su existencia.
 
-**Unidades teóricas**: el proceso como contexto de ejecución — espacio de memoria, tabla de FDs, señales pendientes, credenciales; `fork()` y copy-on-write — qué se comparte y qué se copia; la familia `exec` — cómo se reemplaza el image del proceso; `wait()` y `waitpid()` — por qué los zombies existen y cómo evitarlos; señales como interrupciones asíncronas — `sigaction`, máscaras, `SA_RESTART`; `SIGCHLD`, `SIGPIPE`, `SIGSEGV` — qué significan en la práctica; `/proc` como vista del árbol de procesos; introducción a `ptrace(2)` — la syscall que hace posible gdb, strace, ltrace, rr y los sanitizers. La frontera userspace↔kernel en Linux x86_64 — qué pasos concretos sigue una syscall: código C o Rust llama a un wrapper, el wrapper prepara registros, ejecuta `syscall`, el kernel entra por su entry stub, guarda contexto mínimo, despacha por número de syscall, ejecuta el handler y retorna a user space. Qué hace típicamente libc arriba de esa frontera — adaptar la interfaz C, traducir retornos negativos a `errno`, reiniciar algunas syscalls interrumpidas cuando corresponde, y actuar a veces como cancellation point; diferencia entre llamar vía libc, vía `syscall(2)`, vía `libc` crate, vía `nix`, o escribir un stub mínimo en assembly. Teoría de scheduling — política vs mecanismo; scheduling FIFO y Round-Robin — el caso base y sus tradeoffs de fairness vs throughput; MLFQ (Multi-Level Feedback Queue) — múltiples colas de prioridad, reglas de boost/degrade, por qué el aging evita starvation; el Completely Fair Scheduler (CFS) de Linux como referencia del estado del arte — virtual runtime y árbol rojo-negro (se profundiza en L23); métricas de scheduling — turnaround time, response time, fairness; por qué un scheduler de propósito general es un ejercicio de tradeoffs sin solución perfecta.
+**Unidades teóricas**: el proceso como contexto de ejecución — espacio de memoria, tabla de FDs, señales pendientes, credenciales; `fork()` y copy-on-write — qué se comparte y qué se copia; la familia `exec` — cómo se reemplaza el image del proceso; `wait()` y `waitpid()` — por qué los zombies existen y cómo evitarlos; señales como interrupciones asíncronas — `sigaction`, máscaras, `SA_RESTART`; `SIGCHLD`, `SIGPIPE`, `SIGSEGV` — qué significan en la práctica; `/proc` como vista del árbol de procesos; introducción a `ptrace(2)` — la syscall que hace posible gdb, strace, ltrace, rr y los sanitizers. La frontera userspace↔kernel en Linux x86_64 — aquí se completa el modelo que en L0 solo se vio como preview instrumental: código C o Rust llama a un wrapper, el wrapper prepara registros, ejecuta `syscall`, el kernel entra por su entry stub, guarda contexto mínimo, despacha por número de syscall, ejecuta el handler y retorna a user space. Qué hace típicamente libc arriba de esa frontera — adaptar la interfaz C, traducir retornos negativos a `errno`, reiniciar algunas syscalls interrumpidas cuando corresponde, y actuar a veces como cancellation point; diferencia entre llamar vía libc, vía `syscall(2)`, vía `libc` crate, vía `nix`, o escribir un stub mínimo en assembly. Teoría de scheduling — política vs mecanismo; scheduling FIFO y Round-Robin — el caso base y sus tradeoffs de fairness vs throughput; MLFQ (Multi-Level Feedback Queue) — múltiples colas de prioridad, reglas de boost/degrade, por qué el aging evita starvation; el Completely Fair Scheduler (CFS) de Linux como referencia del estado del arte — virtual runtime y árbol rojo-negro (se profundiza en L23); métricas de scheduling — turnaround time, response time, fairness; por qué un scheduler de propósito general es un ejercicio de tradeoffs sin solución perfecta.
 
 **Proyectos focalizados**:
 - `spl_pstree`: árbol de procesos desde /proc
@@ -859,27 +861,28 @@ Una de las decisiones más importantes del diseño es que el código de cada fas
 
 Forja tiene cuatro caminos explícitos. Todos parten de L0. Ninguno es el único correcto — dependen del objetivo del usuario. El grafo de dependencias permite variantes, pero los cuatro caminos a continuación son coherentes y han sido validados contra las dependencias del plan.
 
+La regla de diseño es esta: **ningún camino separa C de Rust**. Ambos lenguajes forman parte del núcleo de Forja y los caminos responden al arco que se prioriza primero, no a qué lenguaje se deja afuera. Lo que cambia entre caminos es el orden de entrada a sistemas, compiladores o integración; no la presencia de C o de Rust.
+
 **Nota de entrada**: quien ya sabe C con solidez puede entrar directo en L1b (saltando L1a). Quien ya sabe Rust básico puede entrar directo en L3b (saltando L3a). No saltar niveles si hay dudas — L1a y L3a son deliberadamente rápidos.
 
-**Por dónde empezar**: siempre L0. El `devcontainer-setup` no es opcional — todo lo que sigue asume el laboratorio Linux funcionando. Una vez que el devcontainer arranca y los tests de sanidad pasan (`gcc --version`, `cargo --version`, `valgrind --version`), elegir un camino de los cuatro a continuación y seguirlo. Si hay dudas sobre qué camino elegir, empezar con Camino 2 — es el más completo y puede acortarse en cualquier momento.
+**Por dónde empezar**: siempre L0. El `devcontainer-setup` no es opcional — todo lo que sigue asume el laboratorio Linux funcionando. Una vez que el devcontainer arranca y los tests de sanidad pasan (`gcc --version`, `cargo --version`, `valgrind --version`), elegir un camino de los cuatro a continuación y seguirlo. Si hay dudas sobre qué camino elegir, empezar con Camino 2 — es el recorrido canónico y puede acortarse en cualquier momento.
 
 ---
 
-**Camino 1 — Solo C (Rust como opcional posterior)**
+**Camino 1 — Sistemas primero**
 
-> Para quien quiere sistemas primero, sin la fricción del borrow checker. Rust se puede agregar después del arco de sistemas.
+> Para quien quiere consolidar primero la base completa en C y Rust y entrar cuanto antes al arco de sistemas. No deja compiladores afuera: simplemente los posterga hasta tener una base fuerte de OS, redes, runtime y kernel.
 
-`L0 → L1a → L1b → L2 → L5 → L6 → L7 → L8 → L9 → L10 → L11 → L16 → L17 → L19 → L20 → L21 → L23`
+`L0 → L1a → L1b → L2 → L3a → L3b → L4 → L5 → L6 → L7 → L8 → L9 → L10 → L11 → L16 → L17 → L18 → L19 → L20 → L21 → L23`
 
-Proyectos clave: mish, mini-debugger, HTTP server (C), custom-malloc, orquestador.
-No incluye: Rust, compiladores, bases de datos, seguridad formal — estos se pueden agregar con L3-L4 y el arco de compiladores en cualquier punto. `tinyssh` (L18) no está en este camino — quien quiera seguridad puede agregar L18 después de L17.
-**Nota sobre L19**: L19 es mayoritariamente Rust (async/await, tokio, Pin/Unpin). En el Camino 1, se recomienda limitar L19 a la teoría de io_uring y al proyecto `io_uring-echo` en C con liburing, omitiendo las unidades de async Rust idiomático y el proyecto `async-runtime`. El track C completo del nivel es el estudio de libuv como caso de referencia.
+Proyectos clave: mish, mini-debugger, HTTP server, custom-malloc, tinyssh, orquestador.
+Extensión natural: `L12 → L13 → L14 → L15 → L22` para cerrar después el arco de compiladores y persistencia sin salir nunca del enfoque dual C/Rust.
 
 ---
 
-**Camino 2 — Dual C+Rust (recomendado para la mayoría)**
+**Camino 2 — Plan completo (recomendado para la mayoría)**
 
-> El camino completo. Aprende C primero, luego Rust, luego los aplica en paralelo según el proyecto lo requiera.
+> El recorrido canónico. Integra C y Rust desde el inicio y atraviesa todos los dominios del plan sin atajos.
 
 `L0 → L1a → L1b → L2 → L3a → L3b → L4 → L5 → L6 → L7 → L8 → L9 → L10 → L11 → L12 → L13 → L14 → L15 → L16 → L17 → L18 → L19 → L20 → L21 → L22 → L23`
 
@@ -888,21 +891,20 @@ Duración estimada: el más largo — diseñado para 2-3 años de trabajo serio.
 
 ---
 
-**Camino 3 — Compiladorista**
+**Camino 3 — Compiladores primero**
 
-> Para quien tiene interés central en compiladores, lenguajes y teoría. Hace sistemas solo como base y se concentra en el arco de compiladores.
+> Para quien quiere llegar antes al arco de compiladores sin sacrificar la base en ambos lenguajes. Cierra primero L0-L4 y adelanta lenguajes formales, intérpretes, tipos y JIT.
 
-`L0 → L1a → L1b → L2 → L3a → L3b → L4 → L12 → L13 → L14 → L22 → (L5 → L6 → L7 como complemento opcional)`
+`L0 → L1a → L1b → L2 → L3a → L3b → L4 → L12 → L13 → L14 → L22`
 
 Proyectos clave: Lógico (intérprete Lisp con GC), Semtex (parser semántico), JIT-Brain (compilador JIT), regex-engine.
-**Nota sobre Lógico y el GC**: el garbage collector de Lógico usa el allocator de L8, que no está en este camino. En Camino 3, el GC de Lógico puede implementarse usando `malloc` estándar en primera instancia — quien quiera cerrar el círculo puede agregar L8 como nivel opcional después de L2.
-Puede hacerse el arco de compiladores entero antes de tocar procesos, redes o contenedores.
+Complemento recomendado: `L5 → L6 → L7` como base de procesos, syscalls, ELF y memoria virtual; `L8` es especialmente útil si se quiere cerrar bien el GC de Lógico.
 
 ---
 
-**Camino 4 — Integrador**
+**Camino 4 — Integración vertical**
 
-> Mezcla sistemas y compiladores siguiendo las dependencias naturales entre proyectos. El más ambicioso en términos de integración horizontal.
+> Mezcla sistemas y compiladores siguiendo las dependencias naturales entre proyectos, pero manteniendo siempre la caja de herramientas completa en C y Rust.
 
 `L0 → L1a → L1b → L2 → L3a → L3b → L4 → L5 → L6 → L12 → L7 → L8 → L9 → L10 → L11 → L13 → L14 → L15 → L16 → L17 → L18 → L19 → L20 → L22 → L23`
 

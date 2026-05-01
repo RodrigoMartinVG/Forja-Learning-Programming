@@ -334,14 +334,24 @@ Para proyectos focalizados, `stages` suele tener un solo elemento. Para proyecto
 ```yaml
 paths:
   - id: path-1
-    title: "Solo C"
-    description: "Para quien quiere sistemas primero, sin la fricción del borrow checker."
-    levels: [L0, L1a, L1b, L2, L5, L6, L7, L8, L9, L10, L11, L16, L17, L19, L20, L21, L23]
+    title: "Sistemas primero"
+    description: "Base completa en C y Rust antes de profundizar en sistemas, redes, runtime y kernel."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L7, L8, L9, L10, L11, L16, L17, L18, L19, L20, L21, L23]
 
   - id: path-2
-    title: "Dual C+Rust"
-    description: "El camino completo. Recomendado para la mayoría."
+    title: "Plan completo"
+    description: "El recorrido curricular entero. Recomendado como vista canonica del mapa."
     levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23]
+
+  - id: path-3
+    title: "Compiladores primero"
+    description: "C y Rust completos al inicio, y desvio temprano al arco de compiladores."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L12, L13, L14, L22]
+
+  - id: path-4
+    title: "Integracion vertical"
+    description: "Sistemas y compiladores entrelazados, priorizando proyectos que cruzan varios dominios."
+    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L12, L7, L8, L9, L10, L11, L13, L14, L15, L16, L17, L18, L19, L20, L22, L23]
 ```
 
 ### `metadata/cross-refs.yaml`
@@ -539,10 +549,10 @@ Cada fase que se da por terminada debe dejar cuatro cosas coherentes:
 
 ### Ruta piloto para betatesting
 
-La estrategia recomendada sigue siendo priorizar un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1, ejecutado según el orden maestro de fases:
+La estrategia recomendada sigue siendo priorizar un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1 (`Sistemas primero`), ejecutado según el orden maestro de fases:
 
 1. `Base 0`, `Base 1`, `Base 2`
-2. `L0` + `devcontainer-setup`, luego `L1a`, `L1b` y `L2` con sus proyectos focalizados
+2. `L0` + `devcontainer-setup`, luego `L1a`, `L1b`, `L2`, `L3a`, `L3b` y `L4` con sus proyectos focalizados
 3. `L5` y `L6` con sus proyectos focalizados
 4. `mish` (tramo `L6`) como primer integrador usable
 5. `L11` + `mish` (tramo `L11`) para cerrar pipes, redirecciones y job control
