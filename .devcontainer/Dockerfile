@@ -48,7 +48,7 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable \
         && rustup component add --toolchain nightly miri rustfmt clippy; \
       fi \
     && curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | sh \
-    && for crate in cargo-expand cargo-flamegraph cargo-audit cbindgen bindgen-cli; do \
+    && for crate in cargo-expand flamegraph cargo-audit cbindgen bindgen-cli; do \
         cargo binstall --no-confirm --disable-strategies compile "$crate" \
         || cargo install --locked "$crate"; \
     done
