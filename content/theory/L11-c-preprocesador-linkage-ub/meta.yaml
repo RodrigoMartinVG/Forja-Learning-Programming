@@ -1,0 +1,8 @@
+id: L11
+title: "C: preprocesador, linkage y undefined behavior"
+slug: "l11-c-preprocesador-linkage-ub"
+domain: languages
+order: 12
+theory_dir: content/theory/L11-c-preprocesador-linkage-ub
+projects: [elf-explorer]
+prerequisites: [L10]

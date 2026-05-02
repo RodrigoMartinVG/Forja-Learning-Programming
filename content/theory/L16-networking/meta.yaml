@@ -1,8 +1,0 @@
-id: L16
-title: "Redes y protocolos"
-slug: "l16-networking"
-domain: systems
-order: 19
-theory_dir: content/theory/L16-networking
-projects: [http-server, shell-remoto-tcp, minisync, mini-dns-resolver, mini-tcpdump, http2-server, websocket-server, tcp-ip-stack]
-prerequisites: [L15]

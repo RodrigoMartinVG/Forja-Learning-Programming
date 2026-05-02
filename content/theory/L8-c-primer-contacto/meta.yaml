@@ -1,0 +1,8 @@
+id: L8
+title: "C: primer contacto"
+slug: "l8-c-primer-contacto"
+domain: languages
+order: 9
+theory_dir: content/theory/L8-c-primer-contacto
+projects: [hello-c, caesar-cipher, word-count]
+prerequisites: [L7]

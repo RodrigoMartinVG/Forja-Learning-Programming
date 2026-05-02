@@ -1,8 +1,0 @@
-id: L7
-title: "Memoria virtual y formato ELF"
-slug: "l7-virtual-memory-elf"
-domain: systems
-order: 10
-theory_dir: content/theory/L7-virtual-memory-elf
-projects: [vma-explorer, cow-demo, spl_cp, mini-linker, mini-debugger]
-prerequisites: [L6]

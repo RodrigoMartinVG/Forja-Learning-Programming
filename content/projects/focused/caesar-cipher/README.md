@@ -10,7 +10,7 @@ Proyecto focalizado sembrado en Base 2.
 
 ## Niveles visibles
 
-- L1a
+- L8
 
 ## Lenguajes previstos
 

@@ -2,9 +2,9 @@ id: file-monitor
 codename: file-monitor
 title: "file-monitor"
 type: focused
-anchor_level: L5
-display_levels: [L5]
-required_levels: [L5]
+anchor_level: L19
+display_levels: [L19]
+required_levels: [L19]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/file-monitor
@@ -12,5 +12,5 @@ stages:
   - id: file-monitor-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L5]
-    unlock_level: L5
+    required_levels: [L19]
+    unlock_level: L19

@@ -1,8 +1,9 @@
 # Documentacion de Forja
 
-Esta carpeta contiene los tres documentos maestros del proyecto.
+Esta carpeta contiene los documentos maestros del proyecto.
 
-- `forja-contenido.md`: especificacion curricular, niveles, proyectos y bibliografia
+- `forja-contenido.md`: especificacion curricular, niveles, caminos de navegacion y bibliografia
+- `forja-proyectos.md`: catalogo de proyectos, taxonomia y arcos integradores
 - `forja-arquitectura.md`: estructura objetivo del repo, metadata, web y devcontainer
 - `forja-construccion.md`: orden maestro de fases, base phases y criterio operativo
 

@@ -1,0 +1,8 @@
+id: L9
+title: "C: punteros"
+slug: "l9-c-punteros"
+domain: languages
+order: 10
+theory_dir: content/theory/L9-c-punteros
+projects: [stringlib]
+prerequisites: [L8]

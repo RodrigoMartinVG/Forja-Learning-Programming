@@ -1,0 +1,401 @@
+levels:
+  - id: L0
+    title: "Setup del laboratorio"
+    slug: "l0-setup-laboratorio"
+    domain: languages
+    order: 1
+    theory_dir: content/theory/L0-setup-laboratorio
+    projects: [devcontainer-setup]
+    prerequisites: []
+  - id: L1
+    title: "Modelo mental de una computadora"
+    slug: "l1-modelo-mental-computadora"
+    domain: languages
+    order: 2
+    theory_dir: content/theory/L1-modelo-mental-computadora
+    projects: []
+    prerequisites: [L0]
+  - id: L2
+    title: "Representacion de la informacion"
+    slug: "l2-representacion-informacion"
+    domain: languages
+    order: 3
+    theory_dir: content/theory/L2-representacion-informacion
+    projects: []
+    prerequisites: [L1]
+  - id: L3
+    title: "El pipeline de compilacion en C"
+    slug: "l3-pipeline-compilacion-c"
+    domain: languages
+    order: 4
+    theory_dir: content/theory/L3-pipeline-compilacion-c
+    projects: []
+    prerequisites: [L2]
+  - id: L4
+    title: "El sistema de build de Rust"
+    slug: "l4-build-system-rust"
+    domain: languages
+    order: 5
+    theory_dir: content/theory/L4-build-system-rust
+    projects: []
+    prerequisites: [L3]
+  - id: L5
+    title: "Herramientas de observabilidad I"
+    slug: "l5-observabilidad-1"
+    domain: languages
+    order: 6
+    theory_dir: content/theory/L5-observabilidad-1
+    projects: []
+    prerequisites: [L4]
+  - id: L6
+    title: "Herramientas de observabilidad II"
+    slug: "l6-observabilidad-2"
+    domain: languages
+    order: 7
+    theory_dir: content/theory/L6-observabilidad-2
+    projects: []
+    prerequisites: [L5]
+  - id: L7
+    title: "Alfabetizacion assembly"
+    slug: "l7-alfabetizacion-assembly"
+    domain: languages
+    order: 8
+    theory_dir: content/theory/L7-alfabetizacion-assembly
+    projects: []
+    prerequisites: [L6]
+  - id: L8
+    title: "C: primer contacto"
+    slug: "l8-c-primer-contacto"
+    domain: languages
+    order: 9
+    theory_dir: content/theory/L8-c-primer-contacto
+    projects: [hello-c, caesar-cipher, word-count]
+    prerequisites: [L7]
+  - id: L9
+    title: "C: punteros"
+    slug: "l9-c-punteros"
+    domain: languages
+    order: 10
+    theory_dir: content/theory/L9-c-punteros
+    projects: [stringlib]
+    prerequisites: [L8]
+  - id: L10
+    title: "C: estructuras, alineacion y tipos compuestos"
+    slug: "l10-c-estructuras-alineacion"
+    domain: languages
+    order: 11
+    theory_dir: content/theory/L10-c-estructuras-alineacion
+    projects: [dynamic-array]
+    prerequisites: [L9]
+  - id: L11
+    title: "C: preprocesador, linkage y undefined behavior"
+    slug: "l11-c-preprocesador-linkage-ub"
+    domain: languages
+    order: 12
+    theory_dir: content/theory/L11-c-preprocesador-linkage-ub
+    projects: [elf-explorer]
+    prerequisites: [L10]
+  - id: L12
+    title: "C: memoria y gestion manual"
+    slug: "l12-c-memoria-gestion-manual"
+    domain: languages
+    order: 13
+    theory_dir: content/theory/L12-c-memoria-gestion-manual
+    projects: [getopt-impl]
+    prerequisites: [L11]
+  - id: L13
+    title: "C: modelo de errores y testing"
+    slug: "l13-c-errores-testing"
+    domain: languages
+    order: 14
+    theory_dir: content/theory/L13-c-errores-testing
+    projects: []
+    prerequisites: [L12]
+  - id: L14
+    title: "Rust: primer contacto"
+    slug: "l14-rust-primer-contacto"
+    domain: languages
+    order: 15
+    theory_dir: content/theory/L14-rust-primer-contacto
+    projects: [hello-rust, fizzbuzz-rust, mini-calculator]
+    prerequisites: [L13]
+  - id: L15
+    title: "Rust: ownership y borrowing"
+    slug: "l15-rust-ownership-borrowing"
+    domain: languages
+    order: 16
+    theory_dir: content/theory/L15-rust-ownership-borrowing
+    projects: [data-structures-rust]
+    prerequisites: [L14]
+  - id: L16
+    title: "Rust: sistema de tipos y traits"
+    slug: "l16-rust-sistema-tipos-traits"
+    domain: languages
+    order: 17
+    theory_dir: content/theory/L16-rust-sistema-tipos-traits
+    projects: [custom-iterator, parser-combinators]
+    prerequisites: [L15]
+  - id: L17
+    title: "Rust: manejo de errores y testing"
+    slug: "l17-rust-errores-testing"
+    domain: languages
+    order: 18
+    theory_dir: content/theory/L17-rust-errores-testing
+    projects: []
+    prerequisites: [L16]
+  - id: L18
+    title: "Rust: FFI, unsafe y el sistema operativo"
+    slug: "l18-rust-ffi-unsafe-os"
+    domain: languages
+    order: 19
+    theory_dir: content/theory/L18-rust-ffi-unsafe-os
+    projects: [ffi-demo]
+    prerequisites: [L17]
+  - id: L19
+    title: "POSIX: archivos, metadatos y el filesystem"
+    slug: "l19-posix-filesystem"
+    domain: systems
+    order: 20
+    theory_dir: content/theory/L19-posix-filesystem
+    projects: [spl_stat, spl_ls, spl_du, file-monitor]
+    prerequisites: [L18]
+  - id: L20
+    title: "Procesos y senales"
+    slug: "l20-procesos-senales"
+    domain: systems
+    order: 21
+    theory_dir: content/theory/L20-procesos-senales
+    projects: [spl_pstree, impl_abort, impl_alarm, mish, mini-debugger]
+    prerequisites: [L19]
+  - id: L21
+    title: "Scheduling"
+    slug: "l21-scheduling"
+    domain: systems
+    order: 22
+    theory_dir: content/theory/L21-scheduling
+    projects: [scheduler-sim]
+    prerequisites: [L20]
+  - id: L22
+    title: "Memoria virtual"
+    slug: "l22-memoria-virtual"
+    domain: systems
+    order: 23
+    theory_dir: content/theory/L22-memoria-virtual
+    projects: [vma-explorer, cow-demo, spl_cp, mini-debugger]
+    prerequisites: [L21]
+  - id: L23
+    title: "Formato ELF y linking"
+    slug: "l23-elf-linking"
+    domain: systems
+    order: 24
+    theory_dir: content/theory/L23-elf-linking
+    projects: [mini-linker]
+    prerequisites: [L22]
+  - id: L24
+    title: "Allocators"
+    slug: "l24-allocators"
+    domain: systems
+    order: 25
+    theory_dir: content/theory/L24-allocators
+    projects: [custom-malloc]
+    prerequisites: [L23]
+  - id: L25
+    title: "Concurrencia I: threads y primitivas de sincronizacion"
+    slug: "l25-concurrencia-1"
+    domain: systems
+    order: 26
+    theory_dir: content/theory/L25-concurrencia-1
+    projects: [thread-pool, prod-cons, rwlock-impl]
+    prerequisites: [L24]
+  - id: L26
+    title: "Concurrencia II: el hardware debajo de las primitivas"
+    slug: "l26-concurrencia-2"
+    domain: systems
+    order: 27
+    theory_dir: content/theory/L26-concurrencia-2
+    projects: [impl_arc]
+    prerequisites: [L25]
+  - id: L27
+    title: "Concurrencia III: lock-free y concurrencia avanzada"
+    slug: "l27-concurrencia-3"
+    domain: systems
+    order: 28
+    theory_dir: content/theory/L27-concurrencia-3
+    projects: [lock-free-queue, rcu-demo]
+    prerequisites: [L26]
+  - id: L28
+    title: "IPC y comunicacion entre procesos"
+    slug: "l28-ipc"
+    domain: systems
+    order: 29
+    theory_dir: content/theory/L28-ipc
+    projects: [named-pipe-sem, ipc-explorer, miniqueue, mish]
+    prerequisites: [L27]
+  - id: L29
+    title: "El parser de mish no escala"
+    slug: "l29-parser-mish-no-escala"
+    domain: compilers
+    order: 30
+    theory_dir: content/theory/L29-parser-mish-no-escala
+    projects: [mish]
+    prerequisites: [L28]
+  - id: L30
+    title: "Automatas y lexers"
+    slug: "l30-automatas-lexers"
+    domain: compilers
+    order: 31
+    theory_dir: content/theory/L30-automatas-lexers
+    projects: [regex-engine]
+    prerequisites: [L29]
+  - id: L31
+    title: "Parsers y gramaticas"
+    slug: "l31-parsers-gramaticas"
+    domain: compilers
+    order: 32
+    theory_dir: content/theory/L31-parsers-gramaticas
+    projects: [expr-parser, semtex, logico]
+    prerequisites: [L30]
+  - id: L32
+    title: "Interpretes y evaluadores"
+    slug: "l32-interpretes-evaluadores"
+    domain: compilers
+    order: 33
+    theory_dir: content/theory/L32-interpretes-evaluadores
+    projects: [semtex, logico]
+    prerequisites: [L31]
+  - id: L33
+    title: "Sistemas de tipos: practica antes del algoritmo"
+    slug: "l33-sistemas-tipos-practica"
+    domain: compilers
+    order: 34
+    theory_dir: content/theory/L33-sistemas-tipos-practica
+    projects: [semtex, logico]
+    prerequisites: [L32]
+  - id: L34
+    title: "Inferencia de tipos: el algoritmo W"
+    slug: "l34-inferencia-tipos-algoritmo-w"
+    domain: compilers
+    order: 35
+    theory_dir: content/theory/L34-inferencia-tipos-algoritmo-w
+    projects: [semtex, logico]
+    prerequisites: [L33]
+  - id: L35
+    title: "Persistencia I: durabilidad y B-Trees"
+    slug: "l35-persistencia-1"
+    domain: advanced
+    order: 36
+    theory_dir: content/theory/L35-persistencia-1
+    projects: [kvolt]
+    prerequisites: [L34]
+  - id: L36
+    title: "Persistencia II: LSM-Trees, MVCC y SQL"
+    slug: "l36-persistencia-2"
+    domain: advanced
+    order: 37
+    theory_dir: content/theory/L36-persistencia-2
+    projects: [minisql]
+    prerequisites: [L35]
+  - id: L37
+    title: "Persistencia III: caches en memoria y politicas de eviccion"
+    slug: "l37-persistencia-3"
+    domain: advanced
+    order: 38
+    theory_dir: content/theory/L37-persistencia-3
+    projects: [mem-cache]
+    prerequisites: [L36]
+  - id: L38
+    title: "Persistencia IV: event logs y brokers durables"
+    slug: "l38-persistencia-4"
+    domain: advanced
+    order: 39
+    theory_dir: content/theory/L38-persistencia-4
+    projects: [mini-broker]
+    prerequisites: [L37]
+  - id: L39
+    title: "Performance Engineering"
+    slug: "l39-performance-engineering"
+    domain: advanced
+    order: 40
+    theory_dir: content/theory/L39-performance-engineering
+    projects: [perf-benchmarks, flamegraph-lab, cache-locality-exp, false-sharing-exp, kvolt]
+    prerequisites: [L38]
+  - id: L40
+    title: "Redes I: fundamentos TCP y HTTP"
+    slug: "l40-redes-1"
+    domain: advanced
+    order: 41
+    theory_dir: content/theory/L40-redes-1
+    projects: [http-server, shell-remoto-tcp, minisync, mini-dns-resolver, mini-tcpdump]
+    prerequisites: [L39]
+  - id: L41
+    title: "Redes II: protocolos modernos"
+    slug: "l41-redes-2"
+    domain: advanced
+    order: 42
+    theory_dir: content/theory/L41-redes-2
+    projects: [http2-server, websocket-server, tcp-ip-stack]
+    prerequisites: [L40]
+  - id: L42
+    title: "Seguridad y criptografia"
+    slug: "l42-seguridad-criptografia"
+    domain: advanced
+    order: 43
+    theory_dir: content/theory/L42-seguridad-criptografia
+    projects: [tinyssh, impl_script]
+    prerequisites: [L41]
+  - id: L43
+    title: "I/O asincrono y runtimes"
+    slug: "l43-async-io-runtimes"
+    domain: advanced
+    order: 44
+    theory_dir: content/theory/L43-async-io-runtimes
+    projects: [async-runtime, io_uring-echo]
+    prerequisites: [L42]
+  - id: L44
+    title: "Aislamiento y contenedores"
+    slug: "l44-aislamiento-contenedores"
+    domain: advanced
+    order: 45
+    theory_dir: content/theory/L44-aislamiento-contenedores
+    projects: [minidocker]
+    prerequisites: [L43]
+  - id: L45
+    title: "Orquestacion de contenedores"
+    slug: "l45-orquestacion-contenedores"
+    domain: advanced
+    order: 46
+    theory_dir: content/theory/L45-orquestacion-contenedores
+    projects: [orquestador, tcp-ip-stack]
+    prerequisites: [L44]
+  - id: L46
+    title: "Replicacion y consenso"
+    slug: "l46-replicacion-consenso"
+    domain: advanced
+    order: 47
+    theory_dir: content/theory/L46-replicacion-consenso
+    projects: [raft-lite, kvolt]
+    prerequisites: [L45]
+  - id: L47
+    title: "Generacion de codigo y JIT"
+    slug: "l47-generacion-codigo-jit"
+    domain: compilers
+    order: 48
+    theory_dir: content/theory/L47-generacion-codigo-jit
+    projects: [jit-brain, logico]
+    prerequisites: [L46]
+  - id: L48
+    title: "Kernel space I: modulos y drivers"
+    slug: "l48-kernel-space-1"
+    domain: advanced
+    order: 49
+    theory_dir: content/theory/L48-kernel-space-1
+    projects: [char-driver]
+    prerequisites: [L47]
+  - id: L49
+    title: "Kernel space II: VFS, allocators del kernel, CFS y virtualizacion"
+    slug: "l49-kernel-space-2"
+    domain: advanced
+    order: 50
+    theory_dir: content/theory/L49-kernel-space-2
+    projects: [ram-filesystem, kvm-mini-hypervisor, ebpf-tracer]
+    prerequisites: [L48]

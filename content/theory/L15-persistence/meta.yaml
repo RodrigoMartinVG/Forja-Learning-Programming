@@ -1,8 +1,0 @@
-id: L15
-title: "Persistencia y almacenamiento"
-slug: "l15-persistence"
-domain: systems
-order: 18
-theory_dir: content/theory/L15-persistence
-projects: [kvolt, minisql]
-prerequisites: [L14]

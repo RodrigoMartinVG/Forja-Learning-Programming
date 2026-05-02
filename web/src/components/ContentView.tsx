@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { levels, projects, levelContent } from 'virtual:forja-content'
 import type { LevelMeta, ProjectMeta } from 'virtual:forja-content'
 import { getProgress } from '../lib/progress'
+import { getLevelProjects, getProjectLevels } from '../lib/curriculum'
 import MdRenderer from './MdRenderer'
 
 // ─── Domain display names ─────────────────────────────────────────────────────
@@ -19,6 +20,16 @@ const DOMAIN_NAME: Record<string, string> = {
 interface Props {
   contentType: 'level' | 'project'
   contentId: string
+}
+
+function isSeededPlaceholder(body?: string): boolean {
+  if (!body) return false
+
+  return body.includes('queda sembrado en Base 2')
+    || body.includes('se siembra en Base 2')
+    || body.includes('Proyecto focalizado sembrado en Base 2')
+    || body.includes('Proyecto integrador sembrado en Base 2')
+    || body.includes('unidad canonica independiente')
 }
 
 export default function ContentView({ contentType, contentId }: Props) {
@@ -52,10 +63,10 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 
   const content      = levelContent[level.id]
   const hasChapters  = (content?.chapters?.length ?? 0) > 0
-  const hasReadme    = !!content?.readme
+  const hasReadme    = !!content?.readme && !isSeededPlaceholder(content.readme)
   const hasContent   = hasChapters || hasReadme
-  const hasExercises = !!content?.exercises
-  const levelProjs   = projects.filter(p => p.display_levels.includes(level.id))
+  const hasExercises = !!content?.exercises && !isSeededPlaceholder(content.exercises)
+  const levelProjs   = getLevelProjects(level, projects)
   const { completed } = getProgress()
 
   const chapters = content?.chapters ?? []
@@ -202,13 +213,12 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
               selectedProject ? (
                 <>
                   <button
-                    className="section-pager__btn section-pager__btn--prev"
-                    style={{ marginBottom: '2rem' }}
+                    className="section-pager__btn section-pager__btn--prev section-pager__btn--spaced"
                     onClick={() => { setSelectedProject(null); scrollTop() }}
                   >
                     ← proyectos
                   </button>
-                  <h2 style={{ marginBottom: '1rem' }}>{selectedProject.title}</h2>
+                  <h2 className="content-section-title">{selectedProject.title}</h2>
                   {selectedProject.readme
                     ? <MdRenderer>{selectedProject.readme}</MdRenderer>
                     : <Pending label="en construcción" message="El contenido de este proyecto estará disponible pronto." />
@@ -241,6 +251,8 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 
 function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectMeta | null; onBack: () => void; onHome: () => void; fromLevel: string | null }) {
   const navigate = useNavigate()
+  const relatedLevels = project ? getProjectLevels(project, levels) : []
+  const hasProjectReadme = !!project?.readme && !isSeededPlaceholder(project.readme)
   const handleBack = fromLevel
     ? () => navigate(`/workspace/level/${fromLevel}`)
     : onBack
@@ -308,24 +320,24 @@ function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectM
           </div>
 
           {/* Levels that unlock this project */}
-          {project.display_levels.length > 0 && (
+          {relatedLevels.length > 0 && (
             <>
               <div className="section-lbl">niveles relacionados</div>
-              <div className="prereq-list" style={{ marginBottom: '2rem' }}>
-                {project.display_levels.map(id => (
+              <div className="prereq-list prereq-list--spaced">
+                {relatedLevels.map(level => (
                   <button
-                    key={id}
+                    key={level.id}
                     className="tag"
-                    onClick={() => navigate(`/workspace/level/${id}`)}
+                    onClick={() => navigate(`/workspace/level/${level.id}`)}
                   >
-                    {id}
+                    {level.id}
                   </button>
                 ))}
               </div>
             </>
           )}
 
-          {project.readme
+          {hasProjectReadme
             ? <MdRenderer>{project.readme}</MdRenderer>
             : <Pending label="en construcción" message="El contenido de este proyecto estará disponible pronto." />
           }
@@ -365,7 +377,7 @@ function ProjectRow({ project, onClick }: { project: ProjectMeta; onClick: () =>
         <div className="proj-row__name">{project.codename}</div>
         {project.equivalent && (
           <div className="proj-row__desc">
-            equivalente: <em style={{ fontStyle: 'normal', color: 'var(--text)' }}>{project.equivalent}</em>
+            equivalente: <em className="proj-row__desc-emphasis">{project.equivalent}</em>
           </div>
         )}
         <div className="proj-row__meta">

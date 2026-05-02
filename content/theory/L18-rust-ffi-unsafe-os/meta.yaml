@@ -1,0 +1,8 @@
+id: L18
+title: "Rust: FFI, unsafe y el sistema operativo"
+slug: "l18-rust-ffi-unsafe-os"
+domain: languages
+order: 19
+theory_dir: content/theory/L18-rust-ffi-unsafe-os
+projects: [ffi-demo]
+prerequisites: [L17]

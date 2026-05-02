@@ -64,7 +64,7 @@ El proyecto está terminado cuando:
 
 ## Referencia
 
-- Sección teórica: `content/theory/L0-environment/sections/01-laboratorio.md`
+- Unidad teorica asociada: `content/theory/L0-setup-laboratorio/`
 - Script de verificación: `verify-setup.sh` en la raíz del repositorio
 - Dockerfile: `.devcontainer/Dockerfile`
 - Configuración VS Code: `.devcontainer/devcontainer.json`

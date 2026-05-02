@@ -1,0 +1,8 @@
+id: L36
+title: "Persistencia II: LSM-Trees, MVCC y SQL"
+slug: "l36-persistencia-2"
+domain: advanced
+order: 37
+theory_dir: content/theory/L36-persistencia-2
+projects: [minisql]
+prerequisites: [L35]

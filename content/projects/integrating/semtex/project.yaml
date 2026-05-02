@@ -2,25 +2,30 @@ id: semtex
 codename: semtex
 title: "Semtex"
 type: integrating
-anchor_level: L12
-display_levels: [L12, L13, L14]
-required_levels: [L12]
-expansion_levels: [L13, L14]
+anchor_level: L31
+display_levels: [L31, L32, L33, L34]
+required_levels: [L31]
+expansion_levels: [L32, L33, L34]
 languages: [c, rust]
 dir: content/projects/integrating/semtex
 stages:
-  - id: semtex-l12
-    label: "Tramo L12"
+  - id: semtex-l31
+    label: "Tramo L31"
     kind: project-stage
-    required_levels: [L12]
-    unlock_level: L12
-  - id: semtex-l13
-    label: "Tramo L13"
+    required_levels: [L31]
+    unlock_level: L31
+  - id: semtex-l32
+    label: "Tramo L32"
     kind: project-stage
-    required_levels: [L12, L13]
-    unlock_level: L13
-  - id: semtex-l14
-    label: "Tramo L14"
+    required_levels: [L31, L32]
+    unlock_level: L32
+  - id: semtex-l33
+    label: "Tramo L33"
     kind: project-stage
-    required_levels: [L12, L13, L14]
-    unlock_level: L14
+    required_levels: [L31, L32, L33]
+    unlock_level: L33
+  - id: semtex-l34
+    label: "Tramo L34"
+    kind: project-stage
+    required_levels: [L31, L32, L33, L34]
+    unlock_level: L34

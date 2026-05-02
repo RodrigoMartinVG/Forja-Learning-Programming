@@ -1,8 +1,0 @@
-id: L13
-title: "Interpretes y evaluadores"
-slug: "l13-interpreters"
-domain: compilers
-order: 16
-theory_dir: content/theory/L13-interpreters
-projects: [semtex, logico]
-prerequisites: [L12]

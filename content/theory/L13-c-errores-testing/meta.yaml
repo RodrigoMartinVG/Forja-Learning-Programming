@@ -1,0 +1,8 @@
+id: L13
+title: "C: modelo de errores y testing"
+slug: "l13-c-errores-testing"
+domain: languages
+order: 14
+theory_dir: content/theory/L13-c-errores-testing
+projects: []
+prerequisites: [L12]

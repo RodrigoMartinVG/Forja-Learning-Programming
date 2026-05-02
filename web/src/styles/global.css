@@ -201,6 +201,7 @@ a      { color: inherit; text-decoration: none; }
   height: 56px;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 .landing__topbar-logo {
@@ -647,6 +648,7 @@ a      { color: inherit; text-decoration: none; }
   border-color: var(--border-md);
   background: var(--surface-2);
 }
+.section-pager__btn--spaced { margin-bottom: 2rem; }
 
 /* --- Location / breadcrumb bar (old — kept for compatibility) */
 .content-nav {
@@ -770,7 +772,10 @@ a      { color: inherit; text-decoration: none; }
   flex-wrap: wrap;
 }
 
+.content-section-title { margin-bottom: 1rem; }
+
 .prereq-list { display: flex; gap: 4px; flex-wrap: wrap; }
+.prereq-list--spaced { margin-bottom: 2rem; }
 
 /* --- Markdown rendering --------------------------------- */
 .md {
@@ -873,6 +878,7 @@ a      { color: inherit; text-decoration: none; }
 .proj-row__info { flex: 1; min-width: 0; }
 .proj-row__name { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
 .proj-row__desc { font-size: 13px; color: var(--text-2); font-weight: 300; line-height: 1.5; }
+.proj-row__desc-emphasis { font-style: normal; color: var(--text); }
 .proj-row__meta { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
 .proj-row__equiv { font-size: 11px; color: var(--text-3); }
 .proj-row__equiv em { font-style: normal; color: var(--text-2); }
@@ -1126,6 +1132,7 @@ a      { color: inherit; text-decoration: none; }
   border: 1px solid var(--border);
   padding: 5px 14px;
   border-radius: 20px;
+  -webkit-user-select: none;
   user-select: none;
   transition: color var(--ease), border-color var(--ease), background var(--ease);
 }

@@ -1,0 +1,16 @@
+id: mini-broker
+codename: mini-broker
+title: "mini-broker"
+type: integrating
+anchor_level: L38
+display_levels: [L38]
+required_levels: [L38]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/mini-broker
+stages:
+  - id: mini-broker-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L38]
+    unlock_level: L38

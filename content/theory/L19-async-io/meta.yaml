@@ -1,8 +1,0 @@
-id: L19
-title: "I/O asincrono y runtimes"
-slug: "l19-async-io"
-domain: systems
-order: 22
-theory_dir: content/theory/L19-async-io
-projects: [async-runtime, io_uring-echo]
-prerequisites: [L18]

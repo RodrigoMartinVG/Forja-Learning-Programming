@@ -1,8 +1,0 @@
-id: L12
-title: "Lexers y parsers"
-slug: "l12-lexers-parsers"
-domain: compilers
-order: 15
-theory_dir: content/theory/L12-lexers-parsers
-projects: [regex-engine, expr-parser, semtex, logico]
-prerequisites: [L11]

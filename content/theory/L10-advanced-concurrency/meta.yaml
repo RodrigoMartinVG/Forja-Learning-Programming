@@ -1,8 +1,0 @@
-id: L10
-title: "Concurrencia avanzada: atomics, lock-free y memory ordering"
-slug: "l10-advanced-concurrency"
-domain: systems
-order: 13
-theory_dir: content/theory/L10-advanced-concurrency
-projects: [impl_arc, lock-free-queue, rcu-demo]
-prerequisites: [L9]

@@ -2,20 +2,20 @@ id: mini-debugger
 codename: mini-debugger
 title: "mini-debugger"
 type: integrating
-anchor_level: L6
-display_levels: [L6, L7]
-required_levels: [L6]
-expansion_levels: [L7]
+anchor_level: L20
+display_levels: [L20, L22]
+required_levels: [L20]
+expansion_levels: [L22]
 languages: [c, rust]
 dir: content/projects/integrating/mini-debugger
 stages:
-  - id: mini-debugger-l6
-    label: "Tramo L6"
+  - id: mini-debugger-l20
+    label: "Tramo L20"
     kind: project-stage
-    required_levels: [L6]
-    unlock_level: L6
-  - id: mini-debugger-l7
-    label: "Tramo L7"
+    required_levels: [L20]
+    unlock_level: L20
+  - id: mini-debugger-l22
+    label: "Tramo L22"
     kind: project-stage
-    required_levels: [L6, L7]
-    unlock_level: L7
+    required_levels: [L20, L22]
+    unlock_level: L22

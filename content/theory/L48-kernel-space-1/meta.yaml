@@ -1,0 +1,8 @@
+id: L48
+title: "Kernel space I: modulos y drivers"
+slug: "l48-kernel-space-1"
+domain: advanced
+order: 49
+theory_dir: content/theory/L48-kernel-space-1
+projects: [char-driver]
+prerequisites: [L47]

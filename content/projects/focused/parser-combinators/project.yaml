@@ -2,9 +2,9 @@ id: parser-combinators
 codename: parser-combinators
 title: "parser-combinators"
 type: focused
-anchor_level: L4
-display_levels: [L4]
-required_levels: [L4]
+anchor_level: L16
+display_levels: [L16]
+required_levels: [L16]
 expansion_levels: []
 languages: [rust]
 dir: content/projects/focused/parser-combinators
@@ -12,5 +12,5 @@ stages:
   - id: parser-combinators-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L4]
-    unlock_level: L4
+    required_levels: [L16]
+    unlock_level: L16

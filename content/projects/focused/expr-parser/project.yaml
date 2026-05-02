@@ -2,9 +2,9 @@ id: expr-parser
 codename: expr-parser
 title: "expr-parser"
 type: focused
-anchor_level: L12
-display_levels: [L12]
-required_levels: [L12]
+anchor_level: L31
+display_levels: [L31]
+required_levels: [L31]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/expr-parser
@@ -12,5 +12,5 @@ stages:
   - id: expr-parser-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L12]
-    unlock_level: L12
+    required_levels: [L31]
+    unlock_level: L31

@@ -1,6 +1,6 @@
 # Forja — Arquitectura de la Plataforma
 
-> Este documento describe cómo se construye Forja: la estructura del repositorio, la arquitectura de la web, el modelo de contenido, el devcontainer y el alcance del MVP. No contiene contenido curricular — eso está en `forja-contenido.md`.
+> Este documento describe cómo se construye Forja: la estructura del repositorio, la arquitectura de la web, el modelo de contenido, el devcontainer y el alcance del MVP. No contiene contenido curricular — eso vive en `forja-contenido.md` y `forja-proyectos.md`.
 >
 > La dinámica operativa de construcción — orden de trabajo, fases, betatesting y criterio de avance — vive en `forja-construccion.md`.
 
@@ -18,7 +18,7 @@
 | Acceso al contenido | Doble: web como interfaz de navegación + repo como fuente directa |
 | Organización de fases | Directorios por fase dentro de cada proyecto |
 | Fuente de verdad de contenido renderizado | Markdown local al contenido (`README.md`, `exercises.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`) |
-| Fuente de verdad de metadata | Local al contenido: `meta.yaml` por nivel y `project.yaml` por proyecto |
+| Fuente de verdad de metadata | `metadata/levels.yaml` para niveles; `project.yaml` por proyecto; `meta.yaml` como espejo local por nivel |
 
 ---
 
@@ -34,6 +34,7 @@ forja/
 ├── docs/                              # Documentación fuente del proyecto
 │   ├── README.md
 │   ├── forja-contenido.md
+│   ├── forja-proyectos.md
 │   ├── forja-arquitectura.md
 │   └── forja-construccion.md
 ├── verify-setup.sh                    # Verificación común del entorno
@@ -43,32 +44,12 @@ forja/
 │
 ├── content/                           # Todo el contenido curricular
 │   ├── theory/                        # Track teórico — unidades conceptuales
-│   │   ├── L0-environment/
-│   │   ├── L1a-c-first-contact/
-│   │   ├── L1b-c-deep-fundamentals/
-│   │   ├── L2-c-memory/
-│   │   ├── L3a-rust-first-contact/
-│   │   ├── L3b-rust-ownership/
-│   │   ├── L4-rust-types-traits-ffi/
-│   │   ├── L5-posix-files/
-│   │   ├── L6-processes-signals/
-│   │   ├── L7-virtual-memory-elf/
-│   │   ├── L8-allocators/
-│   │   ├── L9-concurrency/
-│   │   ├── L10-advanced-concurrency/
-│   │   ├── L11-ipc/
-│   │   ├── L12-lexers-parsers/
-│   │   ├── L13-interpreters/
-│   │   ├── L14-type-systems/
-│   │   ├── L15-persistence/
-│   │   ├── L16-networking/
-│   │   ├── L17-performance/
-│   │   ├── L18-security/
-│   │   ├── L19-async-io/
-│   │   ├── L20-containers/
-│   │   ├── L21-orchestration/
-│   │   ├── L22-codegen-jit/
-│   │   └── L23-kernel/
+│   │   ├── L0-setup-laboratorio/
+│   │   ├── L1-modelo-mental-computadora/
+│   │   ├── L2-representacion-informacion/
+│   │   ├── ...
+│   │   ├── L48-kernel-space-1/
+│   │   └── L49-kernel-space-2/
 │   │
 │   └── projects/                      # Track práctico — proyectos
 │       ├── focused/                   # Proyectos focalizados
@@ -168,17 +149,18 @@ forja/
 Cada nivel de `theory/` tiene esta estructura interna:
 
 ```text
-L6-processes-signals/
-├── README.md               # Contenido principal de la unidad
+L20-procesos-senales/
+├── README.md               # Documento interno del nivel
+├── chapters/               # Cuerpo real cuando el nivel ya fue escrito
+│   └── .gitkeep
 ├── src/                    # Fragmentos de código ilustrativos
-│   ├── fork-demo.c
-│   ├── sigaction-demo.c
-│   └── scheduler-sim.rs
+│   └── .gitkeep
 ├── exercises.md            # Ejercicios puntuales (preguntas + modificaciones)
-└── meta.yaml               # Metadatos de la unidad (ver sección Metadata)
+├── outline.md              # Diseño del nivel
+└── meta.yaml               # Metadatos locales del nivel
 ```
 
-`README.md` es el documento principal. Sigue la estructura definida en `forja-contenido.md` — tema y motivación, desarrollo conceptual, código de ilustración, errores típicos, referencias cruzadas, lectura adicional.
+`README.md` es el documento principal. Sigue la estructura del nivel definida en `forja-contenido.md` — tema y motivación, desarrollo conceptual, código de ilustración, errores típicos, referencias cruzadas, lectura adicional.
 
 Los archivos de `src/` se referencian desde `README.md`. No son proyectos — son fragmentos que demuestran un concepto puntual.
 
@@ -233,33 +215,34 @@ Algunos proyectos son single-language por naturaleza del dominio:
 
 ## Modelo de metadata YAML
 
-### `meta.yaml` dentro de cada unidad teórica
+### `metadata/levels.yaml` y `meta.yaml` por nivel
 
 ```yaml
-id: L1a
-title: "C: primer contacto"
-slug: "l1a-c-first-contact"
-domain: languages
-group: L1
-sublevel_order: 1
-order: 2
-theory_dir: content/theory/L1a-c-first-contact
-projects: [hello-c, caesar-cipher, word-count]
-prerequisites: [L0]
+levels:
+  - id: L8
+    title: "C: primer contacto"
+    slug: "l8-c-primer-contacto"
+    domain: languages
+    order: 9
+    theory_dir: content/theory/L8-c-primer-contacto
+    projects: [hello-c, caesar-cipher, word-count]
+    prerequisites: [L7]
 
 ---
 
-id: L6
-title: "Procesos y señales"
-slug: "l6-processes-signals"
-domain: systems
+id: L8
+title: "C: primer contacto"
+slug: "l8-c-primer-contacto"
+domain: languages
 order: 9
-theory_dir: content/theory/L6-processes-signals
-projects: [spl_pstree, impl_abort, impl_alarm, scheduler-sim, mish, mini-debugger]
-prerequisites: [L5]
+theory_dir: content/theory/L8-c-primer-contacto
+projects: [hello-c, caesar-cipher, word-count]
+prerequisites: [L7]
 ```
 
-Los niveles navegables del sistema son nodos planos: `L0`, `L1a`, `L1b`, `L2`, ..., `L23`. Los casos como `L1a/L1b` y `L3a/L3b` no se modelan como árboles de subniveles dentro del grafo, sino como niveles normales con un campo opcional `group` para presentación y orden visual. Esto evita complejidad innecesaria en dependencias, rutas, progreso y paths, pero mantiene la agrupación cuando hace falta en la UI.
+`metadata/levels.yaml` es el catálogo canónico de niveles que consume la web. Cada directorio `content/theory/LN-slug/` replica esos campos esenciales en `meta.yaml` para mantener el contenido autocontenido y habilitar fallbacks locales.
+
+Los niveles navegables del sistema son nodos planos `L0` a `L49`. Cada uno tiene su propio directorio canónico bajo `content/theory/`; ya no hay subniveles tipo `L1a/L1b` ni carpetas compartidas por varios niveles.
 
 ### `project.yaml` dentro de cada proyecto
 
@@ -337,50 +320,44 @@ paths:
   - id: path-1
     title: "Sistemas primero"
     description: "Base completa en C y Rust antes de profundizar en sistemas, redes, runtime y kernel."
-    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L7, L8, L9, L10, L11, L16, L17, L18, L19, L20, L21, L23]
+    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L35, L36, L37, L38, L39, L40, L41, L42, L43, L45, L46]
 
   - id: path-2
     title: "Plan completo"
     description: "El recorrido curricular entero. Recomendado como vista canonica del mapa."
-    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23]
-
-  - id: path-3
-    title: "Compiladores primero"
-    description: "C y Rust completos al inicio, y desvio temprano al arco de compiladores."
-    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L12, L13, L14, L22]
-
-  - id: path-4
-    title: "Integracion vertical"
-    description: "Sistemas y compiladores entrelazados, priorizando proyectos que cruzan varios dominios."
-    levels: [L0, L1a, L1b, L2, L3a, L3b, L4, L5, L6, L12, L7, L8, L9, L10, L11, L13, L14, L15, L16, L17, L18, L19, L20, L22, L23]
+    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L32, L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49]
 ```
 
 ### `metadata/cross-refs.yaml`
 
 ```yaml
 cross_refs:
-  - theory: L7-virtual-memory-elf
-    projects: [mini-linker, vma-explorer, cow-demo, spl_cp, mini-debugger]
+  - theory: L22
+    projects: [vma-explorer, cow-demo, spl_cp, mini-debugger]
 
-  - theory: L8-allocators
+  - theory: L23
+    projects: [mini-linker]
+
+  - theory: L24
     projects: [custom-malloc, logico]
-    note: "El GC de Lógico usa custom-malloc"
+    note: "El GC de Logico usa custom-malloc."
 ```
 
 ### Índices generados en build time
 
-La web no edita ni mantiene índices globales a mano. En build time, escanea todos los `content/theory/*/meta.yaml` y `content/projects/**/project.yaml`, construye un índice en memoria, y con eso genera navegación, paths, búsqueda y vistas del grafo. Si en algún momento conviene materializar ese índice en JSON para acelerar el build, ese archivo debe ser generado y no editado manualmente.
+La web no edita ni mantiene índices globales a mano. En build time lee `metadata/levels.yaml`, `metadata/paths.yaml` y `content/projects/**/project.yaml`; para el cuerpo de teoría usa el `theory_dir` de cada nivel y carga `README.md`, `exercises.md` y, si existen, los archivos de `chapters/`. `meta.yaml` queda como espejo local y fallback si alguna vez falta el catálogo canónico.
 
-La resolución de dependencias de proyectos respecto a niveles sale de `project.yaml`, no de inferir prose ni de parsear la tabla de `forja-contenido.md`. La tabla sirve como documento humano del plan; `project.yaml` sirve como contrato estructurado para repo y web.
+La resolución de dependencias de proyectos respecto a niveles sale de `project.yaml`, no de inferir prose ni de parsear tablas de `forja-contenido.md` o `forja-proyectos.md`. Los documentos sirven como mapa humano del plan; `project.yaml` sirve como contrato estructurado para repo y web.
 
 ### Reglas de autoría y no duplicación
 
 El modelo correcto de autoría es este:
 
-- `docs/forja-contenido.md` define el plan curricular humano: qué existe, en qué orden cae, qué foco tiene cada nivel y qué proyecto pertenece a qué arco.
-- `content/theory/*/README.md` y `content/theory/*/exercises.md` contienen el cuerpo real de cada unidad teórica.
+- `docs/forja-contenido.md` define el plan curricular humano: qué existe, en qué orden cae y qué foco tiene cada nivel.
+- `docs/forja-proyectos.md` consolida la taxonomía de proyectos, su ubicación curricular y sus arcos multi-fase.
+- `content/theory/*/README.md`, `content/theory/*/exercises.md` y `content/theory/*/chapters/*.md` contienen el cuerpo real de cada unidad teórica.
 - `content/projects/**/README.md` describe el proyecto; cada `phase-n/README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` contiene el cuerpo real de cada fase.
-- `meta.yaml` y `project.yaml` contienen la estructura navegable y las dependencias reales. Si una relación importa para repo o web, debe vivir ahí y no solo en prose.
+- `metadata/levels.yaml`, `meta.yaml` y `project.yaml` contienen la estructura navegable y las dependencias reales. Si una relación importa para repo o web, debe vivir ahí y no solo en prose.
 - `metadata/paths.yaml` y `metadata/cross-refs.yaml` contienen solo relaciones globales no derivables del contenido local.
 - Cualquier índice agregado para acelerar build o búsqueda debe ser generado. Nunca editado a mano.
 
@@ -424,28 +401,22 @@ Vite procesa el contenido en build time — los archivos Markdown y YAML se impo
 La separación correcta es esta:
 
 - Markdown (`README.md`, `exercises.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`) es la fuente de verdad del cuerpo renderizado.
-- `meta.yaml` y `project.yaml` son la fuente de verdad estructural local.
+- `metadata/levels.yaml` es la fuente de verdad canónica para niveles.
+- `meta.yaml` y `project.yaml` son la fuente de verdad estructural local para cada carpeta de nivel o proyecto.
 - `metadata/paths.yaml` y `metadata/cross-refs.yaml` complementan solo la parte relacional global.
 
 ```ts
-// web/src/lib/catalog.ts — escaneo del repo en build time
-const levelMetaModules = import.meta.glob("../../../content/theory/*/meta.yaml", {
-  eager: true,
-  import: "default",
-  query: "?raw",
-})
+// web/vite.config.ts — build-time readers
+function readLevels(): LevelMeta[] {
+  const levelsFile = join(repoRoot, 'metadata', 'levels.yaml')
+  if (existsSync(levelsFile)) {
+    const data = yaml.load(readFileSync(levelsFile, 'utf-8')) as { levels: LevelMeta[] }
+    return (data?.levels ?? []).sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+  }
 
-const levelReadmeModules = import.meta.glob("../../../content/theory/*/README.md", {
-  eager: true,
-  import: "default",
-  query: "?raw",
-})
-
-const projectMetaModules = import.meta.glob("../../../content/projects/*/*/project.yaml", {
-  eager: true,
-  import: "default",
-  query: "?raw",
-})
+  // Fallback legacy si falta el catalogo canonico.
+  return []
+}
 ```
 
 El renderer actual de la web es Markdown plano con GFM. Syntax highlighting avanzado, diagramas o includes automáticos de snippets son mejoras futuras del renderer, no una segunda fuente de contenido.
@@ -560,7 +531,7 @@ El repo es la fuente de verdad. La web es un lector del repo.
 
 | Aspecto | Repo (GitHub) | Web |
 |---|---|---|
-| Plan curricular humano | `docs/forja-contenido.md` | Contexto y navegación, no cuerpo docente renderizado |
+| Plan curricular humano | `docs/forja-contenido.md` + `docs/forja-proyectos.md` | Contexto y navegación, no cuerpo docente renderizado |
 | Contenido teórico | Markdown en `content/theory/` | Renderizado como páginas |
 | Código de proyectos | Directorios en `content/projects/` | Listado con links a GitHub |
 | Grafo de dependencias | YAML local (`meta.yaml` y `project.yaml`) + relaciones globales en `metadata/` | Visualización interactiva |
@@ -590,10 +561,10 @@ Cada fase que se da por terminada debe dejar cuatro cosas coherentes:
 La estrategia recomendada sigue siendo priorizar un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1 (`Sistemas primero`), ejecutado según el orden maestro de fases:
 
 1. `Base 0`, `Base 1`, `Base 2`
-2. `L0` + `devcontainer-setup`, luego `L1a`, `L1b`, `L2`, `L3a`, `L3b` y `L4` con sus proyectos focalizados
-3. `L5` y `L6` con sus proyectos focalizados
-4. `mish` (tramo `L6`) como primer integrador usable
-5. `L11` + `mish` (tramo `L11`) para cerrar pipes, redirecciones y job control
+2. `L0` + `devcontainer-setup`, luego `L1` hasta `L7` para cerrar la base de laboratorio, modelo mental y assembly
+3. `L8` hasta `L20` con los proyectos focalizados que cada nivel va habilitando
+4. `mish` (tramo `L20`) como primer integrador usable
+5. `L28` + `mish` (tramo `L28`) para cerrar pipes, redirecciones y job control
 
 Este orden permite betatestear el curso real sin apartarse de la secuencia de `forja-construccion.md`. Cada bloque nuevo se valida recorriéndolo como usuario, no solo leyéndolo como autor.
 
@@ -624,5 +595,5 @@ El mapa interactivo, la búsqueda full-text y el tracking de progreso pueden exi
 | Markdown rendering | MDX vs remark/rehype plano | Bajo — ambos funcionan bien con Vite |
 | Design system / UI | Tailwind + Radix UI vs shadcn/ui vs CSS modules custom | Medio — afecta velocidad de desarrollo |
 | Despliegue inicial | GitHub Pages vs Vercel | Bajo — ambos son gratuitos para este caso |
-| ¿Qué proyectos de L23 quedan solo en C? | `char-driver`, `RAM-FileSystem` y `KVM mini-hypervisor` solo C; `ebpf-tracer` tiene implementación dual C/Rust | Bajo — ya cerrado en forja-contenido.md |
+| ¿Qué proyectos de L23 quedan solo en C? | `char-driver`, `RAM-FileSystem` y `KVM mini-hypervisor` solo C; `ebpf-tracer` tiene implementación dual C/Rust | Bajo — ya cerrado en forja-proyectos.md |
 | ¿Las mejoras propuestas de una fase desbloquean la siguiente? | Opcionales vs requeridas | Alto — afecta el modelo pedagógico completo |

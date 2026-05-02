@@ -2,9 +2,9 @@ id: kvm-mini-hypervisor
 codename: kvm-mini-hypervisor
 title: "KVM mini-hypervisor"
 type: integrating
-anchor_level: L23
-display_levels: [L23]
-required_levels: [L23]
+anchor_level: L49
+display_levels: [L49]
+required_levels: [L49]
 expansion_levels: []
 languages: [c]
 dir: content/projects/integrating/kvm-mini-hypervisor
@@ -12,5 +12,5 @@ stages:
   - id: kvm-mini-hypervisor-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L23]
-    unlock_level: L23
+    required_levels: [L49]
+    unlock_level: L49

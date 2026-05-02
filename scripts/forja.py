@@ -17,285 +17,84 @@ METADATA_ROOT = ROOT / "metadata"
 TEMPLATES_ROOT = ROOT / "templates"
 
 
-LEVELS = [
-    {
-        "id": "L0",
-        "dir_name": "L0-environment",
-        "slug": "l0-environment",
-        "title": "Entorno y Toolchain",
-        "domain": "languages",
-        "order": 1,
-        "prerequisites": [],
-        "projects": ["devcontainer-setup"],
-    },
-    {
-        "id": "L1a",
-        "dir_name": "L1a-c-first-contact",
-        "slug": "l1a-c-first-contact",
-        "title": "C: primer contacto",
-        "domain": "languages",
-        "group": "L1",
-        "sublevel_order": 1,
-        "order": 2,
-        "prerequisites": ["L0"],
-        "projects": ["hello-c", "caesar-cipher", "word-count"],
-    },
-    {
-        "id": "L1b",
-        "dir_name": "L1b-c-deep-fundamentals",
-        "slug": "l1b-c-deep-fundamentals",
-        "title": "C: fundamentos profundos",
-        "domain": "languages",
-        "group": "L1",
-        "sublevel_order": 2,
-        "order": 3,
-        "prerequisites": ["L1a"],
-        "projects": ["stringlib", "elf-explorer"],
-    },
-    {
-        "id": "L2",
-        "dir_name": "L2-c-memory",
-        "slug": "l2-c-memory",
-        "title": "C como lenguaje: memoria y gestion manual",
-        "domain": "languages",
-        "order": 4,
-        "prerequisites": ["L1b"],
-        "projects": ["getopt-impl", "dynamic-array"],
-    },
-    {
-        "id": "L3a",
-        "dir_name": "L3a-rust-first-contact",
-        "slug": "l3a-rust-first-contact",
-        "title": "Rust: primer contacto",
-        "domain": "languages",
-        "group": "L3",
-        "sublevel_order": 1,
-        "order": 5,
-        "prerequisites": ["L0"],
-        "projects": ["hello-rust", "fizzbuzz-rust", "mini-calculator"],
-    },
-    {
-        "id": "L3b",
-        "dir_name": "L3b-rust-ownership",
-        "slug": "l3b-rust-ownership",
-        "title": "Rust: ownership y borrowing",
-        "domain": "languages",
-        "group": "L3",
-        "sublevel_order": 2,
-        "order": 6,
-        "prerequisites": ["L3a"],
-        "projects": ["data-structures-rust"],
-    },
-    {
-        "id": "L4",
-        "dir_name": "L4-rust-types-traits-ffi",
-        "slug": "l4-rust-types-traits-ffi",
-        "title": "Rust: tipos, traits, FFI y sistema operativo",
-        "domain": "languages",
-        "order": 7,
-        "prerequisites": ["L3b"],
-        "projects": ["custom-iterator", "parser-combinators", "ffi-demo"],
-    },
-    {
-        "id": "L5",
-        "dir_name": "L5-posix-files",
-        "slug": "l5-posix-files",
-        "title": "POSIX: archivos, metadatos y el filesystem",
-        "domain": "systems",
-        "order": 8,
-        "prerequisites": ["L2"],
-        "projects": ["spl_stat", "spl_ls", "spl_du", "file-monitor"],
-    },
-    {
-        "id": "L6",
-        "dir_name": "L6-processes-signals",
-        "slug": "l6-processes-signals",
-        "title": "Procesos y senales",
-        "domain": "systems",
-        "order": 9,
-        "prerequisites": ["L5"],
-        "projects": ["spl_pstree", "impl_abort", "impl_alarm", "scheduler-sim", "mini-debugger", "mish"],
-    },
-    {
-        "id": "L7",
-        "dir_name": "L7-virtual-memory-elf",
-        "slug": "l7-virtual-memory-elf",
-        "title": "Memoria virtual y formato ELF",
-        "domain": "systems",
-        "order": 10,
-        "prerequisites": ["L6"],
-        "projects": ["vma-explorer", "cow-demo", "spl_cp", "mini-linker", "mini-debugger"],
-    },
-    {
-        "id": "L8",
-        "dir_name": "L8-allocators",
-        "slug": "l8-allocators",
-        "title": "Allocators",
-        "domain": "systems",
-        "order": 11,
-        "prerequisites": ["L7"],
-        "projects": ["custom-malloc"],
-    },
-    {
-        "id": "L9",
-        "dir_name": "L9-concurrency",
-        "slug": "l9-concurrency",
-        "title": "Concurrencia: threads y primitivas de sincronizacion",
-        "domain": "systems",
-        "order": 12,
-        "prerequisites": ["L8"],
-        "projects": ["thread-pool", "prod-cons", "rwlock-impl"],
-    },
-    {
-        "id": "L10",
-        "dir_name": "L10-advanced-concurrency",
-        "slug": "l10-advanced-concurrency",
-        "title": "Concurrencia avanzada: atomics, lock-free y memory ordering",
-        "domain": "systems",
-        "order": 13,
-        "prerequisites": ["L9"],
-        "projects": ["impl_arc", "lock-free-queue", "rcu-demo"],
-    },
-    {
-        "id": "L11",
-        "dir_name": "L11-ipc",
-        "slug": "l11-ipc",
-        "title": "IPC y comunicacion entre procesos",
-        "domain": "systems",
-        "order": 14,
-        "prerequisites": ["L10"],
-        "projects": ["named-pipe-sem", "ipc-explorer", "miniqueue", "mish"],
-    },
-    {
-        "id": "L12",
-        "dir_name": "L12-lexers-parsers",
-        "slug": "l12-lexers-parsers",
-        "title": "Lexers y parsers",
-        "domain": "compilers",
-        "order": 15,
-        "prerequisites": ["L11"],
-        "projects": ["regex-engine", "expr-parser", "semtex", "logico"],
-    },
-    {
-        "id": "L13",
-        "dir_name": "L13-interpreters",
-        "slug": "l13-interpreters",
-        "title": "Interpretes y evaluadores",
-        "domain": "compilers",
-        "order": 16,
-        "prerequisites": ["L12"],
-        "projects": ["semtex", "logico"],
-    },
-    {
-        "id": "L14",
-        "dir_name": "L14-type-systems",
-        "slug": "l14-type-systems",
-        "title": "Sistemas de tipos e inferencia",
-        "domain": "compilers",
-        "order": 17,
-        "prerequisites": ["L13"],
-        "projects": ["semtex", "logico"],
-    },
-    {
-        "id": "L15",
-        "dir_name": "L15-persistence",
-        "slug": "l15-persistence",
-        "title": "Persistencia y almacenamiento",
-        "domain": "systems",
-        "order": 18,
-        "prerequisites": ["L14"],
-        "projects": ["kvolt", "minisql"],
-    },
-    {
-        "id": "L16",
-        "dir_name": "L16-networking",
-        "slug": "l16-networking",
-        "title": "Redes y protocolos",
-        "domain": "systems",
-        "order": 19,
-        "prerequisites": ["L15"],
-        "projects": [
-            "http-server",
-            "shell-remoto-tcp",
-            "minisync",
-            "mini-dns-resolver",
-            "mini-tcpdump",
-            "http2-server",
-            "websocket-server",
-            "tcp-ip-stack",
-        ],
-    },
-    {
-        "id": "L17",
-        "dir_name": "L17-performance",
-        "slug": "l17-performance",
-        "title": "Performance Engineering",
-        "domain": "systems",
-        "order": 20,
-        "prerequisites": ["L16"],
-        "projects": ["perf-benchmarks", "flamegraph-lab", "cache-locality-exp", "false-sharing-exp"],
-    },
-    {
-        "id": "L18",
-        "dir_name": "L18-security",
-        "slug": "l18-security",
-        "title": "Seguridad y criptografia",
-        "domain": "systems",
-        "order": 21,
-        "prerequisites": ["L17"],
-        "projects": ["tinyssh", "impl_script"],
-    },
-    {
-        "id": "L19",
-        "dir_name": "L19-async-io",
-        "slug": "l19-async-io",
-        "title": "I/O asincrono y runtimes",
-        "domain": "systems",
-        "order": 22,
-        "prerequisites": ["L18"],
-        "projects": ["async-runtime", "io_uring-echo"],
-    },
-    {
-        "id": "L20",
-        "dir_name": "L20-containers",
-        "slug": "l20-containers",
-        "title": "Aislamiento y contenedores",
-        "domain": "systems",
-        "order": 23,
-        "prerequisites": ["L19"],
-        "projects": ["minidocker"],
-    },
-    {
-        "id": "L21",
-        "dir_name": "L21-orchestration",
-        "slug": "l21-orchestration",
-        "title": "Orquestacion y sistemas distribuidos",
-        "domain": "systems",
-        "order": 24,
-        "prerequisites": ["L20"],
-        "projects": ["orquestador", "tcp-ip-stack"],
-    },
-    {
-        "id": "L22",
-        "dir_name": "L22-codegen-jit",
-        "slug": "l22-codegen-jit",
-        "title": "Generacion de codigo y JIT",
-        "domain": "compilers",
-        "order": 25,
-        "prerequisites": ["L21"],
-        "projects": ["jit-brain", "logico"],
-    },
-    {
-        "id": "L23",
-        "dir_name": "L23-kernel",
-        "slug": "l23-kernel",
-        "title": "Kernel space",
-        "domain": "systems",
-        "order": 26,
-        "prerequisites": ["L22"],
-        "projects": ["char-driver", "ram-filesystem", "kvm-mini-hypervisor", "ebpf-tracer"],
-    },
-]
+def parse_scalar(value: str) -> object:
+    if value == "":
+        return ""
+    if value.startswith('"') and value.endswith('"'):
+        return value[1:-1].replace('\\"', '"')
+    if value.startswith("[") and value.endswith("]"):
+        inner = value[1:-1].strip()
+        if not inner:
+            return []
+        return [parse_scalar(part.strip()) for part in inner.split(",")]
+    if value.lstrip("-").isdigit():
+        return int(value)
+    return value
+
+
+def load_yaml_sequence(path: Path, root_key: str) -> list[dict[str, object]]:
+    if not path.exists():
+        return []
+
+    items: list[dict[str, object]] = []
+    current: dict[str, object] | None = None
+    in_root = False
+
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+
+        if not in_root:
+            if raw_line.strip() == f"{root_key}:":
+                in_root = True
+            continue
+
+        if raw_line.startswith("  - "):
+            if current is not None:
+                items.append(current)
+            current = {}
+            entry = raw_line[4:]
+            if entry:
+                key, value = entry.split(":", 1)
+                current[key.strip()] = parse_scalar(value.strip())
+            continue
+
+        if current is None:
+            continue
+
+        stripped = raw_line.strip()
+        if ":" not in stripped:
+            continue
+        key, value = stripped.split(":", 1)
+        current[key.strip()] = parse_scalar(value.strip())
+
+    if current is not None:
+        items.append(current)
+
+    return items
+
+
+def load_levels_catalog() -> list[dict[str, object]]:
+    levels = load_yaml_sequence(METADATA_ROOT / "levels.yaml", "levels")
+    enriched: list[dict[str, object]] = []
+
+    for level in levels:
+        item = dict(level)
+        item["dir_name"] = Path(str(item["theory_dir"])).name
+        enriched.append(item)
+
+    return enriched
+
+
+def load_paths_catalog() -> list[dict[str, object]]:
+    return load_yaml_sequence(METADATA_ROOT / "paths.yaml", "paths")
+
+
+def load_cross_refs_catalog() -> list[dict[str, object]]:
+    return load_yaml_sequence(METADATA_ROOT / "cross-refs.yaml", "cross_refs")
+
+
+LEVELS = load_levels_catalog()
 
 
 PROJECT_TITLES = {
@@ -367,6 +166,9 @@ PROJECT_TITLES = {
     "ram-filesystem": "RAM-FileSystem",
     "kvm-mini-hypervisor": "KVM mini-hypervisor",
     "ebpf-tracer": "ebpf-tracer",
+    "mem-cache": "mem-cache",
+    "mini-broker": "mini-broker",
+    "raft-lite": "raft-lite",
 }
 
 
@@ -388,6 +190,9 @@ INTEGRATING_PROJECTS = {
     "orquestador",
     "jit-brain",
     "kvm-mini-hypervisor",
+    "mem-cache",
+    "mini-broker",
+    "raft-lite",
 }
 
 C_ONLY_PROJECTS = {
@@ -414,54 +219,9 @@ RUST_ONLY_PROJECTS = {
 
 NO_LANGUAGE_PROJECTS = {"devcontainer-setup"}
 
-PATHS = [
-    {
-        "id": "path-1",
-        "title": "Solo C",
-        "description": "Para quien quiere sistemas primero, sin la friccion del borrow checker.",
-        "levels": ["L0", "L1a", "L1b", "L2", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L16", "L17", "L19", "L20", "L21", "L23"],
-    },
-    {
-        "id": "path-2",
-        "title": "Dual C+Rust",
-        "description": "El camino completo. Recomendado para la mayoria.",
-        "levels": ["L0", "L1a", "L1b", "L2", "L3a", "L3b", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23"],
-    },
-    {
-        "id": "path-3",
-        "title": "Compiladorista",
-        "description": "Sistemas como base y foco en compiladores, lenguajes y teoria.",
-        "levels": ["L0", "L1a", "L1b", "L2", "L3a", "L3b", "L4", "L12", "L13", "L14", "L22"],
-    },
-    {
-        "id": "path-4",
-        "title": "Integrador",
-        "description": "Mezcla sistemas y compiladores siguiendo las dependencias naturales entre proyectos.",
-        "levels": ["L0", "L1a", "L1b", "L2", "L3a", "L3b", "L4", "L5", "L6", "L12", "L7", "L8", "L9", "L10", "L11", "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L22", "L23"],
-    },
-]
+PATHS = load_paths_catalog()
 
-CROSS_REFS = [
-    {
-        "theory": "L7-virtual-memory-elf",
-        "projects": ["mini-linker", "vma-explorer", "cow-demo", "spl_cp", "mini-debugger"],
-    },
-    {
-        "theory": "L8-allocators",
-        "projects": ["custom-malloc", "logico"],
-        "note": "El GC de Logico usa custom-malloc.",
-    },
-    {
-        "theory": "L11-ipc",
-        "projects": ["named-pipe-sem", "ipc-explorer", "miniqueue", "mish"],
-        "note": "mish reaparece en L11 para pipes, redirecciones y job control.",
-    },
-    {
-        "theory": "L21-orchestration",
-        "projects": ["orquestador", "tcp-ip-stack"],
-        "note": "TCP/IP stack vuelve a abrirse en L21 para integrarse con el orquestador.",
-    },
-]
+CROSS_REFS = load_cross_refs_catalog()
 
 
 def yaml_quote(value: str) -> str:
@@ -472,6 +232,20 @@ def yaml_list(values: list[str]) -> str:
     if not values:
         return "[]"
     return "[" + ", ".join(values) + "]"
+
+
+def level_theory_dir(level: dict[str, object]) -> str:
+    theory_dir = level.get("theory_dir")
+    if theory_dir:
+        return str(theory_dir)
+    return f"content/theory/{level['dir_name']}"
+
+
+def level_dir_name(level: dict[str, object]) -> str:
+    dir_name = level.get("dir_name")
+    if dir_name:
+        return str(dir_name)
+    return Path(level_theory_dir(level)).name
 
 
 def render_template(path: Path, context: dict[str, str]) -> str:
@@ -590,7 +364,7 @@ def level_meta(level: dict[str, object]) -> str:
     lines.extend(
         [
             f"order: {level['order']}",
-            f"theory_dir: content/theory/{level['dir_name']}",
+            f"theory_dir: {level_theory_dir(level)}",
             f"projects: {yaml_list(level['projects'])}",
             f"prerequisites: {yaml_list(level['prerequisites'])}",
         ]
@@ -660,10 +434,49 @@ def format_bullets(items: list[str], empty_message: str) -> str:
     return "\n".join(f"- {item}" for item in items)
 
 
+def level_outline(level: dict[str, object]) -> str:
+    prerequisites = ", ".join(level["prerequisites"]) if level["prerequisites"] else "ninguno"
+    projects = ", ".join(level["projects"]) if level["projects"] else "ninguno"
+
+    return "\n".join(
+        [
+            f"# Outline: {level['id']} - {level['title']}",
+            "",
+            "## Metadatos",
+            f"- Prerequisitos: {prerequisites}.",
+            f"- Proyectos asociados: {projects}.",
+            "",
+            "## Objetivo",
+            "",
+            f"Definir la unidad teorica canonica de {level['id']} antes de escribir su contenido definitivo.",
+            "",
+            "## Capitulos",
+            "",
+            "### Capitulo 00 - Introduccion",
+            "**Archivo:** `chapters/00-introduccion.md`",
+            "**Objetivo:** presentar el mapa del nivel cuando se escriba el contenido.",
+            "**Secciones:**",
+            "- `## Pendiente`",
+            "",
+            "**Notas:** nivel resembrado desde cero; contenido aun no escrito.",
+            "",
+            "## Ejercicios",
+            "",
+            "Pendientes.",
+            "",
+            "## Decisiones de diseno",
+            "",
+            "- Este nivel existe como unidad canonica independiente.",
+            "- El cuerpo definitivo se escribira mas adelante en `chapters/`.",
+        ]
+    )
+
+
 def create_level(level: dict[str, object], force: bool) -> None:
-    level_dir = THEORY_ROOT / level["dir_name"]
+    level_dir = THEORY_ROOT / level_dir_name(level)
     level_dir.mkdir(parents=True, exist_ok=True)
     touch_file(level_dir / "src" / ".gitkeep")
+    touch_file(level_dir / "chapters" / ".gitkeep")
 
     context = {
         "level_id": level["id"],
@@ -674,6 +487,7 @@ def create_level(level: dict[str, object], force: bool) -> None:
     }
     write_file(level_dir / "README.md", render_template(TEMPLATES_ROOT / "level" / "README.md.tpl", context), force)
     write_file(level_dir / "exercises.md", render_template(TEMPLATES_ROOT / "level" / "exercises.md.tpl", context), force)
+    write_file(level_dir / "outline.md", level_outline(level), force)
     write_file(level_dir / "meta.yaml", level_meta(level), force)
 
 
@@ -893,8 +707,8 @@ def validate() -> int:
     failures: list[str] = []
 
     for level in LEVELS:
-        level_dir = THEORY_ROOT / level["dir_name"]
-        for relative in ["README.md", "exercises.md", "meta.yaml", "src/.gitkeep"]:
+        level_dir = THEORY_ROOT / level_dir_name(level)
+        for relative in ["README.md", "exercises.md", "outline.md", "meta.yaml", "chapters/.gitkeep", "src/.gitkeep"]:
             path = level_dir / relative
             if not path.exists():
                 failures.append(f"missing {path.relative_to(ROOT).as_posix()}")
@@ -910,7 +724,7 @@ def validate() -> int:
             if not path.exists():
                 failures.append(f"missing {path.relative_to(ROOT).as_posix()}")
 
-    for relative in ["metadata/paths.yaml", "metadata/cross-refs.yaml"]:
+    for relative in ["metadata/levels.yaml", "metadata/paths.yaml", "metadata/cross-refs.yaml"]:
         path = ROOT / relative
         if not path.exists():
             failures.append(f"missing {relative}")
@@ -936,7 +750,7 @@ def parser() -> argparse.ArgumentParser:
     level.add_argument("--dir-name", required=True)
     level.add_argument("--slug", required=True)
     level.add_argument("--title", required=True)
-    level.add_argument("--domain", required=True, choices=["languages", "systems", "compilers"])
+    level.add_argument("--domain", required=True, choices=["languages", "systems", "compilers", "advanced"])
     level.add_argument("--order", required=True, type=int)
     level.add_argument("--group")
     level.add_argument("--sublevel-order", type=int)

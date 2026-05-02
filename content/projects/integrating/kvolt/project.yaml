@@ -2,15 +2,25 @@ id: kvolt
 codename: kvolt
 title: "KVolt"
 type: integrating
-anchor_level: L15
-display_levels: [L15]
-required_levels: [L15]
-expansion_levels: []
+anchor_level: L35
+display_levels: [L35, L39, L46]
+required_levels: [L35]
+expansion_levels: [L39, L46]
 languages: [c, rust]
 dir: content/projects/integrating/kvolt
 stages:
-  - id: kvolt-main
-    label: "Fase base"
+  - id: kvolt-l35
+    label: "Tramo L35"
     kind: project-stage
-    required_levels: [L15]
-    unlock_level: L15
+    required_levels: [L35]
+    unlock_level: L35
+  - id: kvolt-l39
+    label: "Tramo L39"
+    kind: project-stage
+    required_levels: [L35, L39]
+    unlock_level: L39
+  - id: kvolt-l46
+    label: "Tramo L46"
+    kind: project-stage
+    required_levels: [L35, L39, L46]
+    unlock_level: L46

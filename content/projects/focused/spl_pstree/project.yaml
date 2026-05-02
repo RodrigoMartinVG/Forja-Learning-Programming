@@ -2,9 +2,9 @@ id: spl_pstree
 codename: spl_pstree
 title: "spl_pstree"
 type: focused
-anchor_level: L6
-display_levels: [L6]
-required_levels: [L6]
+anchor_level: L20
+display_levels: [L20]
+required_levels: [L20]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/spl_pstree
@@ -12,5 +12,5 @@ stages:
   - id: spl-pstree-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L6]
-    unlock_level: L6
+    required_levels: [L20]
+    unlock_level: L20

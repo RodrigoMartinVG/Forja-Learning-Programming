@@ -1,0 +1,8 @@
+id: L20
+title: "Procesos y senales"
+slug: "l20-procesos-senales"
+domain: systems
+order: 21
+theory_dir: content/theory/L20-procesos-senales
+projects: [spl_pstree, impl_abort, impl_alarm, mish, mini-debugger]
+prerequisites: [L19]

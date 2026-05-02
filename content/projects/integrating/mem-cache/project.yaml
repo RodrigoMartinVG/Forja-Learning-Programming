@@ -1,0 +1,16 @@
+id: mem-cache
+codename: mem-cache
+title: "mem-cache"
+type: integrating
+anchor_level: L37
+display_levels: [L37]
+required_levels: [L37]
+expansion_levels: []
+languages: [c, rust]
+dir: content/projects/integrating/mem-cache
+stages:
+  - id: mem-cache-main
+    label: "Fase base"
+    kind: project-stage
+    required_levels: [L37]
+    unlock_level: L37

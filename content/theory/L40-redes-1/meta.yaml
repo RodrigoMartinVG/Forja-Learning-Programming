@@ -1,0 +1,8 @@
+id: L40
+title: "Redes I: fundamentos TCP y HTTP"
+slug: "l40-redes-1"
+domain: advanced
+order: 41
+theory_dir: content/theory/L40-redes-1
+projects: [http-server, shell-remoto-tcp, minisync, mini-dns-resolver, mini-tcpdump]
+prerequisites: [L39]

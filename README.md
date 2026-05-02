@@ -10,7 +10,8 @@ Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, R
 
 ## Documentos fuente
 
-- `docs/forja-contenido.md`: especificacion curricular y bibliografia
+- `docs/forja-contenido.md`: especificacion curricular, niveles y navegacion del plan
+- `docs/forja-proyectos.md`: catalogo de proyectos, taxonomia y arcos integradores
 - `docs/forja-arquitectura.md`: estructura objetivo del repo, metadata y web
 - `docs/forja-construccion.md`: orden maestro de fases y criterio operativo
 
@@ -39,7 +40,7 @@ Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, R
 
 ## Convenciones
 
-Las convenciones iniciales del repo viven en `CONVENTIONS.md`. Los slugs canonicos de niveles y proyectos viven en los README de `content/theory/` y `content/projects/`.
+Las convenciones iniciales del repo viven en `CONVENTIONS.md`. Los slugs canonicos de niveles viven en `metadata/levels.yaml`; los de proyectos viven en `project.yaml` dentro de `content/projects/`.
 
 ## Biblioteca local
 

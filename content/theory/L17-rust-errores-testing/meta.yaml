@@ -1,0 +1,8 @@
+id: L17
+title: "Rust: manejo de errores y testing"
+slug: "l17-rust-errores-testing"
+domain: languages
+order: 18
+theory_dir: content/theory/L17-rust-errores-testing
+projects: []
+prerequisites: [L16]

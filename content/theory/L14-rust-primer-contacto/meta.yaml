@@ -1,0 +1,8 @@
+id: L14
+title: "Rust: primer contacto"
+slug: "l14-rust-primer-contacto"
+domain: languages
+order: 15
+theory_dir: content/theory/L14-rust-primer-contacto
+projects: [hello-rust, fizzbuzz-rust, mini-calculator]
+prerequisites: [L13]

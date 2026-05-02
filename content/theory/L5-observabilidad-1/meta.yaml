@@ -1,0 +1,8 @@
+id: L5
+title: "Herramientas de observabilidad I"
+slug: "l5-observabilidad-1"
+domain: languages
+order: 6
+theory_dir: content/theory/L5-observabilidad-1
+projects: []
+prerequisites: [L4]

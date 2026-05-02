@@ -2,9 +2,9 @@ id: spl_cp
 codename: spl_cp
 title: "spl_cp"
 type: focused
-anchor_level: L7
-display_levels: [L7]
-required_levels: [L7]
+anchor_level: L22
+display_levels: [L22]
+required_levels: [L22]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/spl_cp
@@ -12,5 +12,5 @@ stages:
   - id: spl-cp-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L7]
-    unlock_level: L7
+    required_levels: [L22]
+    unlock_level: L22

@@ -2,9 +2,9 @@ id: impl_arc
 codename: impl_arc
 title: "impl_arc"
 type: focused
-anchor_level: L10
-display_levels: [L10]
-required_levels: [L10]
+anchor_level: L26
+display_levels: [L26]
+required_levels: [L26]
 expansion_levels: []
 languages: [rust]
 dir: content/projects/focused/impl_arc
@@ -12,5 +12,5 @@ stages:
   - id: impl-arc-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L10]
-    unlock_level: L10
+    required_levels: [L26]
+    unlock_level: L26

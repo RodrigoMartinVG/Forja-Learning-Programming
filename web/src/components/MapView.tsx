@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { levels, projects } from 'virtual:forja-content'
 import type { LevelMeta } from 'virtual:forja-content'
+import { getLevelProjects } from '../lib/curriculum'
 
 const DOMAINS = [
-  { id: 'languages', label: 'Lenguajes',          levels_label: 'L0 – L4'  },
-  { id: 'systems',   label: 'Sistemas',           levels_label: 'L5 – L11' },
-  { id: 'compilers', label: 'Compiladores',       levels_label: 'L12 – L14' },
-  { id: 'advanced',  label: 'Sistemas Avanzados', levels_label: 'L15 – L23' },
+  { id: 'languages', label: 'Base y Lenguajes' },
+  { id: 'systems',   label: 'Sistemas' },
+  { id: 'compilers', label: 'Compiladores' },
+  { id: 'advanced',  label: 'Sistemas Avanzados' },
 ] as const
 
 export default function MapView() {
@@ -23,7 +24,7 @@ export default function MapView() {
       <div className="map-view__header">
         <h2 className="map-view__title">Mapa de contenido</h2>
         <p className="map-view__subtitle">
-          Seleccioná un nivel para ver su teoría, ejercicios y proyectos asociados.
+          Selecciona un nivel del plan canonico para ver su teoria, ejercicios y proyectos asociados.
         </p>
       </div>
 
@@ -75,9 +76,8 @@ export default function MapView() {
 // ─── Level Card ───────────────────────────────────────────────────────────────
 
 function LevelCard({ level, onSelect }: { level: LevelMeta; onSelect: () => void }) {
-  // Prefer project.yaml display_levels over meta.yaml projects list
-  const linkedProjects = projects.filter(p => p.display_levels.includes(level.id))
-  const fallbackProjs  = level.projects.slice(0, 5)
+  const linkedProjects = getLevelProjects(level, projects)
+  const fallbackProjs = level.projects.filter(id => !linkedProjects.some(project => project.id === id || project.codename === id)).slice(0, 5)
 
   return (
     <div

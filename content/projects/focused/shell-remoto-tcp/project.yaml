@@ -2,9 +2,9 @@ id: shell-remoto-tcp
 codename: shell-remoto-tcp
 title: "shell remoto TCP"
 type: focused
-anchor_level: L16
-display_levels: [L16]
-required_levels: [L16]
+anchor_level: L40
+display_levels: [L40]
+required_levels: [L40]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/shell-remoto-tcp
@@ -12,5 +12,5 @@ stages:
   - id: shell-remoto-tcp-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L16]
-    unlock_level: L16
+    required_levels: [L40]
+    unlock_level: L40

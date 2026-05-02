@@ -1,0 +1,8 @@
+id: L38
+title: "Persistencia IV: event logs y brokers durables"
+slug: "l38-persistencia-4"
+domain: advanced
+order: 39
+theory_dir: content/theory/L38-persistencia-4
+projects: [mini-broker]
+prerequisites: [L37]

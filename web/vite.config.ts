@@ -52,6 +52,14 @@ function isDir(p: string): boolean {
 }
 
 function readLevels(): LevelMeta[] {
+  const levelsFile = join(repoRoot, 'metadata', 'levels.yaml')
+  if (existsSync(levelsFile)) {
+    try {
+      const data = yaml.load(readFileSync(levelsFile, 'utf-8')) as { levels: LevelMeta[] }
+      return (data?.levels ?? []).sort((a, b) => (a.order ?? 99) - (b.order ?? 99))
+    } catch { /* fall back to legacy per-directory metadata */ }
+  }
+
   const theoryDir = join(repoRoot, 'content', 'theory')
   if (!existsSync(theoryDir)) return []
 
@@ -117,6 +125,10 @@ function readLevelContent(theoryDir: string): {
   exercises: string
   chapters: { slug: string; title: string; body: string }[]
 } {
+  if (!theoryDir) {
+    return { readme: '', exercises: '', chapters: [] }
+  }
+
   const base = join(repoRoot, theoryDir)
   const readFile = (name: string) => {
     const p = join(base, name)

@@ -2,9 +2,9 @@ id: io_uring-echo
 codename: io_uring-echo
 title: "io_uring-echo"
 type: focused
-anchor_level: L19
-display_levels: [L19]
-required_levels: [L19]
+anchor_level: L43
+display_levels: [L43]
+required_levels: [L43]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/io_uring-echo
@@ -12,5 +12,5 @@ stages:
   - id: io-uring-echo-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L19]
-    unlock_level: L19
+    required_levels: [L43]
+    unlock_level: L43

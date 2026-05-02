@@ -1,0 +1,8 @@
+id: L1
+title: "Modelo mental de una computadora"
+slug: "l1-modelo-mental-computadora"
+domain: languages
+order: 2
+theory_dir: content/theory/L1-modelo-mental-computadora
+projects: []
+prerequisites: [L0]

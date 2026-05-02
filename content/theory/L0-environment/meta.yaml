@@ -1,8 +1,0 @@
-id: L0
-title: "Entorno y Toolchain"
-slug: "l0-environment"
-domain: languages
-order: 1
-theory_dir: content/theory/L0-environment
-projects: [devcontainer-setup]
-prerequisites: []

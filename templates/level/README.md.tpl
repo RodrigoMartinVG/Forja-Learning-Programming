@@ -1,12 +1,16 @@
 # {{level_id}} - {{level_title}}
 
-Este nivel queda sembrado en Base 2 para fijar estructura, metadata y navegacion.
+> El contenido de este nivel se escribira en `chapters/`. Este README fija la estructura minima del nivel.
+>
+> Diseno curricular -> `docs/forja-contenido.md`
+> Outline del nivel -> `outline.md`
 
 ## Estado actual
 
+- Este nivel queda sembrado en Base 2 como unidad canonica independiente.
 - Contenido teorico: pendiente.
+- Capitulos en `chapters/`: pendiente.
 - Ejemplos en `src/`: pendiente.
-- Integracion fina con la web: pendiente.
 
 ## Prerequisitos
 
@@ -18,4 +22,4 @@ Este nivel queda sembrado en Base 2 para fijar estructura, metadata y navegacion
 
 ## Proximo paso
 
-Completar este README con teoria, ejemplos y referencias cruzadas cuando se abra la fase del nivel.
+Completar `outline.md`, `chapters/`, ejercicios y referencias cruzadas cuando se abra la fase del nivel.

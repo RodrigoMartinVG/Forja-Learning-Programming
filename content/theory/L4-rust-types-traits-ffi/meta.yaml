@@ -1,8 +1,0 @@
-id: L4
-title: "Rust: tipos, traits, FFI y sistema operativo"
-slug: "l4-rust-types-traits-ffi"
-domain: languages
-order: 7
-theory_dir: content/theory/L4-rust-types-traits-ffi
-projects: [custom-iterator, parser-combinators, ffi-demo]
-prerequisites: [L3b]

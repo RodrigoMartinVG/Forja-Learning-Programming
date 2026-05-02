@@ -23,15 +23,17 @@ Eso significa que en Base 0 no aparecen todavia `.devcontainer/`, `meta.yaml`, `
 
 Cada nivel teorico usara un directorio con este patron:
 
-- `L0-environment`
-- `L1a-c-first-contact`
-- `L1b-c-deep-fundamentals`
+- `L0-setup-laboratorio`
+- `L1-modelo-mental-computadora`
 - `...`
-- `L23-kernel`
+- `L49-kernel-space-2`
+
+En general, el patron es `L<orden>-<slug-canonico>` y se deriva de `metadata/levels.yaml`.
 
 Cuando llegue la fase de un nivel, su carpeta deberia contener como minimo:
 
 - `README.md`
+- `chapters/`
 - `src/`
 - `exercises.md`
 - `outline.md`

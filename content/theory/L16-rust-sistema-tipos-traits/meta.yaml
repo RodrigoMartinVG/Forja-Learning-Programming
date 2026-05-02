@@ -1,0 +1,8 @@
+id: L16
+title: "Rust: sistema de tipos y traits"
+slug: "l16-rust-sistema-tipos-traits"
+domain: languages
+order: 17
+theory_dir: content/theory/L16-rust-sistema-tipos-traits
+projects: [custom-iterator, parser-combinators]
+prerequisites: [L15]

@@ -1,0 +1,8 @@
+id: L46
+title: "Replicacion y consenso"
+slug: "l46-replicacion-consenso"
+domain: advanced
+order: 47
+theory_dir: content/theory/L46-replicacion-consenso
+projects: [raft-lite, kvolt]
+prerequisites: [L45]

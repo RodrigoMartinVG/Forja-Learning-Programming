@@ -1,0 +1,8 @@
+id: L0
+title: "Setup del laboratorio"
+slug: "l0-setup-laboratorio"
+domain: languages
+order: 1
+theory_dir: content/theory/L0-setup-laboratorio
+projects: [devcontainer-setup]
+prerequisites: []

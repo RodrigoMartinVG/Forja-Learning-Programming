@@ -1,0 +1,8 @@
+id: L47
+title: "Generacion de codigo y JIT"
+slug: "l47-generacion-codigo-jit"
+domain: compilers
+order: 48
+theory_dir: content/theory/L47-generacion-codigo-jit
+projects: [jit-brain, logico]
+prerequisites: [L46]

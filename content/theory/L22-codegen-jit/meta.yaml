@@ -1,8 +1,0 @@
-id: L22
-title: "Generacion de codigo y JIT"
-slug: "l22-codegen-jit"
-domain: compilers
-order: 25
-theory_dir: content/theory/L22-codegen-jit
-projects: [jit-brain, logico]
-prerequisites: [L21]

@@ -2,9 +2,9 @@ id: websocket-server
 codename: websocket-server
 title: "websocket-server"
 type: focused
-anchor_level: L16
-display_levels: [L16]
-required_levels: [L16]
+anchor_level: L41
+display_levels: [L41]
+required_levels: [L41]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/websocket-server
@@ -12,5 +12,5 @@ stages:
   - id: websocket-server-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L16]
-    unlock_level: L16
+    required_levels: [L41]
+    unlock_level: L41

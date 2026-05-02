@@ -2,9 +2,9 @@ id: miniqueue
 codename: miniqueue
 title: "miniqueue"
 type: integrating
-anchor_level: L11
-display_levels: [L11]
-required_levels: [L11]
+anchor_level: L28
+display_levels: [L28]
+required_levels: [L28]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/integrating/miniqueue
@@ -12,5 +12,5 @@ stages:
   - id: miniqueue-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L11]
-    unlock_level: L11
+    required_levels: [L28]
+    unlock_level: L28

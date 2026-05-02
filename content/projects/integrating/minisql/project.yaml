@@ -2,9 +2,9 @@ id: minisql
 codename: minisql
 title: "MiniSQL"
 type: integrating
-anchor_level: L15
-display_levels: [L15]
-required_levels: [L15]
+anchor_level: L36
+display_levels: [L36]
+required_levels: [L36]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/integrating/minisql
@@ -12,5 +12,5 @@ stages:
   - id: minisql-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L15]
-    unlock_level: L15
+    required_levels: [L36]
+    unlock_level: L36

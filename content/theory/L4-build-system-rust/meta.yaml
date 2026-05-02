@@ -1,0 +1,8 @@
+id: L4
+title: "El sistema de build de Rust"
+slug: "l4-build-system-rust"
+domain: languages
+order: 5
+theory_dir: content/theory/L4-build-system-rust
+projects: []
+prerequisites: [L3]

@@ -1,0 +1,8 @@
+id: L2
+title: "Representacion de la informacion"
+slug: "l2-representacion-informacion"
+domain: languages
+order: 3
+theory_dir: content/theory/L2-representacion-informacion
+projects: []
+prerequisites: [L1]

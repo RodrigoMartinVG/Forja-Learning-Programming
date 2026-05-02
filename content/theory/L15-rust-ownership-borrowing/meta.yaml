@@ -1,0 +1,8 @@
+id: L15
+title: "Rust: ownership y borrowing"
+slug: "l15-rust-ownership-borrowing"
+domain: languages
+order: 16
+theory_dir: content/theory/L15-rust-ownership-borrowing
+projects: [data-structures-rust]
+prerequisites: [L14]

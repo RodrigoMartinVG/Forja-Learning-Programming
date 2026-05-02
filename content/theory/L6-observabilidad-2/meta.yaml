@@ -1,0 +1,8 @@
+id: L6
+title: "Herramientas de observabilidad II"
+slug: "l6-observabilidad-2"
+domain: languages
+order: 7
+theory_dir: content/theory/L6-observabilidad-2
+projects: []
+prerequisites: [L5]

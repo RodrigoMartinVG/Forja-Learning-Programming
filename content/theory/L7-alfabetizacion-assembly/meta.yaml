@@ -1,0 +1,8 @@
+id: L7
+title: "Alfabetizacion assembly"
+slug: "l7-alfabetizacion-assembly"
+domain: languages
+order: 8
+theory_dir: content/theory/L7-alfabetizacion-assembly
+projects: []
+prerequisites: [L6]

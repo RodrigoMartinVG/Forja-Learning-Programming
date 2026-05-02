@@ -1,0 +1,8 @@
+id: L3
+title: "El pipeline de compilacion en C"
+slug: "l3-pipeline-compilacion-c"
+domain: languages
+order: 4
+theory_dir: content/theory/L3-pipeline-compilacion-c
+projects: []
+prerequisites: [L2]

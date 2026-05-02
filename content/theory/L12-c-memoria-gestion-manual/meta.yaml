@@ -1,0 +1,8 @@
+id: L12
+title: "C: memoria y gestion manual"
+slug: "l12-c-memoria-gestion-manual"
+domain: languages
+order: 13
+theory_dir: content/theory/L12-c-memoria-gestion-manual
+projects: [getopt-impl]
+prerequisites: [L11]

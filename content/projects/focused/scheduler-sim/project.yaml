@@ -2,9 +2,9 @@ id: scheduler-sim
 codename: scheduler-sim
 title: "scheduler-sim"
 type: focused
-anchor_level: L6
-display_levels: [L6]
-required_levels: [L6]
+anchor_level: L21
+display_levels: [L21]
+required_levels: [L21]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/scheduler-sim
@@ -12,5 +12,5 @@ stages:
   - id: scheduler-sim-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L6]
-    unlock_level: L6
+    required_levels: [L21]
+    unlock_level: L21

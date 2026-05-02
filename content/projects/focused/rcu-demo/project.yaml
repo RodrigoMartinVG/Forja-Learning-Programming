@@ -2,9 +2,9 @@ id: rcu-demo
 codename: rcu-demo
 title: "rcu-demo"
 type: focused
-anchor_level: L10
-display_levels: [L10]
-required_levels: [L10]
+anchor_level: L27
+display_levels: [L27]
+required_levels: [L27]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/rcu-demo
@@ -12,5 +12,5 @@ stages:
   - id: rcu-demo-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L10]
-    unlock_level: L10
+    required_levels: [L27]
+    unlock_level: L27

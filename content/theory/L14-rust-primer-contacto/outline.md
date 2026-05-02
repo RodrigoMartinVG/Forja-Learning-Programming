@@ -1,0 +1,28 @@
+# Outline: L14 - Rust: primer contacto
+
+## Metadatos
+- Prerequisitos: L13.
+- Proyectos asociados: hello-rust, fizzbuzz-rust, mini-calculator.
+
+## Objetivo
+
+Definir la unidad teorica canonica de L14 antes de escribir su contenido definitivo.
+
+## Capitulos
+
+### Capitulo 00 - Introduccion
+**Archivo:** `chapters/00-introduccion.md`
+**Objetivo:** presentar el mapa del nivel cuando se escriba el contenido.
+**Secciones:**
+- `## Pendiente`
+
+**Notas:** nivel resembrado desde cero; contenido aun no escrito.
+
+## Ejercicios
+
+Pendientes.
+
+## Decisiones de diseno
+
+- Este nivel existe como unidad canonica independiente.
+- El cuerpo definitivo se escribira mas adelante en `chapters/`.

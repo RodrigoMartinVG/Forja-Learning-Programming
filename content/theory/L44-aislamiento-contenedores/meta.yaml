@@ -1,0 +1,8 @@
+id: L44
+title: "Aislamiento y contenedores"
+slug: "l44-aislamiento-contenedores"
+domain: advanced
+order: 45
+theory_dir: content/theory/L44-aislamiento-contenedores
+projects: [minidocker]
+prerequisites: [L43]

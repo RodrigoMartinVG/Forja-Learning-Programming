@@ -1,8 +1,0 @@
-id: L2
-title: "C como lenguaje: memoria y gestion manual"
-slug: "l2-c-memory"
-domain: languages
-order: 4
-theory_dir: content/theory/L2-c-memory
-projects: [getopt-impl, dynamic-array]
-prerequisites: [L1b]

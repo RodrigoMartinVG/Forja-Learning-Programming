@@ -13,6 +13,7 @@ En esta fase solo se fija la estructura y la nomenclatura. El contenido real de 
 
 ## Fuente de verdad
 
-- La especificacion curricular vive en `docs/forja-contenido.md`.
+- La especificacion curricular de niveles vive en `docs/forja-contenido.md`.
+- El catalogo consolidado de proyectos vive en `docs/forja-proyectos.md`.
 - La estructura objetivo del repo vive en `docs/forja-arquitectura.md`.
 - El orden de construccion vive en `docs/forja-construccion.md`.

@@ -1,8 +1,0 @@
-id: L5
-title: "POSIX: archivos, metadatos y el filesystem"
-slug: "l5-posix-files"
-domain: systems
-order: 8
-theory_dir: content/theory/L5-posix-files
-projects: [spl_stat, spl_ls, spl_du, file-monitor]
-prerequisites: [L2]

@@ -1,0 +1,8 @@
+id: L41
+title: "Redes II: protocolos modernos"
+slug: "l41-redes-2"
+domain: advanced
+order: 42
+theory_dir: content/theory/L41-redes-2
+projects: [http2-server, websocket-server, tcp-ip-stack]
+prerequisites: [L40]

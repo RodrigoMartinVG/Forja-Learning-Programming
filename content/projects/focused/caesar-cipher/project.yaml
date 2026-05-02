@@ -2,9 +2,9 @@ id: caesar-cipher
 codename: caesar-cipher
 title: "caesar-cipher"
 type: focused
-anchor_level: L1a
-display_levels: [L1a]
-required_levels: [L1a]
+anchor_level: L8
+display_levels: [L8]
+required_levels: [L8]
 expansion_levels: []
 languages: [c]
 dir: content/projects/focused/caesar-cipher
@@ -12,5 +12,5 @@ stages:
   - id: caesar-cipher-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L1a]
-    unlock_level: L1a
+    required_levels: [L8]
+    unlock_level: L8

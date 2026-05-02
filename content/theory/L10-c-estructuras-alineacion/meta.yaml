@@ -1,0 +1,8 @@
+id: L10
+title: "C: estructuras, alineacion y tipos compuestos"
+slug: "l10-c-estructuras-alineacion"
+domain: languages
+order: 11
+theory_dir: content/theory/L10-c-estructuras-alineacion
+projects: [dynamic-array]
+prerequisites: [L9]

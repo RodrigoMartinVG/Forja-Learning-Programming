@@ -1,8 +1,0 @@
-id: L23
-title: "Kernel space"
-slug: "l23-kernel"
-domain: systems
-order: 26
-theory_dir: content/theory/L23-kernel
-projects: [char-driver, ram-filesystem, kvm-mini-hypervisor, ebpf-tracer]
-prerequisites: [L22]
