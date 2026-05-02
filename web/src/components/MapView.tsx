@@ -12,6 +12,8 @@ const DOMAINS = [
 
 export default function MapView() {
   const navigate = useNavigate()
+  const openForjaIntro = () => navigate('/workspace/intro/forja')
+  const openWorkspaceIntro = () => navigate('/workspace/intro/workspace')
 
   const domains = DOMAINS.map(d => ({
     ...d,
@@ -48,7 +50,11 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* Domains */}
+      <div className="map-intro-row domain-section__levels">
+        <IntroCard eyebrow="Panorama" title="Que es Forja?" onSelect={openForjaIntro} />
+        <IntroCard eyebrow="Antes de L0" title="Introduccion al Workspace" onSelect={openWorkspaceIntro} />
+      </div>
+
       <div className="map-domains">
         {domains.map(domain => (
           <section key={domain.id} className="domain-section">
@@ -74,6 +80,26 @@ export default function MapView() {
 }
 
 // ─── Level Card ───────────────────────────────────────────────────────────────
+
+function IntroCard({ eyebrow, title, onSelect }: { eyebrow: string; title: string; onSelect: () => void }) {
+  return (
+    <div
+      className="level-card level-card--languages"
+      onClick={onSelect}
+      role="button"
+      tabIndex={0}
+      onKeyDown={event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onSelect()
+        }
+      }}
+    >
+      <div className="level-card__id level-card__id--languages">{eyebrow}</div>
+      <div className="level-card__title">{title}</div>
+    </div>
+  )
+}
 
 function LevelCard({ level, onSelect }: { level: LevelMeta; onSelect: () => void }) {
   const linkedProjects = getLevelProjects(level, projects)

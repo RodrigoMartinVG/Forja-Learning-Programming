@@ -1,17 +1,17 @@
 # Convenciones del Repositorio
 
-## Alcance de Base 0
+## Estado estructural actual
 
-Base 0 deja la forma del repo, no su operatividad completa.
+Este archivo describe el estado actual del repo, no una fase historica del bootstrap.
 
-En esta fase:
+Hoy Forja ya incluye:
 
-- si se crea la estructura raiz del monorepo
-- si se fijan slugs y convenciones de contenido
-- no se agregan archivos de tooling de Base 1
-- no se agregan metadatos operativos de Base 2
+- `.devcontainer/` para el laboratorio reproducible
+- `metadata/*.yaml` para catalogos y relaciones globales
+- `content/theory/**` y `content/projects/**` como fuentes de contenido
+- `web/` como interfaz de navegacion y lectura
 
-Eso significa que en Base 0 no aparecen todavia `.devcontainer/`, `meta.yaml`, `project.yaml`, `paths.yaml`, `cross-refs.yaml`, `package.json` ni codigo ejecutable de la web.
+Si una convencion vieja deja de coincidir con el repo real, se actualiza aca en vez de seguir nombrando una fase que ya no organiza el proyecto.
 
 ## Idioma y estilo
 
@@ -37,7 +37,7 @@ Cuando llegue la fase de un nivel, su carpeta deberia contener como minimo:
 - `src/`
 - `exercises.md`
 - `outline.md`
-- `meta.yaml` (desde Base 2 en adelante)
+- `meta.yaml`
 
 ## Convencion para proyectos
 
@@ -57,14 +57,20 @@ Los slugs de proyecto usan kebab-case ASCII. Ejemplos:
 
 Cuando llegue la fase de un proyecto, su carpeta deberia contener como minimo:
 
-- `project.yaml` (desde Base 2 en adelante)
+- `project.yaml`
 - `c/` y/o `rust/`
 - subdirectorios `phase-n/`
 - `README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` dentro de cada fase
 
-## Placeholders en Base 0
+## Placeholders editoriales
 
-En esta fase, los README de cada rama funcionan como placeholders trackeables. Las carpetas concretas de niveles y proyectos se iran materializando a medida que avance el plan o cuando una fase posterior necesite sembrarlas de forma masiva.
+Los README y outlines pueden funcionar como placeholders trackeables mientras un nivel o proyecto todavia no tiene su cuerpo final.
+
+La regla es:
+
+- la estructura canonica del directorio ya debe existir
+- el archivo debe dejar claro si es contenido para estudiar o documento interno de diseno
+- cuando llegue contenido real, el placeholder se reemplaza sin romper la estructura esperada del repo
 
 ## Biblioteca local
 
@@ -98,8 +104,21 @@ chapters/
 ```
 
 - Los archivos se ordenan lexicográficamente. El prefijo numérico (`00`, `01`, `02`...) define el orden y el número que aparece en el sidebar de la web.
-- La primera línea de cada archivo debe ser un heading `# Título` (sin prefijo numérico). Ese título es el que aparece en el sidebar.
+- `00-introduccion.md` es obligatorio y usa exactamente ese nombre. No se reemplaza por `00-panorama.md`, `00-mapa.md` u otras variantes.
+- La primera línea de cada archivo debe ser un heading `# Título` (sin prefijo numérico ni la palabra "Capítulo"). Ese título es el que aparece en el sidebar.
 - `README.md` del nivel es un documento de diseño interno (no se muestra en la web cuando existe `chapters/`). Ver plantilla al final de esta sección.
+
+### Introducción general antes de L0
+
+Antes del primer nivel existe un bloque editorial de entrada compuesto por `content/theory/forja.md` y `content/theory/README.md`.
+
+Ese bloque no cuenta como nivel ni reemplaza a `L0`. Su función es:
+
+- dar contexto a alguien que todavia no sabe que es Forja ni como se usa
+- explicar cómo se recorre el workspace, incluyendo niveles y proyectos
+- justificar por qué `L0` existe y por qué no conviene entrar directo a tecnicismos del laboratorio
+
+La parte `Que es Forja` debe explicar plataforma, motivacion, expectativas y perfil de entrada. La `Introduccion al Workspace` debe ser breve, orientadora y no duplicar el detalle curricular de `docs/forja-contenido.md`.
 
 ### El archivo `outline.md`
 
@@ -155,6 +174,8 @@ Todo nivel debe tener un capítulo `00-introduccion.md` que establezca:
 5. **Cómo trabajarlo** — secciones + ejercicios + proyecto.
 6. **El nivel siguiente** — a dónde va el mapa desde acá.
 
+Si existe una introducción general previa al track, este capítulo debe apoyarse en ella y no repetirla completa.
+
 ### Cobertura explícita: nada colgado
 
 Cada vez que un tema se introduce de forma parcial o superficial, el texto debe decirlo explícitamente:
@@ -171,6 +192,9 @@ No está permitido que un concepto quede "colgado": presentado, pero sin cierre 
 - **Sin condescendencia.** El lector sabe programar; lo que construye Forja es profundidad, no alfabetización.
 - **Directo.** Sin padding introductorio del tipo "en esta sección vamos a ver...". El contenido empieza en la primera oración.
 - **El laboratorio es el método.** Las secciones no son apuntes de cátedra: son guías de experimentación. Cada concepto tiene un comando para verificarlo o un ejemplo que se puede modificar y observar.
+- **Voz consistente.** En niveles teóricos, preferir prosa impersonal o segunda persona consistente, pero no mezclar voseo, tuteo y registros académicos en el mismo texto.
+- **Sin épica vacía.** Evitar frases grandilocuentes, slogans y motivación genérica. La importancia del tema se demuestra con consecuencias técnicas concretas.
+- **Anclar temprano.** En la primera mitad del capítulo debe aparecer al menos un comando, experimento o artefacto real del repo que aterrice la idea.
 
 ### Ejercicios — siempre accionables
 
@@ -181,6 +205,8 @@ Todos los ejercicios deben ser accionables de una de estas dos formas:
 
 **Prohibido**: ejercicios del tipo "describí con tus palabras", "explicá la diferencia entre X e Y", o cualquier cosa que no produzca un resultado verificable. Forja aprende haciendo, no escribiendo ensayos.
 
+Cuando un ejercicio pide escribir una conclusión, esa conclusión debe salir de una observación previa hecha con un comando concreto. El ejercicio no puede depender solo de memoria o intuición.
+
 ### Plantilla de README.md de nivel
 
 ```markdown
@@ -188,8 +214,16 @@ Todos los ejercicios deben ser accionables de una de estas dos formas:
 
 > El contenido está en `chapters/`. Este README es un documento de diseño interno.
 >
+> Que es Forja? → `content/theory/forja.md`
+> Introducción al Workspace → `content/theory/README.md`
 > Diseño curricular → `docs/forja-contenido.md`
 > Outline del nivel → `outline.md`
+
+## Estado editorial
+
+- Objetivo del nivel: ...
+- Proyecto(s) asociado(s): ...
+- Notas de implementación: ...
 
 ## Capítulos
 

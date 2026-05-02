@@ -1,14 +1,16 @@
+import { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Landing from './components/Landing'
-import Workspace from './components/Workspace'
+
+const Landing = lazy(() => import('./components/Landing'))
+const Workspace = lazy(() => import('./components/Workspace'))
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/workspace" element={<Workspace />} />
-        <Route path="/workspace/:contentType/:contentId" element={<Workspace />} />
+        <Route path="/" element={<Suspense fallback={null}><Landing /></Suspense>} />
+        <Route path="/workspace" element={<Suspense fallback={null}><Workspace /></Suspense>} />
+        <Route path="/workspace/:contentType/:contentId" element={<Suspense fallback={null}><Workspace /></Suspense>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

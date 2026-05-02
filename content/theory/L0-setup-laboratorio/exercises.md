@@ -1,3 +1,98 @@
 # Ejercicios - L0
 
-Este nivel fue resembrado como unidad canonica independiente. Los ejercicios todavia no fueron producidos.
+Estos ejercicios buscan que el laboratorio deje de ser algo que solo "se abre" y pase a ser algo que podes verificar con evidencia.
+
+## Ejercicio 1 - Donde vive cada decision
+
+Corre:
+
+```bash
+sed -n '1,25p' .devcontainer/Dockerfile
+jq '{dockerfile: .build.dockerfile, remoteUser: .remoteUser}' .devcontainer/devcontainer.json
+sed -n '1,20p' verify-setup.sh
+```
+
+Pregunta: cual de estos archivos declara la instalacion de herramientas base como `clang`, `gdb` y `jq`?
+
+- A. `.devcontainer/devcontainer.json`
+- B. `.devcontainer/Dockerfile`
+- C. `verify-setup.sh`
+
+**Correcta:** B.
+
+Verificacion: en la salida del Dockerfile tiene que aparecer `apt-get install -y` seguido de esas herramientas.
+
+## Ejercicio 2 - Que archivo describe la apertura del contenedor
+
+Corre:
+
+```bash
+jq '{dockerfile: .build.dockerfile, remoteUser: .remoteUser, terminal: .customizations.vscode.settings["terminal.integrated.defaultProfile.linux"]}' .devcontainer/devcontainer.json
+```
+
+Pregunta: que archivo fija el `remoteUser` y la configuracion de VS Code dentro del devcontainer?
+
+- A. `.devcontainer/devcontainer.json`
+- B. `.devcontainer/Dockerfile`
+- C. `content/theory/L0-setup-laboratorio/meta.yaml`
+
+**Correcta:** A.
+
+Verificacion: la salida JSON del comando debe mostrar `remoteUser` y la configuracion del terminal leidos desde `devcontainer.json`.
+
+## Ejercicio 3 - Contrato base versus snapshot manual
+
+Corre:
+
+```bash
+bash verify-setup.sh | sed -n '1,12p'
+grep -n '^run_check' verify-setup.sh | sed -n '1,12p'
+bash content/theory/L0-setup-laboratorio/src/toolchain_snapshot.sh
+```
+
+Pregunta: cual de estas herramientas aparece en el snapshot manual pero no se verifica con `run_check` en `verify-setup.sh`?
+
+- A. `clang`
+- B. `cargo`
+- C. `rustc`
+
+**Correcta:** C.
+
+Verificacion: `verify-setup.sh` tiene `run_check` para `cargo`, pero no para `rustc`; `toolchain_snapshot.sh` si imprime `rustc --version`.
+
+## Ejercicio 4 - Perfil base y nightly opcional
+
+Corre:
+
+```bash
+jq -r '.build.args.FORJA_INSTALL_NIGHTLY' .devcontainer/devcontainer.json
+grep -n 'nightly' verify-setup.sh
+```
+
+Pregunta: con la configuracion actual del repo, que pasa con nightly y `miri` en el perfil base?
+
+- A. Se instalan y se exigen siempre.
+- B. No se instalan por defecto; el script los marca como `skip` si no estan.
+- C. No aparecen ni en la build ni en la verificacion.
+
+**Correcta:** B.
+
+Verificacion: `FORJA_INSTALL_NIGHTLY` vale `false` y `verify-setup.sh` tiene una rama que imprime `[skip] not installed in base profile`.
+
+## Ejercicio 5 - Transferencia al proyecto
+
+Corre:
+
+```bash
+grep -n '^run_check' verify-setup.sh | tail -n 8
+```
+
+Tarea: propon un check nuevo para `devcontainer-setup` siguiendo este formato minimo:
+
+- herramienta
+- comando exacto de verificacion
+- por que importa en Forja
+- primer nivel o proyecto donde esperas usarla
+
+La respuesta sigue siendo valida solo si puede agregarse al script usando el patron `run_check "label" "comando"`.
+

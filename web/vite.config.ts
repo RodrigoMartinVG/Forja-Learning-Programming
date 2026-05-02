@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve, join, dirname } from 'path'
@@ -91,8 +93,6 @@ function readProjects(): ProjectMeta[] {
         try {
           const parsed = yaml.load(readFileSync(yamlPath, 'utf-8')) as ProjectMeta
           if (parsed?.id) {
-            const readmePath = join(entryPath, 'README.md')
-            parsed.readme = existsSync(readmePath) ? readFileSync(readmePath, 'utf-8') : ''
             projects.push(parsed)
           }
         } catch { /* skip */ }
@@ -141,7 +141,7 @@ function readLevelContent(theoryDir: string): {
 
   if (existsSync(chaptersDir) && isDir(chaptersDir)) {
     const files = readdirSync(chaptersDir)
-      .filter(f => f.endsWith('.md'))
+      .filter((file: string) => file.endsWith('.md'))
       .sort() // lexicographic: 01-, 02-, …
 
     for (const file of files) {
@@ -161,37 +161,81 @@ function readLevelContent(theoryDir: string): {
 
 // ─── Virtual module plugin ────────────────────────────────────────────────────
 
-const VIRTUAL_ID = 'virtual:forja-content'
-const RESOLVED_ID = '\0' + VIRTUAL_ID
+const CONTENT_INDEX_ID = 'virtual:forja-content'
+const CONTENT_INDEX_RESOLVED_ID = '\0' + CONTENT_INDEX_ID
+const CONTENT_BODY_ID = 'virtual:forja-content-body'
+const CONTENT_BODY_RESOLVED_ID = '\0' + CONTENT_BODY_ID
+
+function readProjectContent(projects: ProjectMeta[]): Record<string, { readme: string }> {
+  const projectContent: Record<string, { readme: string }> = {}
+
+  for (const project of projects) {
+    const readmePath = join(repoRoot, project.dir, 'README.md')
+    projectContent[project.id] = {
+      readme: existsSync(readmePath) ? readFileSync(readmePath, 'utf-8') : '',
+    }
+  }
+
+  return projectContent
+}
+
+function readIntroContent(): Record<string, string> {
+  const introSources = {
+    forja: join(repoRoot, 'content', 'theory', 'forja.md'),
+    workspace: join(repoRoot, 'content', 'theory', 'README.md'),
+    theory: join(repoRoot, 'content', 'theory', 'README.md'),
+  }
+
+  return Object.fromEntries(
+    Object.entries(introSources).map(([id, filePath]) => [
+      id,
+      existsSync(filePath) ? readFileSync(filePath, 'utf-8') : '',
+    ]),
+  )
+}
 
 function forjaContentPlugin(): Plugin {
   return {
     name: 'forja-content',
 
     resolveId(id) {
-      if (id === VIRTUAL_ID) return RESOLVED_ID
+      if (id === CONTENT_INDEX_ID) return CONTENT_INDEX_RESOLVED_ID
+      if (id === CONTENT_BODY_ID) return CONTENT_BODY_RESOLVED_ID
     },
 
     load(id) {
-      if (id !== RESOLVED_ID) return
-
       const levels = readLevels()
-      const projects = readProjects()
-      const paths = readPaths()
 
-      const levelContent: Record<string, { readme: string; exercises: string }> = {}
-      for (const level of levels) {
-        if (level.theory_dir) {
-          levelContent[level.id] = readLevelContent(level.theory_dir)
-        }
+      if (id === CONTENT_INDEX_RESOLVED_ID) {
+        const projects = readProjects()
+        const paths = readPaths()
+
+        return [
+          `export const levels = ${JSON.stringify(levels)};`,
+          `export const projects = ${JSON.stringify(projects)};`,
+          `export const paths = ${JSON.stringify(paths)};`,
+        ].join('\n')
       }
 
-      return [
-        `export const levels = ${JSON.stringify(levels)};`,
-        `export const projects = ${JSON.stringify(projects)};`,
-        `export const paths = ${JSON.stringify(paths)};`,
-        `export const levelContent = ${JSON.stringify(levelContent)};`,
-      ].join('\n')
+      if (id === CONTENT_BODY_RESOLVED_ID) {
+        const projects = readProjects()
+        const levelContent: Record<string, ReturnType<typeof readLevelContent>> = {}
+
+        for (const level of levels) {
+          if (level.theory_dir) {
+            levelContent[level.id] = readLevelContent(level.theory_dir)
+          }
+        }
+
+        const projectContent = readProjectContent(projects)
+        const introContent = readIntroContent()
+
+        return [
+          `export const levelContent = ${JSON.stringify(levelContent)};`,
+          `export const projectContent = ${JSON.stringify(projectContent)};`,
+          `export const introContent = ${JSON.stringify(introContent)};`,
+        ].join('\n')
+      }
     },
 
     configureServer(server) {
@@ -204,8 +248,10 @@ function forjaContentPlugin(): Plugin {
 
       server.watcher.on('change', (file) => {
         if (file.includes('content') || file.includes('metadata')) {
-          const mod = server.moduleGraph.getModuleById(RESOLVED_ID)
-          if (mod) server.moduleGraph.invalidateModule(mod)
+          for (const id of [CONTENT_INDEX_RESOLVED_ID, CONTENT_BODY_RESOLVED_ID]) {
+            const mod = server.moduleGraph.getModuleById(id)
+            if (mod) server.moduleGraph.invalidateModule(mod)
+          }
           server.ws.send({ type: 'full-reload' })
         }
       })
@@ -219,5 +265,8 @@ export default defineConfig({
   plugins: [react(), forjaContentPlugin()],
   resolve: {
     alias: { '@': resolve(__dirname, 'src') },
+  },
+  build: {
+    chunkSizeWarningLimit: 650,
   },
 })

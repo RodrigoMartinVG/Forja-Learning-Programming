@@ -1,10 +1,12 @@
-import { useState, useRef } from 'react'
+import { lazy, Suspense, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { levels, projects, levelContent } from 'virtual:forja-content'
+import { levels, projects } from 'virtual:forja-content'
+import { introContent, levelContent, projectContent } from 'virtual:forja-content-body'
 import type { LevelMeta, ProjectMeta } from 'virtual:forja-content'
 import { getProgress } from '../lib/progress'
 import { getLevelProjects, getProjectLevels } from '../lib/curriculum'
-import MdRenderer from './MdRenderer'
+
+const MdRenderer = lazy(() => import('./MdRenderer'))
 
 // ─── Domain display names ─────────────────────────────────────────────────────
 
@@ -15,10 +17,48 @@ const DOMAIN_NAME: Record<string, string> = {
   advanced:  'Sistemas Avanzados',
 }
 
+const INTRO_META: Record<string, {
+  crumb: string
+  sectionLabel: string
+  tags: string[]
+  topbarLabel: string
+  topbarTarget: { type: 'intro' | 'level'; id: string }
+  footerLabel: string
+  footerTarget: { type: 'intro' | 'level'; id: string }
+}> = {
+  forja: {
+    crumb: 'que es forja',
+    sectionLabel: 'panorama general',
+    tags: ['plataforma', 'sistemas desde cero'],
+    topbarLabel: 'Workspace',
+    topbarTarget: { type: 'intro', id: 'workspace' },
+    footerLabel: 'Ver introduccion al Workspace →',
+    footerTarget: { type: 'intro', id: 'workspace' },
+  },
+  workspace: {
+    crumb: 'workspace',
+    sectionLabel: 'antes de L0',
+    tags: ['introduccion editorial', 'no cuenta como nivel'],
+    topbarLabel: 'L0',
+    topbarTarget: { type: 'level', id: 'L0' },
+    footerLabel: 'Entrar por L0 →',
+    footerTarget: { type: 'level', id: 'L0' },
+  },
+  theory: {
+    crumb: 'workspace',
+    sectionLabel: 'antes de L0',
+    tags: ['introduccion editorial', 'no cuenta como nivel'],
+    topbarLabel: 'L0',
+    topbarTarget: { type: 'level', id: 'L0' },
+    footerLabel: 'Entrar por L0 →',
+    footerTarget: { type: 'level', id: 'L0' },
+  },
+}
+
 // ─── Entry point ─────────────────────────────────────────────────────────────
 
 interface Props {
-  contentType: 'level' | 'project'
+  contentType: 'level' | 'project' | 'intro'
   contentId: string
 }
 
@@ -32,11 +72,23 @@ function isSeededPlaceholder(body?: string): boolean {
     || body.includes('unidad canonica independiente')
 }
 
+function MarkdownContent({ children }: { children: string }) {
+  return (
+    <Suspense fallback={null}>
+      <MdRenderer>{children}</MdRenderer>
+    </Suspense>
+  )
+}
+
 export default function ContentView({ contentType, contentId }: Props) {
   const navigate = useNavigate()
   const location = useLocation()
   const onBack = () => navigate('/workspace')
   const onHome = () => navigate('/')
+
+  if (contentType === 'intro') {
+    return <IntroView introId={contentId} onBack={onBack} onHome={onHome} />
+  }
 
   if (contentType === 'level') {
     const level = levels.find(l => l.id === contentId)
@@ -47,6 +99,88 @@ export default function ContentView({ contentType, contentId }: Props) {
   const project = projects.find(p => p.id === contentId || p.codename === contentId)
   const fromLevel = (location.state as { fromLevel?: string } | null)?.fromLevel ?? null
   return <ProjectView project={project ?? null} onBack={onBack} onHome={onHome} fromLevel={fromLevel} />
+}
+
+function IntroView({ introId, onBack, onHome }: { introId: string; onBack: () => void; onHome: () => void }) {
+  const navigate = useNavigate()
+  const body = introContent[introId] ?? ''
+  const meta = INTRO_META[introId] ?? INTRO_META.workspace
+
+  const openTarget = (target: { type: 'intro' | 'level'; id: string }) => {
+    if (target.type === 'intro') {
+      navigate(`/workspace/intro/${target.id}`)
+      return
+    }
+
+    navigate(`/workspace/level/${target.id}`)
+  }
+
+  if (!body) {
+    return (
+      <div className="content-view">
+        <header className="content-topbar">
+          <div className="content-topbar__left">
+            <button className="ws-header__logo" onClick={onHome}>Forja</button>
+            <div className="content-topbar__left-sep" />
+            <button className="content-tab" onClick={onBack}>Mapa</button>
+          </div>
+          <div className="content-topbar__crumb">
+            <span className="content-topbar__crumb-seg content-topbar__crumb-seg--active">introducción no encontrada</span>
+          </div>
+          <div className="content-topbar__right" />
+        </header>
+        <div className="content-body">
+          <Pending label="no encontrada" message="Esta introducción editorial no existe en el contenido actual." />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="content-view anim-fade-up">
+      <header className="content-topbar">
+        <div className="content-topbar__left">
+          <button className="ws-header__logo" onClick={onHome}>Forja</button>
+          <div className="content-topbar__left-sep" />
+          <button className="content-tab" onClick={onBack}>Mapa</button>
+        </div>
+        <div className="content-topbar__crumb">
+          <span className="content-topbar__crumb-seg">introducción</span>
+          <span className="content-topbar__crumb-sep">/</span>
+          <span className="content-topbar__crumb-seg content-topbar__crumb-seg--active">{meta.crumb}</span>
+        </div>
+        <div className="content-topbar__right">
+          <button className="content-tab" onClick={() => openTarget(meta.topbarTarget)}>{meta.topbarLabel}</button>
+        </div>
+      </header>
+
+      <div className="content-body">
+        <div className="content-body__inner">
+          <div className="section-lbl">{meta.sectionLabel}</div>
+          <div className="prereq-list prereq-list--spaced intro-actions">
+            {meta.tags.map(tag => (
+              <span key={tag} className="tag">{tag}</span>
+            ))}
+            <button className="ghost-btn" onClick={() => openTarget(meta.topbarTarget)}>
+              {meta.topbarLabel === 'L0' ? 'seguir con L0' : 'ver el workspace'}
+            </button>
+          </div>
+
+          <MarkdownContent>{body}</MarkdownContent>
+
+          <div className="section-pager">
+            <div className="section-pager__spacer" />
+            <button
+              className="section-pager__btn section-pager__btn--next"
+              onClick={() => openTarget(meta.footerTarget)}
+            >
+              {meta.footerLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // ─── Level view ───────────────────────────────────────────────────────────────
@@ -71,6 +205,7 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 
   const chapters = content?.chapters ?? []
   const activeChapter = chapters[activeChapterIdx]
+  const selectedProjectReadme = selectedProject ? projectContent[selectedProject.id]?.readme ?? '' : ''
 
   return (
     <div className="content-view anim-fade-up">
@@ -169,7 +304,7 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
               hasContent ? (
                 hasChapters && activeChapter ? (
                   <>
-                    <MdRenderer>{activeChapter.body}</MdRenderer>
+                    <MarkdownContent>{activeChapter.body}</MarkdownContent>
                     {/* Prev / Next navigation */}
                     <div className="section-pager">
                       {activeChapterIdx > 0 && (
@@ -192,7 +327,7 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
                     </div>
                   </>
                 ) : (
-                  <MdRenderer>{content.readme}</MdRenderer>
+                  <MarkdownContent>{content.readme}</MarkdownContent>
                 )
               ) : (
                 <Pending label="pendiente" message="El contenido teórico de este nivel aún no fue producido." />
@@ -202,7 +337,7 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
             {/* ── Ejercicios tab ── */}
             {tab === 'ejercicios' && (
               hasExercises ? (
-                <MdRenderer>{content.exercises}</MdRenderer>
+                <MarkdownContent>{content.exercises}</MarkdownContent>
               ) : (
                 <Pending label="pendiente" message="Los ejercicios de este nivel aún no fueron producidos." />
               )
@@ -219,8 +354,8 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
                     ← proyectos
                   </button>
                   <h2 className="content-section-title">{selectedProject.title}</h2>
-                  {selectedProject.readme
-                    ? <MdRenderer>{selectedProject.readme}</MdRenderer>
+                  {selectedProjectReadme
+                    ? <MarkdownContent>{selectedProjectReadme}</MarkdownContent>
                     : <Pending label="en construcción" message="El contenido de este proyecto estará disponible pronto." />
                   }
                 </>
@@ -252,7 +387,8 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectMeta | null; onBack: () => void; onHome: () => void; fromLevel: string | null }) {
   const navigate = useNavigate()
   const relatedLevels = project ? getProjectLevels(project, levels) : []
-  const hasProjectReadme = !!project?.readme && !isSeededPlaceholder(project.readme)
+  const projectReadme = project ? projectContent[project.id]?.readme ?? '' : ''
+  const hasProjectReadme = !!projectReadme && !isSeededPlaceholder(projectReadme)
   const handleBack = fromLevel
     ? () => navigate(`/workspace/level/${fromLevel}`)
     : onBack
@@ -338,7 +474,7 @@ function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectM
           )}
 
           {hasProjectReadme
-            ? <MdRenderer>{project.readme}</MdRenderer>
+            ? <MarkdownContent>{projectReadme}</MarkdownContent>
             : <Pending label="en construcción" message="El contenido de este proyecto estará disponible pronto." />
           }
         </div>

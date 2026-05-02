@@ -12,6 +12,22 @@ La sección teórica del L0 explica qué es un contenedor, cómo funciona Docker
 
 La diferencia es importante: entender un Dockerfile no es lo mismo que poder construir, extender y verificar uno. Ese salto es el proyecto.
 
+## Como recorrerlo junto a L0
+
+Antes de tocar este proyecto conviene haber leido:
+
+- `content/theory/L0-setup-laboratorio/outline.md`
+- `content/theory/L0-setup-laboratorio/chapters/01-devcontainer.md`
+- `content/theory/L0-setup-laboratorio/chapters/02-workflow.md`
+- `content/theory/L0-setup-laboratorio/chapters/03-diagnostico.md`
+
+El orden recomendado es simple:
+
+1. entender el contrato del entorno en L0
+2. correr la verificacion base
+3. extender ese contrato con un check y una herramienta nuevos
+4. documentar el ambiente final como si otra persona fuera a depender de el
+
 ## Qué construís
 
 ### Fase 1: Verificación del ambiente

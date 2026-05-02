@@ -1,7 +1,9 @@
+import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import WorkspaceHeader from './WorkspaceHeader'
 import MapView from './MapView'
-import ContentView from './ContentView'
+
+const ContentView = lazy(() => import('./ContentView'))
 
 export default function Workspace() {
   const { contentType, contentId } = useParams<{
@@ -16,10 +18,12 @@ export default function Workspace() {
       {!isContent && <WorkspaceHeader />}
       <div className="ws-body">
         {isContent ? (
-          <ContentView
-            contentType={contentType as 'level' | 'project'}
-            contentId={contentId}
-          />
+          <Suspense fallback={null}>
+            <ContentView
+              contentType={contentType as 'level' | 'project' | 'intro'}
+              contentId={contentId}
+            />
+          </Suspense>
         ) : (
           <MapView />
         )}

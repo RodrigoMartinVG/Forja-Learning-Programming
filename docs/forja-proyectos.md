@@ -100,38 +100,38 @@ Ejemplos:
 | `cow-demo` | Focalizado | L22 | Memoria virtual |
 | `spl_cp` | Focalizado | L22 | Memoria virtual |
 | `mini-linker` | Focalizado | L23 | ELF y linking |
-| `custom-malloc` | Integrador | L24, L39 | Allocators |
+| `custom-malloc` | Integrador | L24 | Allocators |
 | `thread-pool` | Focalizado | L25 | Concurrencia |
 | `prod-cons` | Focalizado | L25 | Concurrencia |
 | `rwlock-impl` | Focalizado | L25 | Concurrencia |
-| `impl_arc` | Focalizado | L27 | Concurrencia avanzada |
+| `impl_arc` | Focalizado | L26 | Concurrencia avanzada |
 | `lock-free-queue` | Focalizado | L27 | Concurrencia avanzada |
 | `rcu-demo` | Focalizado | L27 | Concurrencia avanzada |
 | `named-pipe-sem` | Focalizado | L28 | IPC |
 | `ipc-explorer` | Focalizado | L28 | IPC |
 | `miniqueue` | Integrador | L28 | IPC |
-| `mish` | Integrador | L20, L28, L29, L31 | Shell |
+| `mish` | Integrador | L20, L28, L29 | Shell |
 | `mini-debugger` | Integrador | L20, L22 | Procesos + memoria |
 | `regex-engine` | Focalizado | L30 | Autómatas |
 | `expr-parser` | Focalizado | L31 | Parsers |
-| `Semtex` | Integrador | L31, L32, L34 | Compiladores |
-| `Lógico` | Integrador | L31, L32, L34, L47 | Intérpretes + JIT |
-| `KVolt` | Integrador | L35, L36, L39, L46 | Persistencia |
+| `Semtex` | Integrador | L31, L32, L33, L34 | Compiladores |
+| `Logico` | Integrador | L31, L32, L33, L34, L47 | Intérpretes + JIT |
+| `KVolt` | Integrador | L35, L39, L46 | Persistencia |
 | `MiniSQL` | Integrador | L36 | Persistencia |
-| `mem-cache` | Integrador | L37, L43, L46 | Persistencia en memoria |
-| `mini-broker` | Integrador | L38, L43, L46 | Event logs y mensajería |
+| `mem-cache` | Integrador | L37 | Persistencia en memoria |
+| `mini-broker` | Integrador | L38 | Event logs y mensajería |
 | `perf-benchmarks` | Focalizado | L39 | Performance |
-| `flamegraph-lab` | Focalizado | L39, L40 | Performance |
+| `flamegraph-lab` | Focalizado | L39 | Performance |
 | `cache-locality-exp` | Focalizado | L39 | Performance |
 | `false-sharing-exp` | Focalizado | L39 | Performance |
-| `HTTP server` | Integrador | L40, L41, L43 | Redes |
+| `HTTP server` | Integrador | L40 | Redes |
 | `shell remoto TCP` | Focalizado | L40 | Redes |
-| `minisync` | Integrador | L40, L41 | Redes |
-| `mini-dns-resolver` | Focalizado | L41 | Redes |
-| `mini-tcpdump` | Focalizado | L41 | Redes |
+| `minisync` | Integrador | L40 | Redes |
+| `mini-dns-resolver` | Focalizado | L40 | Redes |
+| `mini-tcpdump` | Focalizado | L40 | Redes |
 | `websocket-server` | Focalizado | L41 | Redes |
 | `http2-server` | Focalizado | L41 | Redes |
-| `tinyssh` | Integrador | L40, L42 | Seguridad |
+| `tinyssh` | Integrador | L42 | Seguridad |
 | `impl_script` | Focalizado | L42 | Seguridad |
 | `async-runtime` | Integrador | L43 | I/O asíncrono |
 | `io_uring-echo` | Focalizado | L43 | I/O asíncrono |
@@ -141,7 +141,7 @@ Ejemplos:
 | `raft-lite` | Integrador | L46 | Consenso distribuido |
 | `JIT-Brain` | Integrador | L47 | Compiladores avanzados |
 | `char-driver` | Focalizado | L48 | Kernel |
-| `ebpf-tracer` | Focalizado | L48 | Kernel + eBPF |
+| `ebpf-tracer` | Focalizado | L49 | Kernel + eBPF |
 | `RAM-FileSystem` | Focalizado | L49 | Kernel |
 | `KVM mini-hypervisor` | Integrador | L49 | Kernel |
 
@@ -151,7 +151,7 @@ Ejemplos:
 
 ### `mish` — Mini Shell
 
-Niveles: L20, L28, L29, L31.
+Niveles: L20, L28, L29.
 
 Arco:
 
@@ -191,7 +191,7 @@ Equivalentes industriales: RabbitMQ, NATS, ZeroMQ.
 
 ### `custom-malloc` — Allocator
 
-Niveles: L24, L39.
+Niveles: L24.
 
 Arco:
 
@@ -203,7 +203,7 @@ Equivalentes industriales: jemalloc, mimalloc, ptmalloc2.
 
 ### `KVolt` — Base de datos key-value
 
-Niveles: L35, L36, L39, L46.
+Niveles: L35, L39, L46.
 
 Arco:
 
@@ -231,35 +231,35 @@ Equivalentes industriales: SQLite, DuckDB.
 
 ### `mem-cache` — Motor de caché en memoria
 
-Niveles: L37, L43, L46.
+Niveles: L37.
 
 Arco:
 
 - motor en memoria con TTL y políticas de evicción configurables
 - snapshots con `fork()` y copy-on-write
 - envoltura posterior como servicio de alto rendimiento
-- replicación opcional en L46
+- replicación como extensión posterior si el proyecto vuelve a abrirse en metadata
 
 Equivalentes industriales: Redis, Memcached, Dragonfly.
 
-Nota de diseño: en Forja arranca como motor primero, no como servidor primero. La interfaz de red llega después.
+Nota de diseño: en Forja arranca como motor primero, no como servidor primero. La interfaz de red solo pasa a ser tramo macro si aparece como reapertura explícita en `project.yaml`.
 
 ### `mini-broker` — Broker durable sobre event log
 
-Niveles: L38, L43, L46.
+Niveles: L38.
 
 Arco:
 
 - append-only log durable con múltiples consumidores
 - offsets y replay de eventos
 - semánticas de entrega y backpressure
-- envoltura posterior como servicio de alto rendimiento y replicación opcional en L46
+- envoltura posterior como servicio de alto rendimiento y replicación solo si el proyecto vuelve a abrirse en metadata
 
 Equivalentes industriales: Kafka, RabbitMQ, Redpanda.
 
 ### `Semtex` — Parser de marcado
 
-Niveles: L31, L32, L34.
+Niveles: L31, L32, L33, L34.
 
 Arco:
 
@@ -270,9 +270,9 @@ Arco:
 
 Equivalentes industriales: pandoc, pulldown-cmark, tree-sitter.
 
-### `Lógico` — Intérprete Lisp
+### `Logico` — Intérprete Lisp
 
-Niveles: L31, L32, L34, L47.
+Niveles: L31, L32, L33, L34, L47.
 
 Arco:
 
@@ -286,7 +286,7 @@ Equivalentes industriales: Guile, Chicken Scheme, Janet.
 
 ### `HTTP server` — Servidor HTTP
 
-Niveles: L40, L41, L43.
+Niveles: L40.
 
 Arco:
 
@@ -300,7 +300,7 @@ Equivalentes industriales: nginx, Apache, hyper.
 
 ### `minisync` — Sincronización de directorios
 
-Niveles: L40, L41.
+Niveles: L40.
 
 Arco:
 
@@ -315,7 +315,7 @@ Nota: este proyecto existía en el plan anterior y se preserva explícitamente e
 
 ### `tinyssh` — Implementación SSH
 
-Niveles: L40, L42.
+Niveles: L42.
 
 Arco:
 
@@ -477,7 +477,7 @@ Se preservan explícitamente los proyectos y arcos centrales del plan anterior:
 - `mem-cache`
 - `mini-broker`
 - `Semtex`
-- `Lógico`
+- `Logico`
 - `HTTP server`
 - `minisync`
 - `tinyssh`

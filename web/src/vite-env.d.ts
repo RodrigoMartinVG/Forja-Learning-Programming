@@ -40,7 +40,6 @@ declare module 'virtual:forja-content' {
     equivalent?: string
     dir: string
     stages: ProjectStage[]
-    readme: string
   }
 
   export interface ForjaPath {
@@ -53,9 +52,16 @@ declare module 'virtual:forja-content' {
   export const levels: LevelMeta[]
   export const projects: ProjectMeta[]
   export const paths: ForjaPath[]
+}
+
+declare module 'virtual:forja-content-body' {
   export const levelContent: Record<string, {
     readme: string
     exercises: string
     chapters: { slug: string; title: string; body: string }[]
   }>
+  export const projectContent: Record<string, {
+    readme: string
+  }>
+  export const introContent: Record<string, string>
 }

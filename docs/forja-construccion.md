@@ -111,15 +111,13 @@ En los casos simples, esto coincide con su nivel de anclaje:
 En los proyectos multi-nivel, la construcción vuelve a abrir una fase de proyecto cuando aparece un nuevo tramo claramente asociado a un nivel posterior. En la especificación actual, eso ocurre así:
 
 - `mini-debugger`: tramo `L20`, luego tramo `L22`
-- `mish`: tramo `L20`, luego `L28`, luego `L29`, luego `L31`
-- `Semtex`: tramo `L31`, luego `L32`, luego `L34`
-- `Lógico`: tramo `L31`, luego `L32`, luego `L34`, luego `L47`
-- `HTTP server`: tramo `L40`, luego `L41`, y opcionalmente `L43`
+- `mish`: tramo `L20`, luego `L28`, luego `L29`
+- `Semtex`: tramo `L31`, luego `L32`, luego `L33`, luego `L34`
+- `Logico`: tramo `L31`, luego `L32`, luego `L33`, luego `L34`, luego `L47`
+- `KVolt`: tramo `L35`, luego `L39`, y luego `L46`
 - `TCP/IP stack`: tramo `L41`, luego `L45`
-- `mem-cache`: proyecto independiente con tramo `L37`, luego `L43`, y opcionalmente `L46`
-- `mini-broker`: proyecto independiente con tramo `L38`, luego `L43`, y opcionalmente `L46`
 
-No toda mención de un proyecto a otro nivel implica una fase nueva de construcción. A veces ese nivel solo aporta prerequisitos o contexto. El ejemplo más claro sigue siendo `Lógico`: `L24` aporta el allocator que después usa el GC, pero no obliga a abrir una fase de proyecto `Lógico` antes de que exista el propio intérprete.
+No toda mención de un proyecto a otro nivel implica una fase nueva de construcción. A veces ese nivel solo aporta prerequisitos o contexto. El ejemplo más claro sigue siendo `Logico`: `L24` aporta el allocator que después usa el GC, pero no obliga a abrir una fase de proyecto `Logico` antes de que exista el propio intérprete.
 
 ---
 
@@ -214,33 +212,35 @@ Después de las fases base, el orden queda fijado así:
 | `L23` | `mini-linker` |
 | `L24` | `custom-malloc` (tramo `L24`) |
 | `L25` | `thread-pool`, `prod-cons`, `rwlock-impl` |
-| `L27` | `impl_arc`, `lock-free-queue`, `rcu-demo` |
+| `L26` | `impl_arc` |
+| `L27` | `lock-free-queue`, `rcu-demo` |
 | `L28` | `named-pipe-sem`, `ipc-explorer`, `miniqueue`, `mish` (tramo `L28`) |
 | `L29` | `mish` (tramo `L29`) |
 | `L30` | `regex-engine` |
-| `L31` | `expr-parser`, `Semtex` (tramo `L31`), `Lógico` (tramo `L31`), `mish` (tramo `L31`) |
-| `L32` | `Semtex` (tramo `L32`), `Lógico` (tramo `L32`) |
-| `L34` | `Semtex` (tramo `L34`), `Lógico` (tramo `L34`) |
+| `L31` | `expr-parser`, `Semtex` (tramo `L31`), `Logico` (tramo `L31`) |
+| `L32` | `Semtex` (tramo `L32`), `Logico` (tramo `L32`) |
+| `L33` | `Semtex` (tramo `L33`), `Logico` (tramo `L33`) |
+| `L34` | `Semtex` (tramo `L34`), `Logico` (tramo `L34`) |
 | `L35` | `KVolt` (tramo `L35`) |
-| `L36` | `MiniSQL`, `KVolt` (tramo `L36`) |
+| `L36` | `MiniSQL` |
 | `L37` | `mem-cache` (tramo `L37`) |
 | `L38` | `mini-broker` (tramo `L38`) |
-| `L39` | `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, `false-sharing-exp`, `custom-malloc` (tramo `L39`), `KVolt` (tramo `L39`) |
-| `L40` | `HTTP server` (tramo `L40`), `shell remoto TCP`, `minisync` (tramo `L40`), `tinyssh` (tramo `L40`) |
-| `L41` | `mini-dns-resolver`, `mini-tcpdump`, `websocket-server`, `http2-server`, `HTTP server` (tramo `L41`), `minisync` (tramo `L41`), `TCP/IP stack` (tramo `L41`) |
+| `L39` | `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, `false-sharing-exp`, `KVolt` (tramo `L39`) |
+| `L40` | `HTTP server` (tramo `L40`), `shell remoto TCP`, `minisync` (tramo `L40`), `mini-dns-resolver`, `mini-tcpdump` |
+| `L41` | `websocket-server`, `http2-server`, `TCP/IP stack` (tramo `L41`) |
 | `L42` | `impl_script`, `tinyssh` (tramo `L42`) |
-| `L43` | `async-runtime`, `io_uring-echo`, `HTTP server` (tramo opcional `L43`), `mem-cache` (tramo `L43`), `mini-broker` (tramo `L43`) |
+| `L43` | `async-runtime`, `io_uring-echo` |
 | `L44` | `minidocker` |
 | `L45` | `orquestador`, `TCP/IP stack` (tramo `L45`) |
-| `L46` | `raft-lite`, `KVolt` (tramo opcional `L46`), `mem-cache` (tramo opcional `L46`), `mini-broker` (tramo opcional `L46`) |
-| `L47` | `JIT-Brain`, `Lógico` (tramo `L47`) |
-| `L48` | `char-driver`, `ebpf-tracer` |
-| `L49` | `RAM-FileSystem`, `KVM mini-hypervisor` |
+| `L46` | `raft-lite`, `KVolt` (tramo opcional `L46`) |
+| `L47` | `JIT-Brain`, `Logico` (tramo `L47`) |
+| `L48` | `char-driver` |
+| `L49` | `RAM-FileSystem`, `KVM mini-hypervisor`, `ebpf-tracer` |
 
 ### 5.3 Notas sobre el orden maestro
 
 - La tabla anterior fija el orden macro de construcción.
-- `L1-L7`, `L13`, `L17`, `L26` y `L33` no abren una fase macro de proyecto nueva: profundizan base teórica o expanden proyectos ya abiertos.
+- `L1-L7`, `L13` y `L17` no abren una fase macro de proyecto nueva: profundizan base teórica.
 - `mem-cache`, `mini-broker` y `raft-lite` se tratan como proyectos independientes. No son subfases de `KVolt` ni de `orquestador`, aunque puedan interoperar con ellos en tramos posteriores.
 - Las subfases internas de proyectos como `custom-malloc`, `KVolt`, `MiniSQL`, `tinyssh` o `async-runtime` existen, pero viven dentro de su fase de proyecto correspondiente.
 - El revisit opcional del `HTTP server` en `L43` para `io_uring` no está contado como fase macro obligatoria. Si se decide hacerlo, se agrega como tramo explícito en `project.yaml` posterior a `io_uring-echo`.
