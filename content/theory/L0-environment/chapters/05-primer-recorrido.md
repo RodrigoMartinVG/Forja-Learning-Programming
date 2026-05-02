@@ -1,6 +1,6 @@
 # Tu primer recorrido completo
 
-Las cuatro secciones anteriores construyeron el mapa conceptual: el laboratorio, el pipeline, la máquina, las herramientas. Ahora usás todo eso junto en un recorrido real, de principio a fin, con un programa real.
+Los cuatro capítulos anteriores construyeron el mapa conceptual: el laboratorio, el pipeline, la máquina, las herramientas. Ahora usás todo eso junto en un recorrido real, de principio a fin, con un programa real.
 
 El objetivo de este recorrido no es que salga perfecto a la primera. Es que al terminar puedas ver el camino completo: desde un archivo `.c` hasta un syscall ejecutándose en el kernel, y puedas observar cada paso con precisión.
 
@@ -251,30 +251,22 @@ Después de este recorrido, tenés algo concreto:
 5. **Cómo detectar errores de memoria** antes de que causen problemas.
 6. **Por qué el printf bufferea** y cuándo llama realmente a `write`.
 
-## Qué no cubre L0 — y por qué
+## Qué notaste que faltó — y dónde aparece
 
-L0 es el punto de partida, no el destino. Lo que queda fuera de este nivel de forma intencional:
+Después de ese recorrido hay cosas que probablemente generaron preguntas sin respuesta completa. Eso no es un hueco del capítulo: es el diseño.
 
-**Gestión manual de memoria** (`malloc`/`free` en profundidad) → **L2**. No se toca en L0 porque sin entender el heap, los patrones de ownership y los errores más comunes, solo verías funciones sin contexto. L2 arranca desde el modelo mental correcto y construye desde ahí.
+**`malloc` y `free` no aparecieron.** `hello.c` no reserva memoria dinámica — todo vive en el stack o en el segmento estático. Cuando llegues a L2 con código que usa `malloc`, volverás a valgrind y verás que el output cambia: el leak summary ya no dice "no leaks are possible". L2 arranca desde el modelo mental correcto — qué es el heap, cómo lo gestiona `malloc` internamente — y desde ahí construye los patrones de uso correcto y el catálogo de errores comunes.
 
-**El formato ELF en detalle** (secciones, segmentos, relocations, tabla de símbolos) → **L7**. Requiere entender memoria virtual primero. Sin saber qué son las páginas y cómo el kernel las mapea, el ELF es solo un formato de archivo. Con ese contexto, el ELF es el mapa de cómo un programa vive en memoria.
+**El ELF fue una caja negra.** `file hello` te dio el tipo de binario y `ldd` las dependencias, pero no abriste el binario. La razón es que sin entender memoria virtual primero, las secciones, segmentos y relocations del ELF son estructura sin significado. L7 cierra ese hueco con todo el contexto: vas a abrir un binario con `readelf`, entender cada campo, y escribir código que lee ELFs directamente.
 
-**Linking en profundidad** (resolución de símbolos, tablas de reubicación, `-fPIC`, bibliotecas dinámicas) → **L7** + proyecto `mini-linker`. El proyecto implementa un linker real. Requiere ELF primero.
+**`strace` mostró las syscalls pero no las explicó.** Viste `execve`, `write`, `exit_group`. Si corriste la traza completa, también viste `mmap`, `mprotect`, `openat`. Sabés que son llamadas al kernel, pero el modelo completo de procesos — `fork`, `exec`, señales, ciclo de vida — es L6. El proyecto de ese nivel es un shell básico que hace `fork` y `exec` y gestiona señales.
 
-**Assembly en serio** (escribir, leer con propósito, ABI completa) → **L1b**. En L1b vas a analizar exactamente qué hace el compilador con código C real, entender las convenciones de llamado, y usar `gdb` a nivel de instrucción.
+**`gdb` te mostró el surface.** Pusiste un breakpoint, corriste hasta ahí, inspeccionaste registros. En L1b vas a usarlo a nivel de instrucción: seguir la ABI paso a paso, ver exactamente qué hace cada optimización del compilador, trazar una llamada a función hasta el `ret`.
 
-**Procesos y señales** (`fork`, `exec`, `kill`, ciclo de vida) → **L6**. `strace` muestra syscalls, pero qué significa cada una en el modelo de procesos de Unix requiere estudio propio. L6 incluye implementar un shell básico.
-
-**Memoria virtual** (páginas, tablas de página, `mmap`, `brk`, ASLR) → **L7**. Ya aparece mencionada en L0 porque es imposible hablar de direcciones sin ella, pero la mecánica completa tiene su lugar natural en L7.
-
-**Concurrencia** (threads, mutexes, variables atómicas, race conditions) → **L9 y L10**. Requiere entender procesos, memoria compartida y modelos de memoria antes de tener valor real.
-
-**Rust** → **L3a y L3b**. En L0 solo verificás que `rustc` funciona. Rust aparece en L3 con todo el contexto necesario: la razón por la que su sistema de tipos existe, qué problemas de C resuelve, y cómo funciona ownership desde cero.
-
-**Rendimiento profundo** (`perf` con hardware counters, cache behavior, flame graphs) → **L17**. Interpretar los números de `perf` requiere entender microarquitectura de CPU. L17 construye ese contexto.
+**Rust no apareció.** Solo verificaste que `rustc` existe. Eso fue intencional: Rust arranca en L3, con el contexto que ahora tenés. Ya viste overflow, punteros sin chequear y gestión manual de stack — los problemas que el sistema de tipos de Rust fue diseñado para eliminar. Cuando llegues a L3, ownership no va a parecer una regla arbitraria.
 
 ---
 
-El laboratorio está listo. Las herramientas están instaladas. Sabés compilar, observar, y debuggear. Lo que viene ahora son las cosas reales: memoria, procesos, syscalls, concurrencia.
+Con L0 terminado tenés algo real: un piso que no se mueve. Sabés compilar, sabés observar, sabés que las herramientas dicen la verdad. Lo que viene — L1a y L1b — son las primeras cosas que duelen: punteros, memoria manual, C sin red de seguridad.
 
-Continuá con los ejercicios de este nivel y el proyecto `devcontainer-setup`. Después, seguí el mapa hacia L1a.
+Terminá los ejercicios y el proyecto `devcontainer-setup`. Después, seguí el mapa.

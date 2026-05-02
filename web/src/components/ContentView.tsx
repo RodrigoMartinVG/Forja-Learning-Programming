@@ -45,21 +45,21 @@ type Tab = 'teoria' | 'ejercicios' | 'proyectos'
 function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => void; onHome: () => void }) {
   const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('teoria')
-  const [activeSectionIdx, setActiveSectionIdx] = useState(0)
+  const [activeChapterIdx, setActiveChapterIdx] = useState(0)
   const [selectedProject, setSelectedProject] = useState<ProjectMeta | null>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const scrollTop = () => bodyRef.current?.scrollTo({ top: 0, behavior: 'instant' })
 
   const content      = levelContent[level.id]
-  const hasSections  = (content?.sections?.length ?? 0) > 0
+  const hasChapters  = (content?.chapters?.length ?? 0) > 0
   const hasReadme    = !!content?.readme
-  const hasContent   = hasSections || hasReadme
+  const hasContent   = hasChapters || hasReadme
   const hasExercises = !!content?.exercises
   const levelProjs   = projects.filter(p => p.display_levels.includes(level.id))
   const { completed } = getProgress()
 
-  const sections = content?.sections ?? []
-  const activeSection = sections[activeSectionIdx]
+  const chapters = content?.chapters ?? []
+  const activeChapter = chapters[activeChapterIdx]
 
   return (
     <div className="content-view anim-fade-up">
@@ -101,20 +101,20 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 
       </header>
 
-      {/* ── Body layout: optional sections sidebar + content ── */}
+      {/* ── Body layout: optional chapters sidebar + content ── */}
       <div className="content-layout">
 
-        {/* Sections sidebar — only when in teoría tab and we have sections */}
-        {tab === 'teoria' && hasSections && (
-          <aside className="sections-nav">
-            {sections.map((s, i) => (
+        {/* Chapters sidebar — only when in teoría tab and we have chapters */}
+        {tab === 'teoria' && hasChapters && (
+          <aside className="chapters-nav">
+            {chapters.map((s, i) => (
               <button
                 key={s.slug}
-                className={`sections-nav__item ${i === activeSectionIdx ? 'sections-nav__item--active' : ''}`}
-                onClick={() => { setActiveSectionIdx(i); scrollTop() }}
+                className={`chapters-nav__item ${i === activeChapterIdx ? 'chapters-nav__item--active' : ''}`}
+                onClick={() => { setActiveChapterIdx(i); scrollTop() }}
               >
-                <span className="sections-nav__num">{s.slug.match(/^(\d+)/)?.[1] ?? String(i + 1).padStart(2, '0')}</span>
-                <span className="sections-nav__title">{s.title}</span>
+                <span className="chapters-nav__num">{s.slug.match(/^(\d+)/)?.[1] ?? String(i + 1).padStart(2, '0')}</span>
+                <span className="chapters-nav__title">{s.title}</span>
               </button>
             ))}
           </aside>
@@ -156,26 +156,26 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
             {/* ── Teoría tab ── */}
             {tab === 'teoria' && (
               hasContent ? (
-                hasSections && activeSection ? (
+                hasChapters && activeChapter ? (
                   <>
-                    <MdRenderer>{activeSection.body}</MdRenderer>
+                    <MdRenderer>{activeChapter.body}</MdRenderer>
                     {/* Prev / Next navigation */}
                     <div className="section-pager">
-                      {activeSectionIdx > 0 && (
+                      {activeChapterIdx > 0 && (
                         <button
                           className="section-pager__btn section-pager__btn--prev"
-                          onClick={() => { setActiveSectionIdx(activeSectionIdx - 1); scrollTop() }}
+                          onClick={() => { setActiveChapterIdx(activeChapterIdx - 1); scrollTop() }}
                         >
-                          ← {sections[activeSectionIdx - 1].title}
+                          ← {chapters[activeChapterIdx - 1].title}
                         </button>
                       )}
                       <div className="section-pager__spacer" />
-                      {activeSectionIdx < sections.length - 1 && (
+                      {activeChapterIdx < chapters.length - 1 && (
                         <button
                           className="section-pager__btn section-pager__btn--next"
-                          onClick={() => { setActiveSectionIdx(activeSectionIdx + 1); scrollTop() }}
+                          onClick={() => { setActiveChapterIdx(activeChapterIdx + 1); scrollTop() }}
                         >
-                          {sections[activeSectionIdx + 1].title} →
+                          {chapters[activeChapterIdx + 1].title} →
                         </button>
                       )}
                     </div>

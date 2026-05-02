@@ -115,7 +115,7 @@ function extractMdTitle(md: string, fallback: string): string {
 function readLevelContent(theoryDir: string): {
   readme: string
   exercises: string
-  sections: { slug: string; title: string; body: string }[]
+  chapters: { slug: string; title: string; body: string }[]
 } {
   const base = join(repoRoot, theoryDir)
   const readFile = (name: string) => {
@@ -123,27 +123,27 @@ function readLevelContent(theoryDir: string): {
     return existsSync(p) ? readFileSync(p, 'utf-8') : ''
   }
 
-  // Read sections/ subdirectory if it exists
-  const sectionsDir = join(base, 'sections')
-  const sections: { slug: string; title: string; body: string }[] = []
+  // Read chapters/ subdirectory if it exists
+  const chaptersDir = join(base, 'chapters')
+  const chapters: { slug: string; title: string; body: string }[] = []
 
-  if (existsSync(sectionsDir) && isDir(sectionsDir)) {
-    const files = readdirSync(sectionsDir)
+  if (existsSync(chaptersDir) && isDir(chaptersDir)) {
+    const files = readdirSync(chaptersDir)
       .filter(f => f.endsWith('.md'))
       .sort() // lexicographic: 01-, 02-, …
 
     for (const file of files) {
-      const body = readFileSync(join(sectionsDir, file), 'utf-8')
+      const body = readFileSync(join(chaptersDir, file), 'utf-8')
       const slug = file.replace(/\.md$/, '')
       const title = extractMdTitle(body, slug)
-      sections.push({ slug, title, body })
+      chapters.push({ slug, title, body })
     }
   }
 
   return {
     readme: readFile('README.md'),
     exercises: readFile('exercises.md'),
-    sections,
+    chapters,
   }
 }
 

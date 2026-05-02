@@ -8,18 +8,30 @@ Este conocimiento es permanente: todo lo que hagás en Forja —debuggear con `g
 
 ## Las cuatro fases
 
-```mermaid
-flowchart TD
-    A["📄 código fuente (.c)"]
-    B["🔤 preprocesado (.i)"]
-    C["⚙️ ensamblador (.s)"]
-    D["🔢 objeto (.o) — ELF relocatable"]
-    E["▶️ ejecutable — ELF executable"]
-
-    A -->|"gcc -E — cpp expande macros e includes"| B
-    B -->|"gcc -S — compilador genera instrucciones"| C
-    C -->|"as — ensamblador produce código máquina"| D
-    D -->|"ld — linker resuelve símbolos y une"| E
+```
+  ┌─────────────────────────────┐
+  │     código fuente  (.c)     │
+  └──────────────┬──────────────┘
+                 │  gcc -E   preprocesador: expande macros e #includes
+                 ▼
+  ┌─────────────────────────────┐
+  │      preprocesado  (.i)     │
+  └──────────────┬──────────────┘
+                 │  gcc -S   compilador: genera instrucciones
+                 ▼
+  ┌─────────────────────────────┐
+  │      ensamblador   (.s)     │
+  └──────────────┬──────────────┘
+                 │  as        ensamblador: produce código máquina
+                 ▼
+  ┌─────────────────────────────┐
+  │  objeto  (.o)  ELF reloc.   │
+  └──────────────┬──────────────┘
+                 │  ld        linker: resuelve símbolos y une
+                 ▼
+  ┌─────────────────────────────┐
+  │  ejecutable    ELF exec.    │
+  └─────────────────────────────┘
 ```
 
 ### 1. Preprocesamiento

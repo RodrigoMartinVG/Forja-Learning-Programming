@@ -56,6 +56,6 @@ declare module 'virtual:forja-content' {
   export const levelContent: Record<string, {
     readme: string
     exercises: string
-    sections: { slug: string; title: string; body: string }[]
+    chapters: { slug: string; title: string; body: string }[]
   }>
 }

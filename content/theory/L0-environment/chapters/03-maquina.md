@@ -4,6 +4,101 @@ La mayoría de los programadores trabaja con una abstracción: las variables exi
 
 Esta sección construye una intuición concreta de cómo la máquina ve tu programa. No es un curso completo de arquitectura: es el mínimo para que las herramientas del laboratorio tengan sentido.
 
+## La máquina de von Neumann
+
+Antes de entrar en registros, stack y ensamblador, conviene tener el cuadro general.
+
+La arquitectura que describe casi toda computadora moderna —desde un microcontrolador hasta un servidor— es la **arquitectura de von Neumann** (1945). Tiene tres características fundamentales que definen todo lo demás:
+
+1. **Memoria unificada**: el código del programa y los datos que manipula coexisten en la **misma memoria**. No hay una memoria separada para instrucciones y otra para datos. Ambos son bytes en el mismo espacio de direcciones.
+2. **CPU separada**: un procesador que lee instrucciones de memoria, las decodifica y las ejecuta, valiéndose de una unidad aritmético-lógica (ALU) y un conjunto de registros internos.
+3. **Bus de conexión**: el camino por el que CPU y memoria intercambian datos e instrucciones.
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                           MEMORIA                                │
+│                                                                  │
+│   dirección baja                                                 │
+│   ┌──────────────────────────────┐                               │
+│   │  .text  — instrucciones      │  ← bytes que la CPU ejecuta  │
+│   │  mov eax, [rbp-4]            │                               │
+│   │  add eax, edx                │                               │
+│   │  ret                         │                               │
+│   ├──────────────────────────────┤                               │
+│   │  .data / .bss  — globales    │  ← bytes que el programa lee │
+│   ├──────────────────────────────┤                               │
+│   │  heap  (malloc vive acá)     │  ← bytes que el programa lee │
+│   ├──────────────────────────────┤                               │
+│   │  stack  — variables locales  │  ← bytes que el programa lee │
+│   └──────────────────────────────┘                               │
+│   dirección alta                                                 │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │  bus  (dirección + dato)
+┌────────────────────────────▼─────────────────────────────────────┐
+│                            CPU                                   │
+│                                                                  │
+│  ┌──────────────────────┐   ┌──────────────────────────────────┐ │
+│  │      Registros       │   │             ALU                  │ │
+│  │                      │   │  suma, resta, AND, OR,           │ │
+│  │  rip  (instr. ptr.)  │   │  comparaciones, desplazamientos  │ │
+│  │  rax  rdi  rsi  rdx  │   └──────────────────────────────────┘ │
+│  │  rsp  rbp  r8 … r15  │                                        │
+│  └──────────────────────┘                                        │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### El ciclo fetch-decode-execute
+
+La CPU repite sin parar el mismo ciclo de tres pasos:
+
+1. **Fetch** — lee los bytes en la dirección que indica `rip` (el *instruction pointer*). Esos bytes son la próxima instrucción.
+2. **Decode** — interpreta esos bytes: ¿qué operación es? ¿qué operandos usa? ¿cuántos bytes ocupa?
+3. **Execute** — realiza la operación. Si es aritmética, la pasa a la ALU. Si accede a memoria, activa la unidad de carga/almacenamiento. Si es un salto, modifica `rip` directamente.
+
+Al terminar cada instrucción, `rip` avanza automáticamente al byte siguiente (o salta, si era `call`/`jmp`/`ret`).
+
+Un ejemplo concreto con `suma(int a, int b)` compilado sin optimizaciones:
+
+```
+instrucción en .text             qué hace la CPU
+──────────────────────────────── ──────────────────────────────────────────
+push   rbp                       guarda rbp en el stack; rsp -= 8
+mov    rbp, rsp                  rbp = rsp  (establece el frame)
+mov    DWORD PTR [rbp-4], edi    copia edi (=a) desde registro a memoria
+mov    DWORD PTR [rbp-8], esi    copia esi (=b) desde registro a memoria
+mov    edx, DWORD PTR [rbp-4]   carga memoria → registro edx
+mov    eax, DWORD PTR [rbp-8]   carga memoria → registro eax
+add    eax, edx                  ALU: eax = eax + edx
+pop    rbp                       restaura rbp; rsp += 8
+ret                              saca dirección de retorno del stack → salta
+```
+
+`rip` apunta a `push rbp` al entrar. Tras ejecutarla, avanza a `mov rbp, rsp`. Y así hasta `ret`. No hay nada especial en "entrar a una función": es simplemente que `call suma` puso la dirección de `push rbp` en `rip`.
+
+### La idea clave: código y datos son bytes en la misma memoria
+
+Que instrucciones y datos compartan el mismo espacio de direcciones tiene consecuencias que vas a encontrar constantemente:
+
+**El CPU no distingue código de datos por sí mismo.** Lo que convierte unos bytes en "instrucción" es que `rip` los apunta. Si `rip` apuntara a `.data` por error, la CPU intentaría interpretar tus variables como instrucciones — resultado: comportamiento impredecible o crash.
+
+**La dirección 0 no está mapeada.** Cuando desreferenciás un puntero nulo (`*ptr` con `ptr == NULL`), la CPU intenta leer la dirección 0 en memoria. El kernel no la mapeó: el acceso falla y el OS envía `SIGSEGV` al proceso.
+
+**Un buffer overflow puede sobrescribir código de control.** La dirección de retorno que `call` guarda en el stack es también un dato en memoria. Si podés escribir bytes más allá del límite de un array en el stack, podés modificar esa dirección y hacer que `ret` salte a donde vos quieras. Esa es la base de los ataques de corrupción de memoria.
+
+### Por qué los registros son tan rápidos
+
+Acceder a RAM toma alrededor de 100 ciclos de CPU. Acceder a un registro toma **1 ciclo**: están físicamente dentro del procesador, sin necesidad de cruzar el bus.
+
+Por eso el compilador intenta mantener las variables más usadas en registros el mayor tiempo posible. Solo "derrama" un valor a memoria cuando se le acaban los registros o cuando la variable necesita tener una dirección visible (por ejemplo, si hacés `&x`).
+
+Con esto en mente, el ensamblador tiene más sentido:
+
+- `mov eax, [rbp-4]` → lee un dato de la memoria lenta (stack) al registro rápido `eax`
+- `add eax, edx` → la ALU opera sobre dos registros, sin tocar memoria
+- `mov [rbp-4], eax` → el resultado sale del registro rápido a la memoria más lenta del stack
+
+El compilador con `-O2` reduce al mínimo los viajes a memoria. El compilador con `-O0` los hace todos, lo que explica por qué el código no optimizado es tan verboso: cada variable local tiene su lugar fijo en el stack y el compilador lo usa explícitamente.
+
 ## Los enteros no son infinitos: complemento a dos
 
 En C, `int` es un entero de 32 bits en complemento a dos. Eso tiene una consecuencia inmediata:
@@ -82,16 +177,24 @@ El compilador decide qué variable va a qué registro. Con `-O0` la asignación 
 
 El **stack** es una región de memoria que crece hacia abajo. Cada llamada a función reserva un **frame**: espacio para las variables locales, los argumentos que no caben en registros y la dirección de retorno.
 
-```mermaid
-block-beta
-  columns 1
-  space
-  note1["? dirección alta"]
-  A["frame de main()\n-----------------\nvar local: x\nvar local: y\ndirección retorno    ? rbp en main"]
-  B["frame de funcion()\n-----------------\nvar local: a\nvar local: b\ndirección retorno    ? rbp en funcion"]
-  C["(próximo frame)    ? rsp"]
-  note2["? dirección baja  el stack crece hacia acá"]
-  space
+```
+  dirección alta
+  ┌───────────────────────────────────┐
+  │         frame de main()           │
+  │  ─────────────────────────────    │
+  │  var local: x                     │
+  │  var local: y                     │
+  │  dirección de retorno  ← rbp      │
+  ├───────────────────────────────────┤
+  │        frame de funcion()         │
+  │  ─────────────────────────────    │
+  │  var local: a                     │
+  │  var local: b                     │
+  │  dirección de retorno  ← rbp      │
+  ├───────────────────────────────────┤
+  │      (próximo frame)    ← rsp     │
+  └───────────────────────────────────┘
+  dirección baja   ↑ el stack crece hacia acá
 ```
 
 `push rbp` / `mov rbp, rsp` al principio de una función y `pop rbp` / `ret` al final mantienen esa cadena. Es lo que `gdb` te muestra cuando hacés `backtrace`: la cadena de frames desde el punto de parada hasta `main`.
@@ -112,6 +215,8 @@ El heap no tiene el límite de 8 MB del stack (está limitado por la RAM física
 ## Leer ensamblador: la primera vez
 
 No necesitás escribir ensamblador ahora. Sí necesitás poder leerlo sin entrar en pánico.
+
+En la sección anterior ya viste el assembly de `suma()` instrucción por instrucción, mapeado al ciclo fetch-decode-execute. Ahora generalo vos desde el terminal — ese es el flujo de trabajo que usarás constantemente en L1b:
 
 ```c
 // suma.c
@@ -179,20 +284,26 @@ objdump -d ./hello | head -60
 
 Un proceso tiene su espacio de direcciones virtuales dividido en regiones:
 
-```mermaid
-block-beta
-  columns 1
-  space
-  note1["? dirección alta"]
-  A["args y variables de entorno"]
-  B["stack  ???   (crece hacia abajo, rsp apunta al tope)"]
-  space
-  C["heap   ???   (crece hacia arriba, gestionado por malloc)"]
-  D[".bss    datos sin inicializar (el OS los pone a 0)"]
-  E[".data   datos inicializados (variables globales con valor)"]
-  F[".text   código ejecutable (read-only)"]
-  note2["? dirección baja  (0x0 no mapeada  deref de null ? SIGSEGV)"]
-  space
+```
+  dirección alta  (0x7fff...)
+  ┌───────────────────────────────────────────────────┐
+  │          args y variables de entorno              │
+  ├───────────────────────────────────────────────────┤
+  │          stack   ← rsp apunta al tope             │
+  │                                                   │
+  │                         ↓  crece hacia abajo      │
+  │                                                   │
+  │                         ↑  crece hacia arriba     │
+  │                                                   │
+  │          heap    (gestionado por malloc/free)     │
+  ├───────────────────────────────────────────────────┤
+  │  .bss    datos sin inicializar  (OS los pone a 0) │
+  ├───────────────────────────────────────────────────┤
+  │  .data   datos inicializados  (globales con valor)│
+  ├───────────────────────────────────────────────────┤
+  │  .text   código ejecutable  (read-only)           │
+  └───────────────────────────────────────────────────┘
+  dirección baja   (0x0 no mapeada — deref de null → SIGSEGV)
 ```
 
 `.text`, `.data`, `.bss` son secciones del ELF. El kernel las mapea en memoria al ejecutar el proceso. Esto es solo la vista de alto nivel: la historia completa incluye páginas, tablas de página, espacio de usuario vs kernel, y memoria mapeada de bibliotecas dinámicas. Eso es L7.
@@ -277,112 +388,5 @@ No hace falta memorizar nada de esto ahora. La intuición que buscamos es:
 - Las direcciones que ves son virtuales. El kernel administra la traducción a RAM física.
 
 Con esa base, cuando `gdb` te muestre un valor como `0xfffffff6` vas a saber qué mirás. Cuando `valgrind` te diga que accediste 8 bytes después del fin de un array, vas a poder visualizar dónde estaba ese límite. Cuando el proceso reciba un `SIGSEGV`, vas a saber que algo accedió a una dirección no mapeada.
-
-El hardware no miente. Eso es lo bueno de trabajar en este nivel.
-
-  5 + (-5):
-  00000101
-+ 11111011
-----------
- 100000000  ? el bit 9 se desborda y se descarta ? 0x00 = 0 ?
-```
-
-¿Por qué importa esto? Porque cuando veas `0xffffffff` en `gdb`, sabés que puede ser `-1` como `int` o `4294967295` como `unsigned int`. Son los mismos bits; la interpretación depende del tipo.
-
-## Registros: las variables de la CPU
-
-La CPU no trabaja con variables. Trabaja con **registros**: ubicaciones de almacenamiento dentro del procesador, extremadamente rápidas y en número fijo.
-
-En x86-64 los registros de uso general son: `rax`, `rbx`, `rcx`, `rdx`, `rsi`, `rdi`, `r8``r15`. Cada uno almacena 64 bits. Los compiladores "mapean" tus variables C a registros siempre que pueden, porque los registros son mucho más rápidos que la RAM.
-
-El compilador decide qué variable va a qué registro. Con `-O0` la asignación es directa y predecible; con `-O2` el compilador reordena, fusiona y elimina variables según le conviene.
-
-## Leer ensamblador: la primera vez
-
-No necesitás escribir ensamblador ahora. Sí necesitás poder leerlo sin entrar en pánico.
-
-```c
-// suma.c
-int suma(int a, int b) {
-    return a + b;
-}
-```
-
-```bash
-gcc -O0 -S suma.c -o suma.s
-cat suma.s
-```
-
-El resultado en x86-64 será algo así:
-
-```asm
-suma:
-    push   rbp           ; guardar el frame pointer anterior
-    mov    rbp, rsp      ; el nuevo frame empieza aquí
-    mov    DWORD PTR [rbp-4], edi   ; guardar parámetro a en el stack
-    mov    DWORD PTR [rbp-8], esi   ; guardar parámetro b en el stack
-    mov    edx, DWORD PTR [rbp-4]   ; cargar a en edx
-    mov    eax, DWORD PTR [rbp-8]   ; cargar b en eax
-    add    eax, edx      ; eax = eax + edx (resultado)
-    pop    rbp           ; restaurar frame pointer
-    ret                  ; retornar (el valor está en rax/eax)
-```
-
-La convención de llamado de x86-64 en Linux dice:
-- Los primeros argumentos van en `rdi`, `rsi`, `rdx`, `rcx`, `r8`, `r9`
-- El valor de retorno va en `rax`
-
-Con `-O2`, la misma función queda:
-
-```asm
-suma:
-    lea    eax, [rdi+rsi]   ; eax = rdi + rsi directamente
-    ret
-```
-
-Todo el manejo de stack desaparece. El compilador ve que puede sumar los argumentos directamente y retornar. Mismo resultado, código completamente distinto.
-
-## call y ret: lo que realmente pasa al llamar una función
-
-Cuando el programa ejecuta `call suma`, no "entra" mágicamente en otra función. Lo que pasa:
-
-1. El CPU pushea la dirección de la siguiente instrucción (la dirección de retorno) al stack.
-2. El CPU salta a la dirección de `suma`.
-3. `suma` hace su trabajo.
-4. `ret` saca la dirección del stack y salta a ella.
-
-El **stack** es una región de memoria que crece hacia abajo. Cada llamada a función reserva un **frame**: espacio para las variables locales, los argumentos que no caben en registros y la dirección de retorno. `push rbp` / `mov rbp, rsp` al principio de una función y `pop rbp` antes de `ret` mantienen la cadena de frames, que es lo que `gdb` te muestra cuando hacés `backtrace`.
-
-## ver el ensamblador de un binario ya compilado
-
-Si no tenés el fuente, o si querés ver el ensamblador con optimizaciones de un binario existente:
-
-```bash
-objdump -d ./hello | head -60
-```
-
-`objdump -d` desensambla el ejecutable. Con símbolos de debug (`-g`), los nombres de funciones y las líneas de fuente aparecen en comentarios.
-
-## La dirección de una variable
-
-En C, el operador `&` te da la dirección de memoria de una variable. Esa dirección es un número: la posición en el espacio de direcciones virtuales del proceso.
-
-```c
-int x = 42;
-printf("x = %d, dirección = %p\n", x, (void*)&x);
-```
-
-Cada ejecución puede dar una dirección diferente gracias a ASLR (Address Space Layout Randomization), una medida de seguridad del kernel. Con ASLR desactivado (solo en laboratorio), las direcciones son reproducibles. Esto va a importar cuando trabajes con `gdb` y quieras poner breakpoints en posiciones absolutas.
-
-## La intuición que necesitás
-
-No hace falta memorizar nada de esto ahora. La intuición que buscamos es:
-
-- Los enteros tienen tamaño y se desbordan silenciosamente.
-- Las variables no "existen" en hardware; son registros o posiciones en el stack.
-- El compilador con `-O0` es predecible; con `-O2` transforma el código agresivamente.
-- Una función es una dirección de memoria; `call` es un salto con retorno implícito.
-
-Con esa base, cuando `gdb` te muestre un valor como `0xfffffff6` vas a saber qué mirás. Cuando `valgrind` te diga que accediste 8 bytes después del fin de un array, vas a poder visualizar dónde estaba ese límite.
 
 El hardware no miente. Eso es lo bueno de trabajar en este nivel.

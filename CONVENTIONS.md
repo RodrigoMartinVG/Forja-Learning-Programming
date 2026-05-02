@@ -34,6 +34,7 @@ Cuando llegue la fase de un nivel, su carpeta deberia contener como minimo:
 - `README.md`
 - `src/`
 - `exercises.md`
+- `outline.md`
 - `meta.yaml` (desde Base 2 en adelante)
 
 ## Convencion para proyectos
@@ -73,12 +74,21 @@ La carpeta `libros-consulta/` queda reservada para materiales privados de consul
 
 Esta sección documenta cómo se escribe el contenido de los niveles teóricos de Forja. Aplica a todas las secciones de todos los niveles.
 
+### Terminología: capítulo, sección, subsección
+
+- **Capítulo** — un archivo `.md` dentro de `chapters/`. Es la unidad de navegación del panel izquierdo de la web. Cada ítem del sidebar es un capítulo.
+- **Sección** — un heading `##` dentro de un capítulo. Organiza el contenido dentro del archivo.
+- **Subsección** — un heading `###`. Subordinado a una sección.
+- **Sub-subsección** — un heading `####`. Usado con moderación.
+
+En la prosa del contenido: cuando se dice *"en la siguiente sección"* se habla de un `##`; cuando se dice *"en el capítulo siguiente"* se habla del próximo archivo. Nunca usar *sección* para referirse a un archivo completo.
+
 ### Estructura de un nivel
 
-Cada nivel teórico tiene un directorio `sections/` con archivos `.md` numerados:
+Cada nivel teórico tiene un directorio `chapters/` con archivos `.md` numerados:
 
 ```
-sections/
+chapters/
   00-introduccion.md   ← siempre presente: qué es este nivel, qué no es, el mapa
   01-primer-tema.md
   02-segundo-tema.md
@@ -87,11 +97,54 @@ sections/
 
 - Los archivos se ordenan lexicográficamente. El prefijo numérico (`00`, `01`, `02`...) define el orden y el número que aparece en el sidebar de la web.
 - La primera línea de cada archivo debe ser un heading `# Título` (sin prefijo numérico). Ese título es el que aparece en el sidebar.
-- `README.md` del nivel es un documento de diseño interno (no se muestra en la web cuando existe `sections/`). Ver plantilla al final de esta sección.
+- `README.md` del nivel es un documento de diseño interno (no se muestra en la web cuando existe `chapters/`). Ver plantilla al final de esta sección.
 
-### La sección 00 — Introducción
+### El archivo `outline.md`
 
-Todo nivel debe tener una sección `00-introduccion.md` que establezca:
+Cada nivel debe tener un `outline.md` en la raíz de su directorio (al mismo nivel que `chapters/`, no dentro de él).
+
+El outline es un **documento de diseño**, no contenido para el estudiante. No se sirve en la web. Su función:
+- Registrar el objetivo del nivel en una oración verificable.
+- Listar cada capítulo con su objetivo, sus secciones H2/H3 exactas y notas de implementación.
+- Documentar las decisiones de diseño: por qué este orden, qué se postponó y adónde va.
+- Servir como punto de partida para detectar inconsistencias antes de escribir o revisar contenido.
+
+El outline se escribe **antes** de escribir el contenido del nivel y se actualiza cada vez que el contenido cambia. Es la fuente de verdad sobre la intención del nivel.
+
+**Formato mínimo de `outline.md`:**
+
+```markdown
+# Outline: LN — Nombre del nivel
+
+## Metadatos
+- Prerequisito: ...
+- Desbloquea: ...
+- Proyectos asociados: ...
+
+## Objetivo
+[Una sola oración concreta y verificable]
+
+## Capítulos
+
+### Capítulo 00 — Nombre
+**Archivo:** `chapters/00-nombre.md`
+**Objetivo:** ...
+**Secciones:**
+- `## Sección principal`
+  - `### Subsección`
+
+**Notas:** ...
+
+## Ejercicios
+...
+
+## Decisiones de diseño
+...
+```
+
+### El capítulo 00 — Introducción
+
+Todo nivel debe tener un capítulo `00-introduccion.md` que establezca:
 
 1. **Qué es este nivel** — en qué contexto del mapa completo aparece.
 2. **Qué cubre** — tabla de las secciones con una línea descriptiva por cada una.
@@ -131,16 +184,17 @@ Todos los ejercicios deben ser accionables de una de estas dos formas:
 ```markdown
 # LN — Nombre del nivel
 
-> El contenido está en `sections/`. Este README es un documento de diseño interno.
+> El contenido está en `chapters/`. Este README es un documento de diseño interno.
 >
 > Diseño curricular → `docs/forja-contenido.md`
+> Outline del nivel → `outline.md`
 
-## Secciones
+## Capítulos
 
 | Archivo | Título |
 |---|---|
-| `sections/00-introduccion.md` | Introducción |
-| `sections/01-...md` | ... |
+| `chapters/00-introduccion.md` | Introducción |
+| `chapters/01-...md` | ... |
 
-Ejercicios en `exercises.md`. Meta del nivel en `meta.yaml`.
+Ejercicios en `exercises.md`. Outline en `outline.md`. Meta del nivel en `meta.yaml`.
 ```

@@ -2,7 +2,12 @@ import { useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
+import { common } from 'lowlight'
+import x86asm from 'highlight.js/lib/languages/x86asm'
 import type { Components } from 'react-markdown'
+
+// Extend common language set with x86asm (not included by default)
+const languages = { ...common, x86asm }
 
 // ─── Mermaid block ────────────────────────────────────────────────────────────
 
@@ -47,19 +52,23 @@ function MermaidBlock({ code }: { code: string }) {
 const components: Components = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pre({ children, ...props }: any) {
-    // Check if this pre block contains a mermaid code block
     const child = Array.isArray(children) ? children[0] : children
+    // Mermaid: render as diagram
     if (child?.props?.className?.includes('language-mermaid')) {
       const code = String(child.props.children ?? '').replace(/\n$/, '')
       return <MermaidBlock code={code} />
+    }
+    // Untagged blocks are program output / terminal sessions, not source code
+    const hasLanguage = child?.props?.className?.includes('language-')
+    if (!hasLanguage) {
+      const cls = ['output', props.className].filter(Boolean).join(' ')
+      return <pre {...props} className={cls}>{children}</pre>
     }
     return <pre {...props}>{children}</pre>
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   code({ className, children, ...props }: any) {
-    if (!className) {
-      return <code {...props}>{children}</code>
-    }
+    if (!className) return <code {...props}>{children}</code>
     return <code className={className} {...props}>{children}</code>
   },
 }
@@ -71,7 +80,12 @@ export default function MdRenderer({ children }: { children: string }) {
     <div className="md">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[[rehypeHighlight, { ignoreMissing: true, detect: false, subset: false }]]}
+        rehypePlugins={[[rehypeHighlight, {
+          ignoreMissing: true,
+          detect: false,
+          languages,
+          aliases: { x86asm: ['asm'], bash: ['gdb', 'shell'] },
+        }]]}
         components={components}
       >
         {children}

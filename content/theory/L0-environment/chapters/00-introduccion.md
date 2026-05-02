@@ -1,12 +1,16 @@
 # Introducción
 
-Antes de escribir una sola línea de código conviene entender a dónde lleva el camino. Esta sección existe para eso: establecer el contexto completo de L0, explicar qué vas a encontrar en cada parte y dejar claro qué queda afuera, por qué, y cuándo vuelve a aparecer.
+Antes de escribir una sola línea de código conviene entender a dónde lleva el camino. Este capítulo existe para eso: establecer el contexto completo de L0, explicar qué vas a encontrar en cada parte y dejar claro qué queda afuera, por qué, y cuándo vuelve a aparecer.
 
 ## Qué es Forja
 
 Forja es un laboratorio de programación de sistemas organizado en niveles. No es un curso de introducción a la programación: asume que podés leer código y entender estructuras básicas. Lo que construye es otra cosa: la capacidad de trabajar cerca del hardware, de entender lo que el sistema operativo hace en nombre de tu programa, de leer binarios, de gestionar memoria manualmente, de escribir código que no tiene red de seguridad.
 
 Los lenguajes son C y Rust, los dos en serio. No "C primero para aprender memoria y luego Rust para olvidarlo": se usan juntos y en contraste. El mundo real usa los dos, y entender cuándo uno es mejor que el otro requiere haberlos trabajado ambos.
+
+**El orden tiene una lógica.** Los niveles L1 y L2 son exclusivamente C: punteros, aritmética de memoria, el modelo de error de C, lectura de assembly. Ese dolor es intencional — Rust tiene las mismas restricciones pero te las explica el compilador; C te las muestra como crashes. Aprender primero el problema hace que la solución de Rust tenga sentido real. L3 y L4 arrancan Rust desde ese contexto: ownership, borrowing y el borrow checker no son reglas arbitrarias sino respuestas concretas a errores que ya cometiste en C. A partir de L5, los dos lenguajes coexisten nivel a nivel.
+
+**Los proyectos siguen el mismo principio.** La mayoría implementa la misma cosa en C y en Rust — no para comparar líneas de código, sino para que el contraste sea concreto: qué garantiza el compilador, qué queda a cargo del programador, qué se pierde o se gana en cada uno. Algunos proyectos son C puro cuando el tema no tiene traducción directa a Rust seguro (módulos de kernel, exploración de ELF a nivel raw, drivers de caracteres). Otros son Rust puro cuando el objetivo es mostrar un feature del lenguaje sin contaminación de C (iteradores, Arc, el type system). Pero la mayoría son los dos.
 
 Los niveles van desde L0 (donde estás ahora) hasta L23. El mapa no es completamente lineal: hay cuatro caminos con sus lógicas propias. Pero los primeros niveles tienen un orden natural y L0 es la puerta de entrada a todos.
 
@@ -22,17 +26,17 @@ En teoría podrías saltear L0 si ya tenés un ambiente Linux listo y sabés com
 
 ## Qué cubre L0
 
-Este nivel tiene cinco secciones más un set de ejercicios:
+Este nivel tiene cinco capítulos más un set de ejercicios:
 
-| Sección | Qué establece |
+| Capítulo | Qué establece |
 |---|---|
 | **01 — El laboratorio** | El devcontainer, cómo abrirlo, qué tiene instalado, cómo verificarlo |
 | **02 — El pipeline** | Las cuatro fases de compilación, flags fundamentales, GCC vs Clang, Makefiles |
-| **03 — Una intuición de máquina** | Complemento a dos, registros, stack, leer ensamblador, ASLR |
+| **03 — Una intuición de máquina** | Von Neumann, ciclo fetch-decode-execute, complemento a dos, registros, stack, leer ensamblador, ASLR |
 | **04 — Herramientas de observación** | strace, gdb, valgrind, sanitizers, perf |
 | **05 — Primer recorrido completo** | Todo junto con un programa real, de fuente hasta syscall |
 
-Las secciones están pensadas para leerse en orden la primera vez, aunque podés volver a cualquiera como referencia.
+Los capítulos están pensados para leerse en orden la primera vez, aunque podés volver a cualquiera como referencia.
 
 ## Qué no cubre L0, y por qué
 
@@ -66,9 +70,9 @@ Esto es importante: hay cosas que L0 toca pero no explica a fondo, y hay cosas q
 
 ## Cómo trabajar este nivel
 
-Cada sección tiene contenido conceptual y código para ejecutar. No alcanza con leer: ejecutá cada comando, mirá el output, modificá el programa y observá qué cambia.
+Cada capítulo tiene contenido conceptual y código para ejecutar. No alcanza con leer: ejecutá cada comando, mirá el output, modificá el programa y observá qué cambia.
 
-Las secciones 01 a 05 son para leer y experimentar. Los ejercicios son para verificar que el aprendizaje fue real: todos son comandos concretos con resultados observables o preguntas de opción múltiple que podés comprobar con un comando.
+Los capítulos 01 a 05 son para leer y experimentar. Los ejercicios son para verificar que el aprendizaje fue real: todos son comandos concretos con resultados observables o preguntas de opción múltiple que podés comprobar con un comando.
 
 El proyecto `devcontainer-setup` es la pieza de trabajo práctica de este nivel: documentar y verificar un ambiente reproducible es una habilidad de ingeniería en sí misma.
 
