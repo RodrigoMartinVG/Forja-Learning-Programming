@@ -1,21 +1,16 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { LegacyWorkspaceRedirect } from "./pages/LegacyWorkspaceRedirect";
-import { LandingPage } from "./pages/LandingPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { WorkspacePage } from "./pages/WorkspacePage";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Landing from './components/Landing'
+import Workspace from './components/Workspace'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/workspace" element={<WorkspacePage />} />
-        <Route path="/paths" element={<Navigate replace to="/workspace" />} />
-        <Route path="/levels/:slug" element={<LegacyWorkspaceRedirect target="level" />} />
-        <Route path="/projects/:id" element={<LegacyWorkspaceRedirect target="project" />} />
-        <Route path="/projects/:id/:lang/:phase" element={<LegacyWorkspaceRedirect target="phase" />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/workspace" element={<Workspace />} />
+        <Route path="/workspace/:contentType/:contentId" element={<Workspace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }

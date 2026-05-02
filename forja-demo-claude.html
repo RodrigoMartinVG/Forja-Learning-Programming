@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Figtree:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0b0b;
+  --surface:#141414;
+  --surface-2:#1c1c1c;
+  --surface-3:#242424;
+  --border:rgba(255,255,255,0.07);
+  --border-md:rgba(255,255,255,0.12);
+  --text:#ede9e3;
+  --text-2:#8c8880;
+  --text-3:#4c4a47;
+  --accent:#cc5c22;
+  --accent-dim:rgba(204,92,34,0.12);
+  --accent-text:#e8784a;
+  --c-lang:#3d8ef0;
+  --c-lang-dim:rgba(61,142,240,0.12);
+  --c-sys:#d4622a;
+  --c-sys-dim:rgba(212,98,42,0.12);
+  --c-comp:#9b6de8;
+  --c-comp-dim:rgba(155,109,232,0.12);
+  --c-adv:#e05278;
+  --c-adv-dim:rgba(224,82,120,0.12);
+  --sidebar-w:272px;
+  --header-h:52px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Figtree',sans-serif;font-size:15px;line-height:1.6;overflow:hidden}
+button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+/* ─── LANDING ─────────────────────────────────────────── */
+#landing{
+  position:fixed;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:2rem;
+  z-index:100;background:var(--bg);
+  transition:opacity 0.4s,transform 0.4s;
+}
+#landing.hidden{opacity:0;pointer-events:none;transform:translateY(-12px)}
+
+.landing-inner{width:100%;max-width:820px;}
+
+.brand-row{display:flex;align-items:baseline;gap:1rem;margin-bottom:2.5rem;}
+.brand-name{
+  font-family:'Syne',sans-serif;font-size:clamp(52px,8vw,88px);
+  font-weight:800;letter-spacing:-0.03em;color:var(--text);
+  line-height:1;
+}
+.brand-tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--text-3);letter-spacing:0.04em;padding-bottom:6px;
+}
+
+.landing-desc{
+  font-size:clamp(15px,2vw,18px);color:var(--text-2);
+  max-width:560px;line-height:1.7;margin-bottom:3rem;font-weight:300;
+}
+.landing-desc strong{color:var(--text);font-weight:500;}
+
+.paths-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:0.1em;color:var(--text-3);text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.paths-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:2.5rem;
+}
+.path-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:1rem;transition:border-color 0.2s,background 0.2s;
+  cursor:pointer;
+}
+.path-card:hover{border-color:var(--border-md);background:var(--surface-2)}
+.path-num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text-3);margin-bottom:6px;
+}
+.path-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;line-height:1.3}
+.path-desc{font-size:12px;color:var(--text-2);line-height:1.4}
+
+.landing-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--accent);color:#fff;
+  font-family:'Figtree',sans-serif;font-size:14px;font-weight:500;
+  padding:11px 22px;border-radius:8px;
+  transition:background 0.2s,transform 0.15s;
+}
+.landing-cta:hover{background:#b84e1a;transform:translateY(-1px)}
+.landing-cta:active{transform:translateY(0)}
+.cta-arrow{font-size:16px;transition:transform 0.2s}
+.landing-cta:hover .cta-arrow{transform:translateX(3px)}
+
+/* ─── WORKSPACE ───────────────────────────────────────── */
+#workspace{
+  position:fixed;inset:0;display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;transform:translateY(8px);
+  transition:opacity 0.35s,transform 0.35s;
+}
+#workspace.visible{opacity:1;pointer-events:all;transform:none}
+
+/* header */
+.ws-header{
+  height:var(--header-h);min-height:var(--header-h);
+  display:flex;align-items:center;padding:0 1.25rem;
+  border-bottom:1px solid var(--border);
+  gap:0;flex-shrink:0;z-index:10;
+}
+.ws-logo{
+  font-family:'Syne',sans-serif;font-size:20px;font-weight:800;
+  letter-spacing:-0.02em;color:var(--text);cursor:pointer;
+  padding:6px 10px 6px 0;border-right:1px solid var(--border);
+  margin-right:1rem;white-space:nowrap;flex-shrink:0;
+}
+.ws-logo:hover{color:var(--accent-text)}
+
+.view-tabs{display:flex;gap:2px;flex:1;}
+.view-tab{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  letter-spacing:0.04em;color:var(--text-2);
+  padding:6px 14px;border-radius:6px;
+  transition:color 0.15s,background 0.15s;
+}
+.view-tab:hover{color:var(--text);background:var(--surface-2)}
+.view-tab.active{color:var(--text);background:var(--surface-2)}
+
+.ws-header-right{
+  display:flex;align-items:center;gap:8px;margin-left:auto;
+}
+.header-btn{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text-3);padding:5px 12px;border:1px solid var(--border);
+  border-radius:6px;letter-spacing:0.04em;
+  transition:color 0.15s,border-color 0.15s;
+}
+.header-btn:hover{color:var(--text-2);border-color:var(--border-md)}
+
+/* body (sidebar + main) */
+.ws-body{display:flex;flex:1;overflow:hidden;}
+
+/* sidebar */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sidebar-search{
+  padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.sidebar-search input{
+  width:100%;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:6px;padding:7px 10px;color:var(--text-2);
+  font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;
+  transition:border-color 0.15s;
+}
+.sidebar-search input::placeholder{color:var(--text-3)}
+.sidebar-search input:focus{border-color:var(--border-md);color:var(--text)}
+
+.sidebar-levels{flex:1;overflow-y:auto;padding:8px 0}
+.sidebar-levels::-webkit-scrollbar{width:4px}
+.sidebar-levels::-webkit-scrollbar-track{background:transparent}
+.sidebar-levels::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:2px}
+
+.level-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 12px;cursor:pointer;
+  transition:background 0.12s;border-radius:0;
+  position:relative;
+}
+.level-item:hover{background:var(--surface-2)}
+.level-item.active{background:var(--surface-2)}
+.level-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;border-radius:0 1px 1px 0;background:var(--accent);
+}
+
+.level-code{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  min-width:30px;padding-top:2px;
+}
+.level-code.lang{color:var(--c-lang)}
+.level-code.sys{color:var(--c-sys)}
+.level-code.comp{color:var(--c-comp)}
+.level-code.adv{color:var(--c-adv)}
+
+.level-info{flex:1;min-width:0;}
+.level-title{font-size:13px;font-weight:500;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.level-item.active .level-title{color:var(--text)}
+.level-projects-count{font-size:11px;color:var(--text-3);margin-top:1px}
+
+.level-domain-dot{
+  width:6px;height:6px;border-radius:50%;
+  flex-shrink:0;margin-top:6px;
+}
+.dot-lang{background:var(--c-lang)}
+.dot-sys{background:var(--c-sys)}
+.dot-comp{background:var(--c-comp)}
+.dot-adv{background:var(--c-adv)}
+
+/* main area */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;}
+.main::-webkit-scrollbar{width:5px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:2px}
+
+/* ─── MAP VIEW ────────────────────────────────────────── */
+#view-map{padding:2rem 2.5rem;}
+.map-header{margin-bottom:2.5rem;}
+.map-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
+.map-subtitle{color:var(--text-2);font-size:14px;font-weight:300}
+
+.stats-row{display:flex;gap:8px;margin-bottom:2.5rem;}
+.stat-chip{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:10px 16px;
+}
+.stat-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1}
+.stat-label{font-size:12px;color:var(--text-2);margin-top:2px}
+
+.domain-section{margin-bottom:2rem;}
+.domain-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+}
+.domain-badge{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.06em;
+  padding:3px 10px;border-radius:4px;font-weight:500;
+}
+.badge-lang{background:var(--c-lang-dim);color:var(--c-lang)}
+.badge-sys{background:var(--c-sys-dim);color:var(--c-sys)}
+.badge-comp{background:var(--c-comp-dim);color:var(--c-comp)}
+.badge-adv{background:var(--c-adv-dim);color:var(--c-adv)}
+
+.domain-name{font-size:13px;font-weight:500;color:var(--text-2)}
+.domain-count{font-size:12px;color:var(--text-3);margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+.levels-cards{display:flex;flex-wrap:wrap;gap:8px;}
+.level-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:9px;padding:12px 14px;cursor:pointer;
+  min-width:180px;max-width:220px;flex:1;
+  transition:border-color 0.15s,background 0.15s,transform 0.15s;
+}
+.level-card:hover{border-color:var(--border-md);background:var(--surface-2);transform:translateY(-1px)}
+.lc-code{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  margin-bottom:6px;
+}
+.lc-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.3}
+.lc-projects{display:flex;flex-wrap:wrap;gap:4px;}
+.proj-chip{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  background:var(--surface-3);color:var(--text-3);
+  padding:2px 7px;border-radius:4px;
+  transition:color 0.12s;
+}
+.proj-chip:hover{color:var(--text-2)}
+.proj-chip.integrating{background:var(--accent-dim);color:var(--accent-text)}
+
+/* ─── UNIT VIEW ───────────────────────────────────────── */
+#view-unit{padding:0;display:none;}
+#view-unit.visible{display:block;}
+
+.unit-hero{
+  padding:2rem 2.5rem 1.5rem;
+  border-bottom:1px solid var(--border);
+}
+.unit-breadcrumb{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text-3);margin-bottom:16px;display:flex;align-items:center;gap:6px;
+}
+.unit-breadcrumb span{cursor:pointer;transition:color 0.12s}
+.unit-breadcrumb span:hover{color:var(--text-2)}
+.bc-sep{color:var(--text-3);opacity:0.4}
+
+.unit-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;}
+.unit-code-big{
+  font-family:'Syne',sans-serif;font-size:42px;font-weight:800;
+  letter-spacing:-0.03em;line-height:1;
+}
+.unit-code-big.lang{color:var(--c-lang)}
+.unit-code-big.sys{color:var(--c-sys)}
+.unit-code-big.comp{color:var(--c-comp)}
+.unit-code-big.adv{color:var(--c-adv)}
+
+.unit-head-right{padding-top:6px;}
+.unit-title-main{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px}
+.unit-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.unit-domain-badge{padding:3px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;}
+.unit-prereq{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text-3);display:flex;align-items:center;gap:5px;
+}
+.prereq-tag{
+  background:var(--surface-3);color:var(--text-2);
+  padding:2px 7px;border-radius:4px;cursor:pointer;
+  transition:color 0.12s;
+}
+.prereq-tag:hover{color:var(--text)}
+
+.unit-desc{
+  color:var(--text-2);font-size:14px;font-weight:300;line-height:1.7;
+  max-width:680px;
+}
+
+.unit-body{padding:2rem 2.5rem;}
+
+.section-title{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--text-3);
+  margin-bottom:1rem;display:flex;align-items:center;gap:10px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* theory block */
+.theory-block{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:1.5rem;margin-bottom:2rem;
+}
+.theory-content h3{
+  font-family:'Syne',sans-serif;font-size:17px;font-weight:600;
+  margin-bottom:10px;color:var(--text);
+}
+.theory-content p{
+  font-size:14px;color:var(--text-2);line-height:1.75;margin-bottom:12px;font-weight:300;
+}
+.theory-content code{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  background:var(--surface-3);color:var(--accent-text);
+  padding:1px 6px;border-radius:4px;
+}
+.theory-content ul{
+  padding-left:1.2rem;color:var(--text-2);font-size:14px;font-weight:300;
+  line-height:1.7;
+}
+.theory-content li{margin-bottom:4px}
+.read-more{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-3);
+  margin-top:12px;cursor:pointer;transition:color 0.15s;
+  border:1px solid var(--border);border-radius:6px;padding:5px 12px;
+}
+.read-more:hover{color:var(--text-2);border-color:var(--border-md)}
+
+/* projects section */
+.projects-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem;}
+.project-row{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:9px;padding:14px 16px;
+  display:flex;align-items:flex-start;gap:14px;
+  cursor:pointer;transition:border-color 0.15s,background 0.15s;
+}
+.project-row:hover{border-color:var(--border-md);background:var(--surface-2)}
+.proj-type-badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.06em;
+  padding:3px 8px;border-radius:4px;white-space:nowrap;margin-top:2px;flex-shrink:0;
+}
+.type-focused{background:var(--surface-3);color:var(--text-2)}
+.type-integrating{background:var(--accent-dim);color:var(--accent-text)}
+
+.proj-info{flex:1}
+.proj-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px}
+.proj-desc{font-size:13px;color:var(--text-2);font-weight:300;line-height:1.5}
+.proj-meta{
+  display:flex;align-items:center;gap:12px;margin-top:8px;
+}
+.proj-lang{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text-3);background:var(--surface-3);
+  padding:2px 7px;border-radius:4px;
+}
+.proj-phases{font-size:11px;color:var(--text-3)}
+.proj-equiv{font-size:11px;color:var(--text-3)}
+.proj-equiv em{font-style:normal;color:var(--text-2)}
+
+.proj-chevron{color:var(--text-3);font-size:16px;align-self:center;transition:transform 0.15s}
+.project-row:hover .proj-chevron{transform:translateX(3px);color:var(--text-2)}
+
+/* exercises */
+.exercises-block{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:1.5rem;
+}
+.exercise-item{
+  padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;
+}
+.exercise-item:last-child{border-bottom:none;padding-bottom:0}
+.ex-num{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--text-3);min-width:24px;padding-top:2px;
+}
+.ex-text{font-size:13px;color:var(--text-2);font-weight:300;line-height:1.6}
+.ex-text strong{color:var(--text);font-weight:500}
+
+/* progress indicator */
+.progress-pill{
+  display:flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-3);
+  border:1px solid var(--border);border-radius:20px;padding:4px 12px;
+}
+.prog-dot{width:6px;height:6px;border-radius:50%;}
+.prog-dot.todo{background:var(--text-3)}
+.prog-dot.reading{background:#e8b84a}
+.prog-dot.done{background:#5cc471}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<section id="landing">
+  <div class="landing-inner">
+    <div class="brand-row">
+      <div class="brand-name">Forja</div>
+      <div class="brand-tag">// sistemas desde cero</div>
+    </div>
+    <p class="landing-desc">
+      Un laboratorio para aprender <strong>C, Rust y programación de sistemas</strong> con profundidad real — sin atajos, sin frameworks de primer paso. Cada nivel tiene teoría, código y proyectos que construís desde cero.
+    </p>
+    <div class="paths-label">cuatro caminos de entrada</div>
+    <div class="paths-grid">
+      <div class="path-card">
+        <div class="path-num">01</div>
+        <div class="path-title">Sistemas primero</div>
+        <div class="path-desc">Base completa en C y Rust antes de profundizar en sistemas y kernel.</div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">02</div>
+        <div class="path-title">Plan completo</div>
+        <div class="path-desc">El recorrido curricular entero. Vista canónica del mapa.</div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">03</div>
+        <div class="path-title">Compiladores primero</div>
+        <div class="path-desc">C y Rust al inicio, y desvío temprano al arco de compiladores.</div>
+      </div>
+      <div class="path-card">
+        <div class="path-num">04</div>
+        <div class="path-title">Integración vertical</div>
+        <div class="path-desc">Sistemas y compiladores entrelazados, proyectos que cruzan dominios.</div>
+      </div>
+    </div>
+    <button class="landing-cta" onclick="enterWorkspace()">
+      Explorar el mapa
+      <span class="cta-arrow">→</span>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════ WORKSPACE ═══════════ -->
+<div id="workspace">
+  <!-- header -->
+  <header class="ws-header">
+    <div class="ws-logo" onclick="exitWorkspace()">Forja</div>
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-map" onclick="switchView('map')">mapa</button>
+      <button class="view-tab" id="tab-unit" onclick="switchView('unit')" id="tab-unit">unidad</button>
+    </div>
+    <div class="ws-header-right">
+      <button class="header-btn">caminos</button>
+      <button class="header-btn">búsqueda</button>
+      <div class="progress-pill">
+        <div class="prog-dot todo"></div>
+        sin progreso
+      </div>
+    </div>
+  </header>
+
+  <!-- body -->
+  <div class="ws-body">
+    <!-- sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-search">
+        <input type="text" placeholder="buscar nivel o proyecto...">
+      </div>
+      <div class="sidebar-levels" id="sidebar-levels">
+        <!-- rendered by JS -->
+      </div>
+    </nav>
+
+    <!-- main -->
+    <main class="main">
+
+      <!-- MAP VIEW -->
+      <div id="view-map">
+        <div class="map-header">
+          <div class="map-title">Mapa de contenido</div>
+          <div class="map-subtitle">Seleccioná un nivel para ver su contenido, teoría y proyectos asociados.</div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-chip">
+            <div class="stat-num">24</div>
+            <div class="stat-label">niveles</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-num">63</div>
+            <div class="stat-label">proyectos</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-num">4</div>
+            <div class="stat-label">caminos</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-num">2</div>
+            <div class="stat-label">lenguajes</div>
+          </div>
+        </div>
+
+        <div id="map-domains"><!-- rendered by JS --></div>
+      </div>
+
+      <!-- UNIT VIEW -->
+      <div id="view-unit">
+        <!-- rendered by JS -->
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+const levels = [
+  {id:'L0',title:'Entorno',domain:'sys',prereqs:[],
+   desc:'Setup del toolchain, devcontainer, primeros pasos con GCC, Clang, GDB, Valgrind y strace. El objetivo es controlar completamente el ambiente antes de escribir código.',
+   projects:[
+     {id:'devcontainer-setup',title:'devcontainer-setup',type:'focused',langs:['c'],phases:1,equiv:'el ambiente de trabajo completo'},
+   ],
+   theory:[
+     'Cómo funciona la compilación en etapas: preprocesador, compilación, ensamblado, linking.',
+     'Sanitizers como herramientas de desarrollo: ASan, UBSan, MSan — no son opcionales en producción de aprendizaje.',
+     'Representación binaria y complemento a dos: por qué INT_MAX + 1 es UB en C pero no en hardware.',
+   ],
+   exercises:['¿Qué hace cada flag de GCC en <code>-Wall -Wextra -Wpedantic</code>? Activarlos y leer cada warning hasta entenderlo.',
+     'Compilar un programa simple con ASan y provocar deliberadamente un buffer overflow. Leer el reporte.',
+     '¿Qué muestra <code>strace ./a.out</code> cuando el programa solo hace <code>printf("hola")</code>? ¿Cuántas syscalls se ejecutan?']
+  },
+  {id:'L1a',title:'C: primer contacto',domain:'lang',prereqs:['L0'],group:'L1',
+   desc:'Tipos, operadores, control de flujo, funciones. El objetivo es tener un modelo mental correcto de C antes de ver memoria.',
+   projects:[
+     {id:'hello-c',title:'hello-c',type:'focused',langs:['c'],phases:1,equiv:'cualquier punto de entrada'},
+     {id:'caesar-cipher',title:'caesar-cipher',type:'focused',langs:['c'],phases:1,equiv:'rot13, openssl enc'},
+     {id:'word-count',title:'word-count',type:'focused',langs:['c'],phases:2,equiv:'wc(1)'},
+   ],
+   theory:['Tipos primitivos y sus garantías en C: qué garantiza el estándar vs qué decide la implementación.',
+     'Por qué existe <code>stdint.h</code>: <code>uint32_t</code> tiene ancho garantizado, <code>int</code> no.',
+     'El modelo de flujo de control: if, while, for, switch — y por qué el fallthrough en switch es una trampa.'],
+   exercises:['Implementar <code>strlen</code> desde cero sin usar la de libc. Medir con <code>perf</code> cuánto tarda vs la versión de libc.',
+     'Escribir una función que devuelva múltiples valores sin usar structs. ¿Cuántas formas hay? ¿Cuál es idiomática en C?',
+     '¿Qué imprime <code>printf("%d", 256)</code> si el argumento es un <code>char</code> con valor 0? Explicar por qué.']
+  },
+  {id:'L1b',title:'C: fundamentos profundos',domain:'lang',prereqs:['L1a'],group:'L1',
+   desc:'Punteros, aritmética de punteros, arrays, strings, structs, enums, union. Registros x86-64, calling conventions, leer el assembly que genera el compilador.',
+   projects:[
+     {id:'stringlib',title:'stringlib',type:'focused',langs:['c'],phases:2,equiv:'string.h de libc'},
+     {id:'elf-explorer',title:'elf-explorer',type:'focused',langs:['c'],phases:2,equiv:'readelf, objdump'},
+     {id:'getopt-impl',title:'getopt-impl',type:'focused',langs:['c'],phases:1,equiv:'getopt(3)'},
+     {id:'dynamic-array',title:'dynamic-array',type:'focused',langs:['c'],phases:2,equiv:'std::vector (C++)'},
+   ],
+   theory:['Registros x86-64 y calling conventions System V AMD64: qué registro recibe cada argumento, cuáles son caller-saved vs callee-saved.',
+     'Stack frames en hardware: cómo <code>call</code> empuja rip, el prólogo empuja rbp, y <code>ret</code> restaura todo.',
+     'Leer el assembly generado: cómo reconocer un if, un loop, una función y el efecto de -O2 sobre cada uno.'],
+   exercises:['Compilar <code>word-count</code> con <code>-S -O0</code> y <code>-S -O2</code>. Encontrar una función donde el optimizador elimine el stack frame completo.',
+     'Implementar <code>memmove</code> correctamente (con overlap). ¿Por qué no alcanza con un loop forward?',
+     '¿Qué diferencia hay entre <code>char *s = "hola"</code> y <code>char s[] = "hola"</code>? Verificarlo con <code>objdump</code>.']
+  },
+  {id:'L2',title:'Memoria en C',domain:'lang',prereqs:['L1b'],
+   desc:'Stack vs heap, malloc/free, gestión manual de memoria, errores clásicos con Valgrind y ASan.',
+   projects:[
+     {id:'dynamic-array',title:'dynamic-array',type:'focused',langs:['c'],phases:2,equiv:'realloc-backed vector'},
+   ],
+   theory:['El modelo de memoria de C: stack, heap, data segment, BSS, text.','malloc/free internamente: qué hace el allocator con sbrk/mmap y por qué free no devuelve memoria al SO inmediatamente.','Los cuatro errores clásicos: use-after-free, double-free, buffer overflow, memory leak.'],
+   exercises:['Escribir un programa que tenga un memory leak deliberado. Detectarlo con Valgrind y con ASan.',
+     '¿Qué pasa si llamás <code>free(ptr)</code> dos veces? Reproducirlo y leer el stack trace.',
+     'Implementar una linked list con malloc/free. Escribir una función <code>list_destroy</code> que no pierda ningún nodo.']
+  },
+  {id:'L3a',title:'Rust: primer contacto',domain:'lang',prereqs:['L2'],group:'L3',
+   desc:'Sintaxis, tipos, pattern matching, iteradores. Sin énfasis en ownership — el objetivo es poder leer y escribir Rust básico.',
+   projects:[
+     {id:'hello-rust',title:'hello-rust',type:'focused',langs:['rust'],phases:1,equiv:'punto de entrada'},
+     {id:'fizzbuzz-rust',title:'fizzbuzz-rust',type:'focused',langs:['rust'],phases:1,equiv:'ejercicio clásico'},
+     {id:'mini-calculator',title:'mini-calculator',type:'focused',langs:['rust'],phases:2,equiv:'bc(1)'},
+   ],
+   theory:['Por qué aprender Rust después de C: no como lenguaje de reemplazo sino como lente para entender lo que C no dice.','Pattern matching exhaustivo vs switch con fallthrough: la diferencia es semántica, no sintáctica.','El sistema de tipos de Rust: enums algebraicos, Option, Result — y por qué null no existe.'],
+   exercises:['Implementar FizzBuzz con un iterador personalizado que implemente <code>Iterator</code>.','Escribir una función que parsee un entero de un string y maneje el error con <code>?</code>. ¿Qué tipo devuelve?','¿Cuál es la diferencia entre <code>String</code> y <code>&str</code>? Escribir una función que acepte ambos.']
+  },
+  {id:'L3b',title:'Rust: ownership',domain:'lang',prereqs:['L3a'],group:'L3',
+   desc:'El sistema de ownership, borrowing y lifetimes. El modelo de Rust como sistema de tipos de regiones.',
+   projects:[
+     {id:'data-structures-rust',title:'data-structures-rust',type:'focused',langs:['rust'],phases:3,equiv:'Vec, LinkedList, HashMap'},
+     {id:'custom-iterator',title:'custom-iterator',type:'focused',langs:['rust'],phases:2,equiv:'Iterator trait'},
+   ],
+   theory:['Ownership como tracking estático de recursos: la regla "cada valor tiene un dueño único".',
+     'Borrowing: referencias compartidas inmutables vs referencia mutable exclusiva — el alias XOR mutabilidad.',
+     'Lifetimes como anotaciones de la duración de referencias: cuándo son necesarias y cuándo el compilador las infiere.'],
+   exercises:['¿Por qué el compilador rechaza tener una referencia mutable y una inmutable al mismo tiempo? Construir el caso mínimo.',
+     'Implementar una linked list en Rust sin usar <code>unsafe</code>. ¿Cuál es la parte más difícil?',
+     'Escribir una función que devuelva una referencia a un elemento de un vector. ¿Qué lifetime annotation necesita?']
+  },
+  {id:'L4',title:'Tipos, traits y FFI',domain:'lang',prereqs:['L3b'],
+   desc:'Traits como interfaces, generics, FFI C↔Rust con cbindgen y bindgen.',
+   projects:[
+     {id:'parser-combinators',title:'parser-combinators',type:'focused',langs:['rust'],phases:2,equiv:'nom, winnow'},
+     {id:'ffi-demo',title:'ffi-demo',type:'focused',langs:['c','rust'],phases:2,equiv:'cbindgen + bindgen'},
+   ],
+   theory:['Traits vs interfaces: la diferencia crucial es que los traits en Rust no tienen vtable implícita — <code>dyn Trait</code> es explícito.',
+     'Generics y monomorphization: cómo Rust genera código especializado para cada tipo concreto — lo que C++ llama templates.',
+     'FFI: el boundary C↔Rust, <code>extern "C"</code>, tipos que se pueden pasar (POD), tipos que no se pueden pasar.'],
+   exercises:['Implementar el trait <code>Display</code> para un tipo propio. ¿Cuál es la diferencia con <code>Debug</code>?',
+     'Escribir una librería en C y llamarla desde Rust con <code>bindgen</code>. ¿Qué pasa si la función C asigna memoria?',
+     '¿Cuándo usar <code>impl Trait</code> vs <code>dyn Trait</code>? Escribir un caso donde cada uno sea la elección correcta.']
+  },
+  {id:'L5',title:'POSIX y archivos',domain:'sys',prereqs:['L4'],
+   desc:'File descriptors, syscalls de I/O, el VFS de Linux, stat, permisos.',
+   projects:[
+     {id:'spl_stat',title:'spl_stat',type:'focused',langs:['c','rust'],phases:1,equiv:'stat(1)'},
+     {id:'spl_ls',title:'spl_ls',type:'focused',langs:['c','rust'],phases:2,equiv:'ls(1)'},
+     {id:'spl_du',title:'spl_du',type:'focused',langs:['c','rust'],phases:2,equiv:'du(1)'},
+     {id:'file-monitor',title:'file-monitor',type:'focused',langs:['c','rust'],phases:2,equiv:'inotifywait'},
+   ],
+   theory:['File descriptors como índices en la tabla de archivos del proceso: stdin=0, stdout=1, stderr=2 son convenciones.','El VFS de Linux: por qué <code>read()</code> funciona igual con un archivo, un pipe o un socket.','stat(2) y sus campos: ino, mode, nlink, uid, gid, size, mtime — qué significa cada uno.'],
+   exercises:['Implementar <code>cp</code> con <code>open/read/write/close</code>. ¿Cuántos read() necesita para copiar 1MB?',
+     '¿Por qué <code>ls -la</code> muestra el tamaño en bloques y no en bytes? ¿Qué es un bloque para el kernel?',
+     'Abrir un archivo con O_APPEND y escribir desde dos procesos en paralelo. ¿Se intercalan las escrituras?']
+  },
+  {id:'L6',title:'Procesos y señales',domain:'sys',prereqs:['L5'],
+   desc:'fork, exec, wait, señales, scheduling. La frontera userspace↔kernel como protocolo concreto.',
+   projects:[
+     {id:'spl_pstree',title:'spl_pstree',type:'focused',langs:['c','rust'],phases:2,equiv:'pstree(1)'},
+     {id:'impl_abort',title:'impl_abort',type:'focused',langs:['c'],phases:1,equiv:'abort(3)'},
+     {id:'impl_alarm',title:'impl_alarm',type:'focused',langs:['c'],phases:1,equiv:'alarm(2)'},
+     {id:'scheduler-sim',title:'scheduler-sim',type:'focused',langs:['c','rust'],phases:3,equiv:'simulador MLFQ/CFS'},
+     {id:'mish',title:'mish',type:'integrating',langs:['c','rust'],phases:4,equiv:'bash, zsh, dash'},
+     {id:'mini-debugger',title:'mini-debugger',type:'integrating',langs:['c'],phases:3,equiv:'gdb (tramo inicial)'},
+   ],
+   theory:['fork/exec como modelo de creación de procesos: fork duplica el proceso, exec reemplaza la imagen — la separación es intencional.',
+     'Señales como mecanismo asíncrono: por qué signal-safety existe y qué funciones son seguras en un handler.',
+     'Scheduling en Linux: FIFO, Round-Robin para tiempo real, MLFQ y CFS para SCHED_OTHER.'],
+   exercises:['Implementar un servidor que hace fork por cada conexión. ¿Qué pasa con los file descriptors del hijo?',
+     '¿Por qué llamar a malloc() desde un signal handler es peligroso? Construir el caso de deadlock.',
+     'Escribir un programa que mida su propio context switch time usando rdtsc.']
+  },
+  {id:'L7',title:'Memoria virtual y ELF',domain:'sys',prereqs:['L6'],
+   desc:'El espacio de direcciones virtual, VMAs, page faults, copy-on-write, el formato ELF.',
+   projects:[
+     {id:'vma-explorer',title:'vma-explorer',type:'focused',langs:['c'],phases:2,equiv:'/proc/pid/maps'},
+     {id:'cow-demo',title:'cow-demo',type:'focused',langs:['c'],phases:1,equiv:'demostración de CoW'},
+     {id:'spl_cp',title:'spl_cp',type:'focused',langs:['c','rust'],phases:3,equiv:'cp(1) con sendfile'},
+     {id:'mini-linker',title:'mini-linker',type:'focused',langs:['c'],phases:3,equiv:'ld (tramo inicial)'},
+   ],
+   theory:['VMAs y /proc/pid/maps: cada entrada es un rango de direcciones con permisos y un backing.','Page faults como mecanismo de lazy allocation: el kernel no asigna páginas físicas hasta que se tocan.','Copy-on-write después de fork: padre e hijo comparten páginas físicas hasta que uno escribe.'],
+   exercises:['Leer /proc/self/maps desde el propio programa. Identificar stack, heap, libc y el ejecutable.','Provocar un stack overflow deliberado. ¿Qué señal llega? ¿Cómo detectarlo con ulimit?','¿Por qué mmap de un archivo es más eficiente que read()+write() para archivos grandes?']
+  },
+  {id:'L8',title:'Allocators',domain:'sys',prereqs:['L7'],
+   desc:'Implementar un allocator propio desde mmap. Entender slab allocators y bump allocators.',
+   projects:[
+     {id:'custom-malloc',title:'custom-malloc',type:'integrating',langs:['c','rust'],phases:4,equiv:'jemalloc, mimalloc'},
+     {id:'logico',title:'logico',type:'integrating',langs:['rust'],phases:5,equiv:'Prolog (tramo GC)'},
+   ],
+   theory:['Las tres estrategias de allocator: bump, free-list y slab — trade-offs entre velocidad, fragmentación y tamaño.','Por qué jemalloc usa arenas: reducir contención en entornos multithreaded.','El problema de la fragmentación interna vs externa y por qué no existe solución universal.'],
+   exercises:['Implementar un bump allocator sobre mmap. ¿Cuántos bytes de overhead por alloc?','Medir la velocidad de tu allocator vs malloc de libc con hyperfine.','¿Cómo detecta Valgrind use-after-free? Leer la documentación de shadow memory.']
+  },
+  {id:'L9',title:'Concurrencia',domain:'sys',prereqs:['L8'],
+   desc:'Threads POSIX, mutexes, condition variables, semáforos. Los problemas clásicos.',
+   projects:[
+     {id:'thread-pool',title:'thread-pool',type:'focused',langs:['c','rust'],phases:2,equiv:'rayon, threadpool'},
+     {id:'prod-cons',title:'prod-cons',type:'focused',langs:['c','rust'],phases:2,equiv:'problema clásico'},
+     {id:'rwlock-impl',title:'rwlock-impl',type:'focused',langs:['c'],phases:2,equiv:'pthread_rwlock'},
+   ],
+   theory:['Threads vs procesos: misma memoria, distinto stack — las consecuencias de compartir el heap.','Mutex como contrato: solo previene data races, no garantiza ausencia de deadlocks.','Condition variables: por qué el while loop (no if) y por qué el spurious wakeup existe.'],
+   exercises:['Implementar el problema de los filósofos comensales con deadlock deliberado. Luego arreglarlo.','¿Por qué un mutex recursivo es una señal de diseño problemático? Construir el caso.','Medir el overhead de un mutex non-contended con rdtsc.']
+  },
+  {id:'L10',title:'Concurrencia avanzada',domain:'sys',prereqs:['L9'],
+   desc:'Lock-free programming, memory ordering, RCU. El modelo de memoria de C11 y Rust.',
+   projects:[
+     {id:'impl_arc',title:'impl_arc',type:'focused',langs:['rust'],phases:2,equiv:'Arc<T> de std'},
+     {id:'lock-free-queue',title:'lock-free-queue',type:'focused',langs:['c','rust'],phases:3,equiv:'crossbeam-queue'},
+     {id:'rcu-demo',title:'rcu-demo',type:'focused',langs:['c'],phases:2,equiv:'RCU del kernel Linux'},
+   ],
+   theory:['El modelo de memoria de C11: por qué la CPU y el compilador reordenan instrucciones y cuándo importa.','Acquire-release semantics: qué garantizan y qué no garantizan entre threads.','RCU (Read-Copy-Update): la idea de que los lectores nunca se bloquean y los escritores copian.'],
+   exercises:['Implementar un contador atómico sin mutex. ¿Cuándo es suficiente Relaxed y cuándo necesitás SeqCst?','Escribir un test que revele el memory ordering incorrecto. ¿Es reproducible?','¿Por qué el double-checked locking sin atomics es incorrecto? Construir el caso.']
+  },
+  {id:'L11',title:'IPC',domain:'sys',prereqs:['L10'],
+   desc:'Pipes, FIFOs, sockets Unix, memoria compartida, semáforos POSIX. Expansión de mish.',
+   projects:[
+     {id:'named-pipe-sem',title:'named-pipe-sem',type:'focused',langs:['c'],phases:2,equiv:'mkfifo(1)'},
+     {id:'ipc-explorer',title:'ipc-explorer',type:'focused',langs:['c','rust'],phases:2,equiv:'ipcs(1)'},
+     {id:'mish',title:'mish (tramo L11)',type:'integrating',langs:['c','rust'],phases:2,equiv:'pipes, redirecciones, job control'},
+   ],
+   theory:['Pipes como caso especial del VFS: un pipe es un par de file descriptors con un buffer en el kernel.','Sockets Unix vs named pipes: los sockets tienen accept/connect, los pipes son one-way.','El problema de los zombie processes: por qué wait() existe y qué pasa si no se llama.'],
+   exercises:['Implementar <code>ls | wc -l</code> desde C sin usar system(). ¿Cuántos pipes, forks y execs necesita?','¿Qué pasa si el lector de un pipe cierra su fd y el escritor sigue escribiendo? Reproducirlo.','Implementar un semáforo con un pipe y un byte de token.']
+  },
+  {id:'L12',title:'Lexers y parsers',domain:'comp',prereqs:['L4'],
+   desc:'Autómatas finitos, expresiones regulares, parsing LL y LR, árboles sintácticos.',
+   projects:[
+     {id:'regex-engine',title:'regex-engine',type:'focused',langs:['c','rust'],phases:3,equiv:'grep, PCRE'},
+     {id:'expr-parser',title:'expr-parser',type:'focused',langs:['rust'],phases:2,equiv:'ast de expresiones'},
+   ],
+   theory:['Autómatas finitos deterministas vs no-deterministas: NFA es más expresivo, DFA es más eficiente.','El algoritmo de Thompson para compilar regex a NFA.','Parsing LL(k) vs LR(1): por qué los parsers LR reconocen más gramáticas.'],
+   exercises:['Implementar un lexer para JSON. ¿Cuántos estados necesita el autómata?','¿Por qué las regex no pueden parsear HTML? Construir el contraejemplo con recursión.','Implementar un parser de expresiones aritméticas con precedencia correcta sin yacc.']
+  },
+  {id:'L13',title:'Intérpretes',domain:'comp',prereqs:['L12'],
+   desc:'Tree-walking interpreters, bytecode VMs, evaluación lazy vs eager.',
+   projects:[
+     {id:'logico',title:'logico',type:'integrating',langs:['rust'],phases:5,equiv:'SWI-Prolog (subconjunto)'},
+   ],
+   theory:['Tree-walking interpreter: simple de implementar, lento por cache misses en el AST.','Bytecode VM: compilar a instrucciones de stack machine, ejecutar con un loop de dispatch.','Continuations como representación explícita del stack de llamadas.'],
+   exercises:['Implementar un intérprete de un lenguaje de expresiones con variables y funciones.','¿Cuánto más rápido es una bytecode VM vs un tree-walker para el mismo programa?','Agregar tail-call optimization al intérprete. ¿Dónde vive el estado de la recursión?']
+  },
+  {id:'L14',title:'Sistemas de tipos',domain:'comp',prereqs:['L13'],
+   desc:'Hindley-Milner, inferencia de tipos, polimorfismo paramétrico.',
+   projects:[
+     {id:'logico',title:'logico (tipo checker)',type:'integrating',langs:['rust'],phases:2,equiv:'tipo checker de Prolog'},
+   ],
+   theory:['Algoritmo W y unificación: cómo Hindley-Milner infiere tipos sin anotaciones explícitas.','Polimorfismo paramétrico vs polimorfismo ad-hoc (overloading): la diferencia semántica.','El problema de la completitud: por qué Hindley-Milner es completo y por qué los tipos dependientes no.'],
+   exercises:['Implementar unificación de términos de primer orden.','¿Por qué let-polymorphism existe y qué problema resuelve el value restriction?','Agregar inferencia de tipos al intérprete de L13.']
+  },
+  {id:'L15',title:'Persistencia',domain:'adv',prereqs:['L11'],
+   desc:'Storage engines, WAL, B-trees, MVCC.',
+   projects:[
+     {id:'minisql',title:'minisql',type:'integrating',langs:['rust'],phases:4,equiv:'SQLite (subconjunto)'},
+   ],
+   theory:['Write-Ahead Logging: por qué el log va antes que el dato y cómo garantiza durabilidad.','B-trees vs LSM trees: read-heavy vs write-heavy, la diferencia de amplificación.','MVCC: múltiples versiones de un dato para que lectores no bloqueen a escritores.'],
+   exercises:['Implementar un B-tree que persiste en disco con mmap.','¿Cuál es la diferencia entre durabilidad y consistencia? Construir un caso donde falla cada una.','Medir el impacto de fsync en throughput de escritura.']
+  },
+  {id:'L16',title:'Redes',domain:'adv',prereqs:['L11'],
+   desc:'TCP/IP, sockets, protocolos de aplicación, TLS.',
+   projects:[
+     {id:'shell-remoto-tcp',title:'shell-remoto-tcp',type:'focused',langs:['c','rust'],phases:2,equiv:'netcat -e'},
+     {id:'mini-dns-resolver',title:'mini-dns-resolver',type:'focused',langs:['rust'],phases:2,equiv:'dig(1)'},
+     {id:'http-server',title:'http-server',type:'integrating',langs:['rust'],phases:3,equiv:'nginx (HTTP/1.1)'},
+   ],
+   theory:['TCP como protocolo de entrega confiable sobre IP no confiable: sliding window, retransmisión, control de congestión.','El three-way handshake y el TIME_WAIT: por qué las conexiones no mueren inmediatamente.','TLS 1.3: el handshake reducido a un round-trip y por qué el modelo anterior era inseguro.'],
+   exercises:['Implementar un cliente HTTP/1.1 desde cero sobre sockets crudos.','¿Por qué SO_REUSEADDR existe? Reproducir el error sin él.','Medir la latencia de un TCP round-trip con resolución de microsegundos.']
+  },
+  {id:'L17',title:'Performance',domain:'adv',prereqs:['L16'],
+   desc:'Profiling, flamegraphs, cache locality, false sharing, SIMD.',
+   projects:[
+     {id:'perf-benchmarks',title:'perf-benchmarks',type:'focused',langs:['c','rust'],phases:2,equiv:'benchmarks de referencia'},
+     {id:'flamegraph-lab',title:'flamegraph-lab',type:'focused',langs:['c','rust'],phases:2,equiv:'cargo-flamegraph'},
+     {id:'cache-locality-exp',title:'cache-locality-exp',type:'focused',langs:['c'],phases:2,equiv:'experimento de localidad'},
+   ],
+   theory:['La jerarquía de memoria: L1/L2/L3 cache, RAM, SSD — las latencias en nanosegundos que hay que tener memorizadas.','False sharing: dos threads tocando variables distintas en la misma cache line se bloquean entre sí.','Branch prediction y por qué los loops predecibles son más rápidos que los if aleatorios.'],
+   exercises:['Medir el impacto de row-major vs column-major access en una matrix multiplication.','Escribir un benchmark que revele false sharing. Arreglarlo con padding.','Generar un flamegraph de custom-malloc bajo carga. Identificar el hot path.']
+  },
+  {id:'L18',title:'Seguridad',domain:'adv',prereqs:['L17'],
+   desc:'Vulnerabilidades de memoria, exploit mitigations, fuzzing, sandboxing.',
+   projects:[
+     {id:'impl_script',title:'impl_script',type:'focused',langs:['c'],phases:2,equiv:'seccomp-bpf filter'},
+   ],
+   theory:['Stack smashing: cómo un buffer overflow en el stack puede redirigir el control de flujo.','Mitigaciones modernas: ASLR, stack canaries, NX bits, CFI — y sus limitaciones.','Fuzzing: por qué la cobertura guiada (AFL, libFuzzer) es más eficiente que el random fuzzing.'],
+   exercises:['Reproducir un stack overflow controlado en un binario compilado sin mitigaciones.','¿Qué hace un stack canary exactamente? Leer el assembly generado con -fstack-protector.','Escribir un harness de libFuzzer para el parser de L12.']
+  },
+  {id:'L19',title:'Async I/O',domain:'adv',prereqs:['L18'],
+   desc:'io_uring, epoll, el modelo de completion vs el modelo de readiness.',
+   projects:[
+     {id:'io_uring-echo',title:'io_uring-echo',type:'focused',langs:['c','rust'],phases:3,equiv:'servidor echo con io_uring'},
+     {id:'async-runtime',title:'async-runtime',type:'integrating',langs:['rust'],phases:4,equiv:'tokio (tramo básico)'},
+   ],
+   theory:['epoll vs select: por qué epoll escala a miles de fds y select no.','io_uring: el modelo de submission queue + completion queue que elimina el syscall overhead.','async/await en Rust como máquina de estados generada por el compilador.'],
+   exercises:['Implementar un servidor echo que maneje 1000 conexiones simultáneas con epoll.','¿Cuántos syscalls hace io_uring para 1000 operaciones vs la misma cantidad con read/write?','Implementar un future simple desde cero sin tokio.']
+  },
+  {id:'L20',title:'Contenedores',domain:'adv',prereqs:['L19'],
+   desc:'Namespaces, cgroups, overlay filesystems. Implementar un runtime de contenedores mínimo.',
+   projects:[
+     {id:'minidocker',title:'minidocker',type:'integrating',langs:['c'],phases:4,equiv:'docker run (subconjunto)'},
+   ],
+   theory:['Linux namespaces: PID, mount, net, UTS, IPC, user — cada uno aisla un aspecto del sistema.','cgroups v2: control de CPU, memoria y I/O por grupo de procesos.','Overlay filesystems: cómo las imágenes de contenedores son capas de solo lectura con una capa escribible encima.'],
+   exercises:['Crear un namespace de PID con clone(). ¿Qué PID tiene el proceso dentro del namespace?','Limitar un proceso a 100MB de RAM con cgroups. ¿Qué señal recibe cuando se excede?','Montar un overlay filesystem manualmente con mount(2).']
+  },
+  {id:'L21',title:'Orquestación',domain:'adv',prereqs:['L20'],
+   desc:'Schedulers de cluster, service discovery, consensus.',
+   projects:[
+     {id:'orquestador',title:'orquestador',type:'integrating',langs:['rust'],phases:4,equiv:'Kubernetes (subconjunto)'},
+   ],
+   theory:['El problema de consensus distribuido: por qué no existe un algoritmo simple y qué hace Raft diferente a Paxos.','Service discovery: DNS vs sidecar vs control plane — los trade-offs de cada modelo.','El CAP theorem como herramienta de diseño: consistency, availability, partition tolerance.'],
+   exercises:['Implementar leader election con Raft sobre un canal en memoria.','¿Qué es un split-brain en un cluster? ¿Cómo lo detecta y resuelve Raft?','Implementar un health check que distingue lentitud de muerte.']
+  },
+  {id:'L22',title:'Codegen y JIT',domain:'comp',prereqs:['L14'],
+   desc:'Compilación a código máquina, IR, optimizaciones básicas, JIT compilation.',
+   projects:[
+     {id:'jit-brain',title:'jit-brain',type:'integrating',langs:['c','rust'],phases:4,equiv:'LuaJIT (tramo básico)'},
+   ],
+   theory:['Intermediate Representations: por qué los compiladores no van directo de AST a código máquina.','SSA form: por qué asignar una variable exactamente una vez simplifica las optimizaciones.','JIT compilation: compilar en tiempo de ejecución, los trade-offs de compilation latency vs peak performance.'],
+   exercises:['Generar código máquina x86-64 en memoria y ejecutarlo con mmap+mprotect.','Implementar constant folding sobre un IR simple.','¿Cuál es la diferencia entre un trace JIT y un method JIT?']
+  },
+  {id:'L23',title:'Kernel',domain:'adv',prereqs:['L21'],
+   desc:'Módulos de kernel, drivers de caracteres, RAM filesystem, KVM hypervisor.',
+   projects:[
+     {id:'char-driver',title:'char-driver',type:'focused',langs:['c'],phases:2,equiv:'driver de dispositivo simple'},
+     {id:'ram-filesystem',title:'ram-filesystem',type:'integrating',langs:['c'],phases:4,equiv:'tmpfs'},
+     {id:'ebpf-tracer',title:'ebpf-tracer',type:'focused',langs:['c','rust'],phases:2,equiv:'bpftrace'},
+     {id:'kvm-mini-hypervisor',title:'kvm-mini-hypervisor',type:'integrating',langs:['c'],phases:3,equiv:'QEMU (tramo básico)'},
+   ],
+   theory:['El espacio del kernel como entorno de ejecución sin libc, sin malloc, sin excepciones — solo kmalloc y panic.','VFS internals: inode, dentry, file_operations — la tabla de métodos que implementa un filesystem.','KVM: Linux como hypervisor, el modelo de VM exit y cómo el guest ejecuta código nativo.'],
+   exercises:['Escribir un módulo de kernel que responde a read() con un string fijo.','¿Qué es un page cache y por qué dirty pages se escriben en batch?','Implementar un filesystem que vive enteramente en RAM con un único archivo.']
+  },
+]
+
+const domainMeta = {
+  lang:{name:'Lenguajes',color:'lang',levels:['L0','L1a','L1b','L2','L3a','L3b','L4']},
+  sys:{name:'Sistemas',color:'sys',levels:['L5','L6','L7','L8','L9','L10','L11']},
+  comp:{name:'Compiladores',color:'comp',levels:['L12','L13','L14','L22']},
+  adv:{name:'Avanzado',color:'adv',levels:['L15','L16','L17','L18','L19','L20','L21','L23']},
+}
+
+let state = {view:'map', selectedLevel:null}
+
+function enterWorkspace(){
+  document.getElementById('landing').classList.add('hidden')
+  const ws = document.getElementById('workspace')
+  ws.style.display='flex'
+  requestAnimationFrame(()=>ws.classList.add('visible'))
+  renderSidebar()
+  renderMapView()
+}
+function exitWorkspace(){
+  document.getElementById('landing').classList.remove('hidden')
+  document.getElementById('workspace').classList.remove('visible')
+}
+
+function switchView(v){
+  state.view = v
+  document.getElementById('tab-map').classList.toggle('active', v==='map')
+  document.getElementById('tab-unit').classList.toggle('active', v==='unit')
+  document.getElementById('view-map').style.display = v==='map'?'block':'none'
+  const unitView = document.getElementById('view-unit')
+  if(v==='unit'){unitView.classList.add('visible')}
+  else{unitView.classList.remove('visible')}
+}
+
+function selectLevel(id){
+  state.selectedLevel = id
+  document.querySelectorAll('.level-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.id===id)
+  })
+  renderUnitView(id)
+  switchView('unit')
+}
+
+function renderSidebar(){
+  const container = document.getElementById('sidebar-levels')
+  container.innerHTML = levels.map(l=>`
+    <div class="level-item" data-id="${l.id}" onclick="selectLevel('${l.id}')">
+      <div class="level-code ${l.domain}">${l.id}</div>
+      <div class="level-info">
+        <div class="level-title">${l.title}</div>
+        <div class="level-projects-count">${l.projects.length} proyecto${l.projects.length!==1?'s':''}</div>
+      </div>
+    </div>
+  `).join('')
+}
+
+function renderMapView(){
+  const container = document.getElementById('map-domains')
+  container.innerHTML = Object.entries(domainMeta).map(([key,domain])=>{
+    const domainLevels = levels.filter(l=>l.domain===key)
+    return `
+    <div class="domain-section">
+      <div class="domain-header">
+        <span class="domain-badge badge-${domain.color}">${domain.name.toUpperCase()}</span>
+        <span class="domain-name">${domain.name}</span>
+        <span class="domain-count">${domainLevels.length} niveles</span>
+      </div>
+      <div class="levels-cards">
+        ${domainLevels.map(l=>`
+          <div class="level-card" onclick="selectLevel('${l.id}')">
+            <div class="lc-code ${l.domain}">${l.id}</div>
+            <div class="lc-title">${l.title}</div>
+            <div class="lc-projects">
+              ${l.projects.slice(0,4).map(p=>`<span class="proj-chip ${p.type==='integrating'?'integrating':''}">${p.id}</span>`).join('')}
+              ${l.projects.length>4?`<span class="proj-chip">+${l.projects.length-4}</span>`:''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`
+  }).join('')
+}
+
+function renderUnitView(id){
+  const level = levels.find(l=>l.id===id)
+  if(!level) return
+  const unitEl = document.getElementById('view-unit')
+  unitEl.innerHTML = `
+    <div class="unit-hero">
+      <div class="unit-breadcrumb">
+        <span onclick="switchView('map')">mapa</span>
+        <span class="bc-sep">›</span>
+        <span>${domainMeta[level.domain].name}</span>
+        <span class="bc-sep">›</span>
+        <span>${level.id}</span>
+      </div>
+      <div class="unit-header">
+        <div class="unit-code-big ${level.domain}">${level.id}</div>
+        <div class="unit-head-right">
+          <div class="unit-title-main">${level.title}</div>
+          <div class="unit-meta-row">
+            <span class="unit-domain-badge badge-${level.domain}">${domainMeta[level.domain].name}</span>
+            ${level.prereqs.length?`
+              <span class="unit-prereq">
+                prereqs:
+                ${level.prereqs.map(p=>`<span class="prereq-tag" onclick="selectLevel('${p}')">${p}</span>`).join('')}
+              </span>
+            `:'<span class="unit-prereq" style="color:var(--c-sys-dim)">punto de entrada</span>'}
+          </div>
+        </div>
+      </div>
+      <p class="unit-desc">${level.desc}</p>
+    </div>
+
+    <div class="unit-body">
+      <div class="section-title">teoría</div>
+      <div class="theory-block">
+        <div class="theory-content">
+          <h3>Contenido del nivel</h3>
+          <ul>
+            ${level.theory.map(t=>`<li>${t}</li>`).join('')}
+          </ul>
+          <p style="margin-top:1rem">Los fragmentos de código de ilustración están en <code>content/theory/${id.toLowerCase()}-${level.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')}/src/</code> y se referencian desde el README del nivel.</p>
+        </div>
+        <button class="read-more">Leer README completo →</button>
+      </div>
+
+      <div class="section-title">proyectos</div>
+      <div class="projects-grid">
+        ${level.projects.map(p=>`
+          <div class="project-row">
+            <span class="proj-type-badge type-${p.type}">${p.type==='integrating'?'integrador':'focalizado'}</span>
+            <div class="proj-info">
+              <div class="proj-name">${p.id}</div>
+              <div class="proj-desc">Equivalente industrial: ${p.equiv}</div>
+              <div class="proj-meta">
+                ${p.langs.map(l=>`<span class="proj-lang">${l}</span>`).join('')}
+                <span class="proj-phases">${p.phases} fase${p.phases!==1?'s':''}</span>
+              </div>
+            </div>
+            <span class="proj-chevron">›</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="section-title">ejercicios</div>
+      <div class="exercises-block">
+        ${level.exercises.map((e,i)=>`
+          <div class="exercise-item">
+            <span class="ex-num">${String(i+1).padStart(2,'0')}</span>
+            <div class="ex-text">${e}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `
+}
+
+document.getElementById('workspace').style.display='none'
+</script>
+</body>
+</html>

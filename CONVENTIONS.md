@@ -66,3 +66,81 @@ En esta fase, los README de cada rama funcionan como placeholders trackeables. L
 ## Biblioteca local
 
 La carpeta `libros-consulta/` queda reservada para materiales privados de consulta personal. Debe permanecer fuera de Git y del remoto.
+
+---
+
+## Filosofía de autoría de contenido
+
+Esta sección documenta cómo se escribe el contenido de los niveles teóricos de Forja. Aplica a todas las secciones de todos los niveles.
+
+### Estructura de un nivel
+
+Cada nivel teórico tiene un directorio `sections/` con archivos `.md` numerados:
+
+```
+sections/
+  00-introduccion.md   ← siempre presente: qué es este nivel, qué no es, el mapa
+  01-primer-tema.md
+  02-segundo-tema.md
+  ...
+```
+
+- Los archivos se ordenan lexicográficamente. El prefijo numérico (`00`, `01`, `02`...) define el orden y el número que aparece en el sidebar de la web.
+- La primera línea de cada archivo debe ser un heading `# Título` (sin prefijo numérico). Ese título es el que aparece en el sidebar.
+- `README.md` del nivel es un documento de diseño interno (no se muestra en la web cuando existe `sections/`). Ver plantilla al final de esta sección.
+
+### La sección 00 — Introducción
+
+Todo nivel debe tener una sección `00-introduccion.md` que establezca:
+
+1. **Qué es este nivel** — en qué contexto del mapa completo aparece.
+2. **Qué cubre** — tabla de las secciones con una línea descriptiva por cada una.
+3. **Qué toca superficialmente y por qué** — con referencia explícita al nivel donde se profundiza.
+4. **Qué no cubre en absoluto y por qué** — mismo criterio.
+5. **Cómo trabajarlo** — secciones + ejercicios + proyecto.
+6. **El nivel siguiente** — a dónde va el mapa desde acá.
+
+### Cobertura explícita: nada colgado
+
+Cada vez que un tema se introduce de forma parcial o superficial, el texto debe decirlo explícitamente:
+
+- **Si el tema se trata en otro nivel**: citar ese nivel. Ej: *"el formato ELF se cubre en L7, una vez que se tiene el contexto de memoria virtual"*.
+- **Si el tema se menciona pero no se enseña**: justificar por qué. Ej: *"malloc aparece aquí solo como herramienta; la mecánica interna del heap es L2"*.
+- **Si algo queda sin resolver intencionalmente**: decirlo y decir cuándo se resuelve.
+
+No está permitido que un concepto quede "colgado": presentado, pero sin cierre ni referencia. Todo cabo suelto lleva una etiqueta explícita.
+
+### Tono
+
+- **Técnico pero motivado.** Antes de explicar *cómo* funciona algo, explicar *por qué importa* en el contexto del nivel.
+- **Sin condescendencia.** El lector sabe programar; lo que construye Forja es profundidad, no alfabetización.
+- **Directo.** Sin padding introductorio del tipo "en esta sección vamos a ver...". El contenido empieza en la primera oración.
+- **El laboratorio es el método.** Las secciones no son apuntes de cátedra: son guías de experimentación. Cada concepto tiene un comando para verificarlo o un ejemplo que se puede modificar y observar.
+
+### Ejercicios — siempre accionables
+
+Todos los ejercicios deben ser accionables de una de estas dos formas:
+
+1. **Comando con resultado observable**: un comando de shell cuyo output el estudiante puede comparar o interpretar. Puede pedir interpretarlo, modificar algo y observar el cambio, o comparar dos variantes.
+2. **Multiple choice con verificación**: una pregunta con opciones, la respuesta correcta marcada, y un comando que permite comprobar la respuesta empíricamente.
+
+**Prohibido**: ejercicios del tipo "describí con tus palabras", "explicá la diferencia entre X e Y", o cualquier cosa que no produzca un resultado verificable. Forja aprende haciendo, no escribiendo ensayos.
+
+### Plantilla de README.md de nivel
+
+```markdown
+# LN — Nombre del nivel
+
+> El contenido está en `sections/`. Este README es un documento de diseño interno.
+>
+> Diseño curricular → `docs/forja-contenido.md`
+
+## Secciones
+
+| Archivo | Título |
+|---|---|
+| `sections/00-introduccion.md` | Introducción |
+| `sections/01-...md` | ... |
+
+Ejercicios en `exercises.md`. Meta del nivel en `meta.yaml`.
+```

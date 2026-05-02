@@ -17,6 +17,7 @@
 | Tracking de progreso | `localStorage` exclusivamente |
 | Acceso al contenido | Doble: web como interfaz de navegación + repo como fuente directa |
 | Organización de fases | Directorios por fase dentro de cada proyecto |
+| Fuente de verdad de contenido renderizado | Markdown local al contenido (`README.md`, `exercises.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`) |
 | Fuente de verdad de metadata | Local al contenido: `meta.yaml` por nivel y `project.yaml` por proyecto |
 
 ---
@@ -372,6 +373,29 @@ La web no edita ni mantiene índices globales a mano. En build time, escanea tod
 
 La resolución de dependencias de proyectos respecto a niveles sale de `project.yaml`, no de inferir prose ni de parsear la tabla de `forja-contenido.md`. La tabla sirve como documento humano del plan; `project.yaml` sirve como contrato estructurado para repo y web.
 
+### Reglas de autoría y no duplicación
+
+El modelo correcto de autoría es este:
+
+- `docs/forja-contenido.md` define el plan curricular humano: qué existe, en qué orden cae, qué foco tiene cada nivel y qué proyecto pertenece a qué arco.
+- `content/theory/*/README.md` y `content/theory/*/exercises.md` contienen el cuerpo real de cada unidad teórica.
+- `content/projects/**/README.md` describe el proyecto; cada `phase-n/README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` contiene el cuerpo real de cada fase.
+- `meta.yaml` y `project.yaml` contienen la estructura navegable y las dependencias reales. Si una relación importa para repo o web, debe vivir ahí y no solo en prose.
+- `metadata/paths.yaml` y `metadata/cross-refs.yaml` contienen solo relaciones globales no derivables del contenido local.
+- Cualquier índice agregado para acelerar build o búsqueda debe ser generado. Nunca editado a mano.
+
+De estas reglas salen dos consecuencias prácticas:
+
+- No se duplica el cuerpo de una unidad o de una fase en `docs/`. `docs/` describe el sistema y el plan; `content/` contiene el material que la web renderiza.
+- No se duplican dependencias, stages o relaciones como fuente operativa en prose si ya existen en YAML. La prose explica; el YAML resuelve.
+
+Si la web necesita un resumen corto para cards, listados o previews, hay solo dos opciones válidas:
+
+- derivarlo del primer párrafo del Markdown correspondiente
+- agregar un campo breve explícito en YAML y tratarlo como dueño único de ese resumen
+
+Lo que no se hace es redactar el mismo resumen en tres lugares distintos.
+
 ---
 
 ## La web — React + TypeScript + Vite
@@ -383,7 +407,7 @@ La web convierte la estructura del repo en una experiencia de navegación. El us
 - Mapa visual interactivo del grafo de dependencias
 - Referencias cruzadas clickeables entre teoría y proyectos
 - Tracking de progreso local (qué completó, qué tiene desbloqueado)
-- Renderizado de Markdown con syntax highlighting y diagramas
+- Renderizado de Markdown/GFM tomado del repo
 - Búsqueda de conceptos a través de todos los contenidos
 
 ### Lo que la web no hace
@@ -395,23 +419,36 @@ La web convierte la estructura del repo en una experiencia de navegación. El us
 
 ### Procesamiento en build time
 
-Vite procesa el contenido en build time — los archivos Markdown y YAML se importan durante el build y el resultado es un sitio estático. El servidor no hace nada en runtime. La web trata `meta.yaml` y `project.yaml` como la fuente de verdad del contenido; `metadata/paths.yaml` y `metadata/cross-refs.yaml` complementan solo la parte relacional global.
+Vite procesa el contenido en build time — los archivos Markdown y YAML se importan durante el build y el resultado es un sitio estático. El servidor no hace nada en runtime.
+
+La separación correcta es esta:
+
+- Markdown (`README.md`, `exercises.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`) es la fuente de verdad del cuerpo renderizado.
+- `meta.yaml` y `project.yaml` son la fuente de verdad estructural local.
+- `metadata/paths.yaml` y `metadata/cross-refs.yaml` complementan solo la parte relacional global.
 
 ```ts
-// vite.config.ts — importar todos los README.md de theory/
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import mdx from '@mdx-js/rollup'
-import remarkGfm from 'remark-gfm'
-import rehypeShiki from 'rehype-shiki'
+// web/src/lib/catalog.ts — escaneo del repo en build time
+const levelMetaModules = import.meta.glob("../../../content/theory/*/meta.yaml", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+})
 
-export default defineConfig({
-  plugins: [
-    mdx({ remarkPlugins: [remarkGfm], rehypePlugins: [rehypeShiki] }),
-    react(),
-  ],
+const levelReadmeModules = import.meta.glob("../../../content/theory/*/README.md", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+})
+
+const projectMetaModules = import.meta.glob("../../../content/projects/*/*/project.yaml", {
+  eager: true,
+  import: "default",
+  query: "?raw",
 })
 ```
+
+El renderer actual de la web es Markdown plano con GFM. Syntax highlighting avanzado, diagramas o includes automáticos de snippets son mejoras futuras del renderer, no una segunda fuente de contenido.
 
 ### Páginas de la web
 
@@ -523,6 +560,7 @@ El repo es la fuente de verdad. La web es un lector del repo.
 
 | Aspecto | Repo (GitHub) | Web |
 |---|---|---|
+| Plan curricular humano | `docs/forja-contenido.md` | Contexto y navegación, no cuerpo docente renderizado |
 | Contenido teórico | Markdown en `content/theory/` | Renderizado como páginas |
 | Código de proyectos | Directorios en `content/projects/` | Listado con links a GitHub |
 | Grafo de dependencias | YAML local (`meta.yaml` y `project.yaml`) + relaciones globales en `metadata/` | Visualización interactiva |

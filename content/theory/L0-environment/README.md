@@ -1,21 +1,18 @@
-# L0 - Entorno y Toolchain
+# L0 � Entorno y Toolchain
 
-Este nivel queda sembrado en Base 2 para fijar estructura, metadata y navegacion.
+> El contenido de este nivel est� en `sections/`. Este README es un documento de dise�o interno; no se muestra en la web.
+>
+> Dise�o curricular de L0 ? `docs/forja-contenido.md`
 
-## Estado actual
+## Secciones
 
-- Contenido teorico: pendiente.
-- Ejemplos en `src/`: pendiente.
-- Integracion fina con la web: pendiente.
+| Archivo | T�tulo |
+|---|---|
+| `sections/00-introduccion.md` | Introducci�n |
+| `sections/01-laboratorio.md` | El laboratorio |
+| `sections/02-compilador.md` | El pipeline de compilaci�n |
+| `sections/03-maquina.md` | Una intuici�n de m�quina |
+| `sections/04-herramientas.md` | Herramientas de observaci�n |
+| `sections/05-primer-recorrido.md` | Tu primer recorrido completo |
 
-## Prerequisitos
-
-- Sin prerequisitos declarados.
-
-## Proyectos asociados
-
-- devcontainer-setup
-
-## Proximo paso
-
-Completar este README con teoria, ejemplos y referencias cruzadas cuando se abra la fase del nivel.
+Ejercicios en `exercises.md`. Meta del nivel en `meta.yaml`.

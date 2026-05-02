@@ -17,12 +17,12 @@ La regla base es esta:
 
 La unidad de avance pasa a ser una **fase lineal** con foco explícito.
 
-Las fuentes de verdad del orden son dos:
+La separación correcta de fuentes es esta:
 
-- los niveles de la sección 4 de `forja-contenido.md`
-- la `Tabla completa de proyectos` de la sección 6 de `forja-contenido.md`
+- `docs/forja-contenido.md` fija el orden humano del plan: niveles, foco curricular y tabla de proyectos como mapa legible.
+- `meta.yaml` y `project.yaml` fijan el orden operativo: prerequisitos reales, niveles visibles, tramos y reaperturas de proyecto.
 
-Con esas dos piezas, el orden maestro de construcción puede fijarse desde ahora mismo.
+Con esas dos capas, el orden maestro de construcción puede fijarse desde ahora mismo sin depender de prose suelta ni de decisiones tomadas a ojo.
 
 ---
 
