@@ -90,7 +90,8 @@ Que la persona pueda describir un programa en ejecución como una máquina de es
 - `exercises/02-distinguir-las-piezas.md`: clasificar afirmaciones típicas como confusión entre CPU, registro, memoria, dirección, código o dato.
 - `exercises/03-salto-condicional.md`: dado un salto condicional y varios estados posibles, elegir cómo queda el `pc` en cada caso.
 - `exercises/04-source-codigo-y-proceso.md`: clasificar ejemplos concretos como source, código cargado, dato o programa en ejecución.
-- `exercises/05-comparar-estados.md`: comparar dos estados simples para decidir si cambió el código cargado, el estado de ejecución o solo los datos.
+- `exercises/05-comparar-estados.md`: comparar dos estados os layouts...
+quisiera ples para decidir si cambió el código cargado, el estado de ejecución o solo los datos.
 
 ## Decisiones de diseño
 
