@@ -22,6 +22,16 @@
 
 ---
 
+## Estado editorial actual
+
+El canon visible del repo ya cubre `L0-L57` y el catálogo estructural actual de proyectos. Eso no implica authoría real homogénea dentro de `content/`.
+
+- En teoría, el placeholder estructural mínimo canónico es `README.md` + `meta.yaml`. Hoy solo `L0` tiene outline, capítulos y ejercicios escritos como contenido real.
+- En proyectos, el placeholder estructural mínimo es `README.md` + `project.yaml` + los directorios de lenguaje pertinentes. Hoy solo `devcontainer-setup` tiene un `README.md` raíz de authoría real.
+- `docs/` puede describir candidatos y capas futuras antes de que exista su materialización completa. La web y el build solo consumen lo que ya existe estructuralmente en `metadata/` y `content/`.
+
+---
+
 ## Estructura del repositorio
 
 ```text
@@ -37,7 +47,7 @@ forja/
 │   ├── forja-proyectos.md
 │   ├── forja-arquitectura.md
 │   └── forja-construccion.md
-├── verify-setup.sh                    # Verificación común del entorno
+├── verify-setup.sh                    # Verificacion comun del laboratorio/devcontainer
 ├── .devcontainer/                     # Laboratorio Linux reproducible
 │   ├── devcontainer.json
 │   └── Dockerfile
@@ -48,8 +58,8 @@ forja/
 │   │   ├── L1-modelo-mental-computadora/
 │   │   ├── L2-representacion-informacion/
 │   │   ├── ...
-│   │   ├── L48-kernel-space-1/
-│   │   └── L49-kernel-space-2/
+│   │   ├── L56-kernel-space-1/
+│   │   └── L57-kernel-space-2/
 │   │
 │   └── projects/                      # Track práctico — proyectos
 │       ├── focused/                   # Proyectos focalizados
@@ -124,20 +134,23 @@ forja/
 │           ├── jit-brain/
 │           └── kvm-mini-hypervisor/
 │
-├── metadata/                          # Relaciones globales no derivables del contenido local
+├── metadata/                          # Relaciones globales y catálogo canónico
+│   ├── README.md
+│   ├── levels.yaml                    # Catálogo canónico de niveles
 │   ├── paths.yaml                     # Los 4 caminos de navegación
 │   └── cross-refs.yaml                # Relaciones teoría ↔ proyectos y notas transversales
 │
 └── web/                               # Aplicación React
     ├── src/
-    │   ├── components/
-    │   ├── pages/
-    │   ├── hooks/
-    │   ├── lib/                       # Parsing de YAML, carga de MD, grafo
-    │   └── store/                     # Estado de progreso (localStorage)
-    ├── public/
+  │   ├── App.tsx
+  │   ├── components/
+  │   ├── lib/                       # Parsing de YAML, carga de MD y helpers curriculares
+  │   ├── styles/
+  │   ├── main.tsx
+  │   └── vite-env.d.ts
     ├── index.html
     ├── vite.config.ts
+  ├── tsconfig.app.json
     ├── tsconfig.json
     └── package.json
 ```
@@ -146,29 +159,37 @@ forja/
 
 ## Estructura de una unidad teórica
 
-Cuando un nivel entra en authoring real, su estructura interna objetivo es esta:
+Mientras un nivel siga en placeholder estructural, su mínimo canónico actual es este:
 
 ```text
-L20-procesos-senales/
-├── README.md               # Documento interno del nivel
-├── chapters/               # Cuerpo real cuando el nivel ya fue escrito
-│   └── .gitkeep
-├── src/                    # Fragmentos de código ilustrativos
-│   └── .gitkeep
-├── exercises.md            # Ejercicios puntuales (preguntas + modificaciones)
-├── outline.md              # Diseño del nivel
+L20-posix-filesystem/
+├── README.md               # Placeholder editorial o documento real del nivel
 └── meta.yaml               # Metadatos locales del nivel
 ```
 
-`README.md` es el documento principal. Sigue la estructura del nivel definida en `forja-contenido.md` — tema y motivación, desarrollo conceptual, código de ilustración, errores típicos, referencias cruzadas, lectura adicional.
+Cuando un nivel entra en authoring real, su estructura puede expandirse a esto:
 
-Si un nivel todavía está solo documentado en `docs/` o existe como carpeta dummy, puede no tener todavía `outline.md`, `chapters/` desarrollados ni contenido final. Esa ausencia no contradice el plan; solo indica que su turno editorial no llegó.
+```text
+L20-posix-filesystem/
+├── README.md               # Documento principal del nivel
+├── meta.yaml               # Metadatos locales del nivel
+├── outline.md              # Diseño detallado del nivel
+├── chapters/               # Cuerpo real cuando el nivel ya fue escrito
+├── exercises.md            # Ejercicios puntuales (preguntas + modificaciones)
+└── src/                    # Fragmentos de código ilustrativos
+```
+
+`README.md` funciona en ambos estados: como placeholder editorial mínimo o como documento principal del nivel cuando ya hay authoría real. En este segundo caso sigue la estructura definida en `forja-contenido.md` — tema y motivación, desarrollo conceptual, código de ilustración, errores típicos, referencias cruzadas y lectura adicional.
+
+Si un nivel todavía está en placeholder estructural, la ausencia de `outline.md`, `chapters/`, `exercises.md` y `src/` no contradice el plan. Solo indica que su turno editorial no llegó.
 
 Los archivos de `src/` se referencian desde `README.md`. No son proyectos — son fragmentos que demuestran un concepto puntual.
 
 ---
 
 ## Estructura de un proyecto
+
+Como en teoría, hay dos estados relevantes. Un proyecto ya incorporado al catálogo visible puede existir como placeholder estructural con `README.md`, `project.yaml` y los directorios de lenguaje pertinentes (`c/`, `rust/`) aunque todavía no tenga fases materiales. La estructura siguiente describe el estado objetivo cuando el proyecto ya entró en authoring real.
 
 ### Proyecto focalizado
 
@@ -204,14 +225,14 @@ projects/focused/spl_stat/
 
 ### Proyecto integrador
 
-Misma estructura, con más fases. Los proyectos que solo tienen implementación en C (L23: char-driver, RAM-FileSystem, KVM mini-hypervisor) solo tienen el directorio `c/`. Los proyectos que tienen implementación dual tienen ambos.
+Misma estructura, con más fases. Los proyectos que solo tienen implementación en C (`char-driver`, `ram-filesystem`, `kvm-mini-hypervisor`) solo tienen el directorio `c/`. `ebpf-tracer` mantiene implementación dual C/Rust.
 
-Igual que en teoría, esta es la estructura objetivo cuando el proyecto ya entró en authoring real. Un proyecto que hoy exista solo como candidato documental en `forja-proyectos.md` no necesita todavía carpeta completa, `project.yaml` ni fases materiales.
+Igual que en teoría, esta es la estructura objetivo cuando el proyecto ya entró en authoring real. Un proyecto ya incorporado al catálogo visible sí debe existir al menos como placeholder estructural. Solo los candidatos que todavía viven exclusivamente en `forja-proyectos.md` pueden no tener todavía carpeta, `project.yaml` ni fases materiales.
 
 ### Proyectos single-language
 
 Algunos proyectos son single-language por naturaleza del dominio:
-- Proyectos de L23 (kernel space): solo `c/`
+- `char-driver`, `ram-filesystem` y `kvm-mini-hypervisor`: solo `c/`
 - `hello-rust`, `fizzbuzz-rust`, `mini-calculator`, `data-structures-rust`, `custom-iterator`, `parser-combinators`: solo `rust/`
 - `hello-c`, `caesar-cipher`, `word-count`, `stringlib`, `elf-explorer`: solo `c/`
 
@@ -370,8 +391,8 @@ El modelo correcto de autoría es este:
 
 - `docs/forja-contenido.md` define el plan curricular humano: qué existe, en qué orden cae y qué foco tiene cada nivel.
 - `docs/forja-proyectos.md` consolida la taxonomía de proyectos, su ubicación curricular y sus arcos multi-fase.
-- `content/theory/*/README.md`, `content/theory/*/exercises.md` y `content/theory/*/chapters/*.md` contienen el cuerpo real de cada unidad teórica.
-- `content/projects/**/README.md` describe el proyecto; cada `phase-n/README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` contiene el cuerpo real de cada fase.
+- `content/theory/*/README.md` puede ser placeholder editorial o cuerpo real; `exercises.md` y `chapters/*.md` aparecen cuando la authoría real del nivel ya empezó.
+- `content/projects/**/README.md` puede ser placeholder estructural o README real de proyecto; cada `phase-n/README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` aparece recién cuando esa authoría ya existe.
 - `metadata/levels.yaml`, `meta.yaml` y `project.yaml` contienen la estructura navegable y las dependencias reales. Si una relación importa para repo o web, debe vivir ahí y no solo en prose.
 - `metadata/paths.yaml` y `metadata/cross-refs.yaml` contienen solo relaciones globales no derivables del contenido local.
 - Cualquier índice agregado para acelerar build o búsqueda debe ser generado. Nunca editado a mano.
@@ -396,11 +417,10 @@ Lo que no se hace es redactar el mismo resumen en tres lugares distintos.
 
 La web convierte la estructura del repo en una experiencia de navegación. El usuario puede usar el repo directamente desde GitHub — la web no es requisito. Lo que la web agrega:
 
-- Mapa visual interactivo del grafo de dependencias
-- Referencias cruzadas clickeables entre teoría y proyectos
-- Tracking de progreso local (qué completó, qué tiene desbloqueado)
+- Workspace navegable con mapa editorial en dos modos: niveles → proyectos y proyectos → niveles
+- Navegación clickeable entre introducciones, niveles y proyectos
+- Tracking de progreso local simple por nivel (`todo`, `reading`, `done`)
 - Renderizado de Markdown/GFM tomado del repo
-- Búsqueda de conceptos a través de todos los contenidos
 
 ### Lo que la web no hace
 
@@ -436,61 +456,44 @@ function readLevels(): LevelMeta[] {
 
 El renderer actual de la web es Markdown plano con GFM. Syntax highlighting avanzado, diagramas o includes automáticos de snippets son mejoras futuras del renderer, no una segunda fuente de contenido.
 
-### Páginas de la web
+### Páginas y vistas de la web
 
 | Ruta | Descripción |
 |---|---|
-| `/` | Home — qué es Forja, cómo empezar, atajos a los 4 caminos |
-| `/map` | Mapa visual del grafo de niveles y proyectos |
-| `/levels/:slug` | Página de un nivel — teoría + lista de proyectos del nivel |
-| `/projects/:id` | Página de un proyecto — descripción, fases, equivalente industrial |
-| `/projects/:id/:lang/:phase` | Página de una fase específica — README + STUDY_GUIDE |
-| `/paths` | Los 4 caminos de navegación con comparación |
-| `/search` | Búsqueda full-text |
+| `/` | Landing editorial: qué es Forja, cómo empezar, preview de proyectos y caminos |
+| `/workspace` | Workspace principal: mapa del canon, intros editoriales y entrada al contenido |
+| `/workspace?view=projects` | Mismo workspace con el mapa invertido por proyectos |
+| `/workspace/intro/:id` | Introducciones editoriales previas a L0 |
+| `/workspace/level/:id` | Vista de un nivel — teoría, ejercicios y proyectos asociados |
+| `/workspace/project/:id` | Vista de un proyecto — ficha, README raíz y niveles relacionados |
 
 ### Routing
 
-React Router v6 con rutas definidas en código. El build genera páginas estáticas vía `react-router`'s static data APIs o una prerender step con Vite SSG.
-
-**Decisión abierta**: evaluar `TanStack Router` vs `React Router v6` — TanStack tiene mejor TypeScript safety y loaders tipados.
+React Router v6 con una landing y un workspace unificado. La navegación interna del workspace preserva el `search` de la URL para no perder contexto liviano; hoy eso se usa, por ejemplo, para persistir el modo del mapa con `?view=projects`.
 
 ### Tracking de progreso en localStorage
 
 El estado de progreso se almacena en localStorage con la siguiente estructura:
 
 ```ts
-interface ForjaProgress {
-  version: number                        // para migraciones futuras
-  lastUpdated: string                    // ISO timestamp
-  levels: Record<string, LevelProgress>
-  projects: Record<string, ProjectProgress>
-}
-
-interface LevelProgress {
-  theoryRead: boolean
-  exercisesCompleted: boolean
-}
-
-interface ProjectProgress {
-  phases: Record<string, PhaseProgress>  // key: "c/phase-1", "rust/phase-2", etc.
-}
-
-interface PhaseProgress {
-  status: 'not-started' | 'in-progress' | 'completed'
-  improvements: string[]                 // lista de mejoras marcadas como hechas
-  notes: string                          // notas personales del usuario
+interface Progress {
+  completed: string[]
+  reading: string[]
 }
 ```
 
-El estado vive en un React Context expuesto por un hook `useProgress()`. Se persiste automáticamente en `localStorage` en cada cambio.
+Hoy ese estado es deliberadamente simple: solo guarda ids de niveles marcados como `done` o `reading`. No existe todavía progreso fino por proyecto, fase ni mejora propuesta.
 
-### Visualización del grafo
+### Visualización del mapa
 
-La página `/map` renderiza el grafo de dependencias del plan. Los nodos son niveles; las aristas son dependencias. Los nodos se colorean según el estado de progreso del usuario.
+La vista principal de `/workspace` no dibuja hoy un force graph ni aristas explícitas. Usa una representación editorial en cards, derivada de `metadata/levels.yaml` y `project.yaml`.
 
-**Decisión abierta**: evaluar `reactflow` (más features, más peso) vs `d3-force` (más control, más código) vs algo más simple (tabla visual con conexiones CSS) para el MVP.
+Los dos modos actuales son:
 
-Para el MVP, una representación visual simplificada (no force-directed, sino un layout en capas vertical con las dependencias como líneas) es suficiente y más fácil de implementar correctamente.
+- niveles → proyectos: cards de nivel agrupadas por dominio
+- proyectos → niveles: cards de proyecto agrupadas por tipo
+
+La relación entre teoría y práctica se comunica por asociación estructural y navegación, no por líneas dibujadas en pantalla.
 
 ---
 
@@ -509,9 +512,9 @@ Vive en `.devcontainer/` en la raíz del repo. Compatible con VS Code Remote Con
 - `strace`, `ltrace`
 - `perf` (linux-tools)
 - `binutils` completo (`nm`, `objdump`, `readelf`, `ar`, `ranlib`, `ldd`)
-- `linux-headers` (para proyectos de L23)
-- `liburing-dev` (para L19 io_uring)
-- `libseccomp-dev` (para L20 minidocker)
+- `linux-headers` (para el bloque kernel de `L56-L57`)
+- `liburing-dev` (para `L50` y `io_uring-echo`)
+- `libseccomp-dev` (para `L51` y `minidocker`)
 
 **Rust**:
 - `rustup` con toolchain stable por defecto; nightly opcional para labs avanzados
@@ -527,7 +530,7 @@ Vive en `.devcontainer/` en la raíz del repo. Compatible con VS Code Remote Con
 
 ### Verificación del setup
 
-El proyecto `devcontainer-setup` (L0) incluye un script de verificación que comprueba que todas las herramientas están disponibles y en versión correcta:
+El proyecto `devcontainer-setup` (L0) incluye un script de verificacion pensado para ejecutarse dentro del devcontainer o del laboratorio Linux reproducible. No es un chequeo general del host de Windows.
 
 ```bash
 ./verify-setup.sh
@@ -575,9 +578,9 @@ Cada fase que se da por terminada debe dejar cuatro cosas coherentes:
 
 La estrategia recomendada sigue siendo priorizar un camino natural que permita probar Forja mientras nace. La primera ruta piloto razonable es el arco inicial del Camino 1 (`Sistemas primero`), ejecutado según el orden maestro de fases:
 
-1. `Base 0`, `Base 1`, `Base 2`
-2. `L0` + `devcontainer-setup`, luego `L1` hasta `L7` para cerrar la base de laboratorio, modelo mental y assembly
-3. `L8` hasta `L21` con los proyectos focalizados que cada nivel va habilitando
+1. `L0` + `devcontainer-setup`
+2. `L1` hasta `L7` para cerrar la base de laboratorio, modelo mental, tooling y assembly
+3. `L8` hasta `L21` con los proyectos focalizados que cada nivel ya habilita en el catálogo visible
 4. `mish` (tramo `L21`) como primer integrador usable
 5. `L31` + `mish` (tramo `L31`) para cerrar pipes, redirecciones y job control
 
@@ -589,15 +592,15 @@ El MVP no queda fijado todavía como un conjunto definitivo de niveles. El crite
 
 ### Web del MVP
 
-La web del MVP sí debería resolver lo esencial de lectura y navegación:
+La web del MVP ya debería resolver, como mínimo, lo esencial de lectura y navegación:
 
 - Home page con qué es Forja y cómo empezar
-- Navegación por niveles y proyectos renderizados desde Markdown
-- Links claros entre teoría, proyectos y fases
-- Lista de caminos sugeridos
+- Workspace unificado con mapa en dos modos y navegación a intros, niveles y proyectos
+- Render de niveles y proyectos desde Markdown local
+- Links claros entre teoría y proyectos
 - Deploy estático en GitHub Pages o Vercel
 
-El mapa interactivo, la búsqueda full-text y el tracking de progreso pueden existir después. Arquitectónicamente están contemplados desde el principio, pero no son requisito de la primera versión usable.
+La búsqueda full-text, el tracking fino por proyecto/fase y cualquier grafo con aristas explícitas pueden existir después. Arquitectónicamente son extensiones naturales, pero no son requisito de la primera versión usable.
 
 ---
 
@@ -605,10 +608,10 @@ El mapa interactivo, la búsqueda full-text y el tracking de progreso pueden exi
 
 | Pregunta | Opciones | Impacto |
 |---|---|---|
-| Router React | React Router v6 vs TanStack Router | Bajo — decisión reversible |
-| Visualización del grafo en `/map` | reactflow vs d3-force vs layout CSS simple | Medio — afecta el MVP si se incluye |
+| Evolución del mapa en `/workspace` | Mantener cards editoriales vs pasar a un grafo con aristas explícitas | Medio — afecta complejidad y legibilidad |
+| Router React | Mantener React Router v6 vs migrar si el workspace gana loaders más complejos | Bajo — decisión reversible |
 | Markdown rendering | MDX vs remark/rehype plano | Bajo — ambos funcionan bien con Vite |
 | Design system / UI | Tailwind + Radix UI vs shadcn/ui vs CSS modules custom | Medio — afecta velocidad de desarrollo |
 | Despliegue inicial | GitHub Pages vs Vercel | Bajo — ambos son gratuitos para este caso |
-| ¿Qué proyectos de L23 quedan solo en C? | `char-driver`, `RAM-FileSystem` y `KVM mini-hypervisor` solo C; `ebpf-tracer` tiene implementación dual C/Rust | Bajo — ya cerrado en forja-proyectos.md |
+| ¿Conviene modelar progreso por proyecto/fase además del progreso por nivel? | Mantener estado simple vs ampliar localStorage | Alto — afecta UX y persistencia |
 | ¿Las mejoras propuestas de una fase desbloquean la siguiente? | Opcionales vs requeridas | Alto — afecta el modelo pedagógico completo |

@@ -1,6 +1,6 @@
 # Forja — Proyectos
 
-> Este documento consolida el track práctico de Forja: taxonomía, tabla completa de proyectos, arcos integradores, criterio de implementación y ampliaciones de proyectos ya aprobadas a nivel documental.
+> Este documento consolida el track práctico de Forja: taxonomía, catálogo estructural visible, arcos integradores y candidatos ya aceptados como dirección curricular aunque todavía no formen parte de `metadata/` ni de `content/projects/**`.
 >
 > El mapa curricular humano de niveles vive en `forja-contenido.md`. La arquitectura del repo y de la web vive en `forja-arquitectura.md`.
 
@@ -34,7 +34,7 @@ El track práctico existe en dos escalas:
 - proyectos focalizados, para aislar un concepto o mecanismo
 - proyectos integradores, para construir sistemas multi-fase que reabren contenido de varios bloques
 
-El canon visible del track práctico sigue siendo el catálogo actual. Las ampliaciones que todavía no tienen numeración, `project.yaml` definitivo o carpeta desarrollada en `content/projects/**` se registran acá como candidatos documentales. Su presencia en este documento no obliga a crear contenido real por adelantado.
+El canon visible del track práctico sigue siendo el catálogo estructural actual. Las ampliaciones que todavía no tienen slug estable, `project.yaml` ni carpeta en `content/projects/**` se registran acá como candidatos documentales. Su presencia en este documento no obliga a crear contenido real por adelantado.
 
 ### 1.1 Estado editorial actual del track practico
 
@@ -43,6 +43,8 @@ Hoy solo `devcontainer-setup` tiene un `README.md` de proyecto escrito como docu
 El resto de los `README.md` en `content/projects/**` se consideran placeholders estructurales. Sirven para hacer visible el proyecto en el arbol del repo, pero no deben leerse como documentacion completa de arco, fases o implementacion.
 
 Mientras un proyecto siga en ese estado, `project.yaml` manda sobre niveles visibles, lenguajes y reaperturas.
+
+Las descripciones multi-fase de este documento son diseño curricular maestro. No sustituyen el `README.md` raíz de cada proyecto mientras ese README siga en modo placeholder.
 
 ---
 
@@ -81,7 +83,7 @@ Ejemplos:
 
 ## 3. Tabla completa de proyectos
 
-La tabla siguiente describe el catálogo visible actual. Los candidatos de ampliación ya aceptados documentalmente aparecen después, separados del canon activo para no confundir plan con contenido ya implementado.
+La tabla siguiente describe el catálogo estructural visible actual. Los candidatos de ampliación aceptados a nivel documental aparecen después, separados de ese catálogo para no confundir dirección curricular con proyecto ya materializado en el repo.
 
 | Proyecto | Tipo | Nivel(es) | Dominio |
 |---|---|---|---|
@@ -157,16 +159,16 @@ La tabla siguiente describe el catálogo visible actual. Los candidatos de ampli
 | `RAM-FileSystem` | Focalizado | L57 | Kernel |
 | `KVM mini-hypervisor` | Integrador | L57 | Kernel |
 
-### 3.1 Proyectos candidatos en consolidación documental
+### 3.1 Proyectos aceptados a nivel documental pero fuera del catálogo estructural
 
-| Proyecto candidato | Rol previsto | Acople curricular | Estado documental |
+| Proyecto candidato | Rol previsto | Acople curricular | Estado estructural |
 |---|---|---|---|
-| `format-lab` | Laboratorio focalizado | Capa explícita de formatos y serialización | Aprobado como candidato canónico |
-| `gc-lab` | Integrador corto | GC fundamental y reapertura de `custom-malloc`/`Logico` | Aprobado como candidato canónico |
-| `bytecode-vm` | Integrador | Runtimes, VMs y ejecución por bytecode | Aprobado como candidato canónico |
-| `mini-runtime` | Integrador | Object layout, heap y organización interna de runtime | Aprobado como candidato canónico |
-| `coroutine-executor` | Integrador corto | Puente entre runtimes generales y async runtime | Aprobado como candidato canónico |
-| proyecto de task queues tipadas | Integrador multi-fase | Concurrencia práctica, persistencia, prioridades y dispatch asíncrono | Aprobado como candidato experimental; slug definitivo pendiente |
+| `format-lab` | Laboratorio focalizado | Capa explícita de formatos y serialización | Aceptado documentalmente; sin `project.yaml` ni carpeta todavía |
+| `gc-lab` | Integrador corto | GC fundamental y reapertura de `custom-malloc`/`Logico` | Aceptado documentalmente; sin `project.yaml` ni carpeta todavía |
+| `bytecode-vm` | Integrador | Runtimes, VMs y ejecución por bytecode | Aceptado documentalmente; sin `project.yaml` ni carpeta todavía |
+| `mini-runtime` | Integrador | Object layout, heap y organización interna de runtime | Aceptado documentalmente; sin `project.yaml` ni carpeta todavía |
+| `coroutine-executor` | Integrador corto | Puente entre runtimes generales y async runtime | Aceptado documentalmente; sin `project.yaml` ni carpeta todavía |
+| proyecto de task queues tipadas | Integrador multi-fase | Concurrencia práctica, persistencia, prioridades y dispatch asíncrono | Línea experimental aceptada; slug definitivo pendiente |
 
 Estos candidatos entran primero en documentación. Su incorporación futura a `metadata/` y a `content/projects/**` vendrá recién cuando les llegue turno real de diseño y authoring.
 
@@ -175,6 +177,8 @@ Estos candidatos entran primero en documentación. Su incorporación futura a `m
 ## 4. Los proyectos integradores
 
 Las descripciones de arco de esta sección fijan la historia multi-fase que Forja quiere contar, aunque una carpeta concreta todavía siga dummy o con placeholders. El objetivo acá es dejar explícito qué reabre cada proyecto y cómo se conecta con el resto del plan.
+
+Mientras un proyecto no tenga README de authoría real, estas descripciones viven acá y no en `content/projects/**`. Son la fuente maestra de diseño curricular del track práctico.
 
 ### `mish` — Mini Shell
 
@@ -533,4 +537,4 @@ Se preservan explícitamente los proyectos y arcos centrales del plan anterior:
 - `KVM mini-hypervisor`
 - `ebpf-tracer`
 
-Al contrastar el borrador v2 contra `forja-contenido.md` anterior no quedó ninguna omisión pendiente: `minisync` ya quedó preservado. Sobre esa base, la siguiente ola documental agrega como candidatos explícitos `format-lab`, `gc-lab`, `bytecode-vm`, `mini-runtime`, `coroutine-executor` y un proyecto de task queues tipadas todavía sin slug definitivo.
+Al contrastar el borrador v2 contra `forja-contenido.md` anterior no quedó ninguna omisión pendiente: `minisync` ya quedó preservado. Sobre esa base, el catálogo documental mantiene como candidatos explícitos `format-lab`, `gc-lab`, `bytecode-vm`, `mini-runtime`, `coroutine-executor` y un proyecto de task queues tipadas todavía sin slug definitivo.

@@ -62,6 +62,10 @@ interface Props {
   contentId: string
 }
 
+function withWorkspaceSearch(pathname: string, search: string): string {
+  return search ? `${pathname}${search}` : pathname
+}
+
 function isSeededPlaceholder(body?: string): boolean {
   if (!body) return false
 
@@ -83,36 +87,46 @@ function MarkdownContent({ children }: { children: string }) {
 export default function ContentView({ contentType, contentId }: Props) {
   const navigate = useNavigate()
   const location = useLocation()
-  const onBack = () => navigate('/workspace')
+  const onBack = () => navigate(withWorkspaceSearch('/workspace', location.search))
   const onHome = () => navigate('/')
 
   if (contentType === 'intro') {
-    return <IntroView introId={contentId} onBack={onBack} onHome={onHome} />
+    return <IntroView introId={contentId} onBack={onBack} onHome={onHome} workspaceSearch={location.search} />
   }
 
   if (contentType === 'level') {
     const level = levels.find(l => l.id === contentId)
     if (!level) return <NotFound id={contentId} onBack={onBack} />
-    return <LevelView level={level} onBack={onBack} onHome={onHome} />
+    return <LevelView level={level} onBack={onBack} onHome={onHome} workspaceSearch={location.search} />
   }
 
   const project = projects.find(p => p.id === contentId || p.codename === contentId)
   const fromLevel = (location.state as { fromLevel?: string } | null)?.fromLevel ?? null
-  return <ProjectView project={project ?? null} onBack={onBack} onHome={onHome} fromLevel={fromLevel} />
+  return <ProjectView project={project ?? null} onBack={onBack} onHome={onHome} fromLevel={fromLevel} workspaceSearch={location.search} />
 }
 
-function IntroView({ introId, onBack, onHome }: { introId: string; onBack: () => void; onHome: () => void }) {
+function IntroView({
+  introId,
+  onBack,
+  onHome,
+  workspaceSearch,
+}: {
+  introId: string
+  onBack: () => void
+  onHome: () => void
+  workspaceSearch: string
+}) {
   const navigate = useNavigate()
   const body = introContent[introId] ?? ''
   const meta = INTRO_META[introId] ?? INTRO_META.workspace
 
   const openTarget = (target: { type: 'intro' | 'level'; id: string }) => {
     if (target.type === 'intro') {
-      navigate(`/workspace/intro/${target.id}`)
+      navigate(withWorkspaceSearch(`/workspace/intro/${target.id}`, workspaceSearch))
       return
     }
 
-    navigate(`/workspace/level/${target.id}`)
+    navigate(withWorkspaceSearch(`/workspace/level/${target.id}`, workspaceSearch))
   }
 
   if (!body) {
@@ -187,7 +201,17 @@ function IntroView({ introId, onBack, onHome }: { introId: string; onBack: () =>
 
 type Tab = 'teoria' | 'ejercicios' | 'proyectos'
 
-function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => void; onHome: () => void }) {
+function LevelView({
+  level,
+  onBack,
+  onHome,
+  workspaceSearch,
+}: {
+  level: LevelMeta
+  onBack: () => void
+  onHome: () => void
+  workspaceSearch: string
+}) {
   const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('teoria')
   const [activeChapterIdx, setActiveChapterIdx] = useState(0)
@@ -287,7 +311,7 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
                         <button
                           key={p}
                           className="tag"
-                          onClick={() => navigate(`/workspace/level/${p}`)}
+                          onClick={() => navigate(withWorkspaceSearch(`/workspace/level/${p}`, workspaceSearch))}
                           title={`Ir a ${p}`}
                         >
                           {p}
@@ -384,13 +408,25 @@ function LevelView({ level, onBack, onHome }: { level: LevelMeta; onBack: () => 
 
 // ─── Project view ─────────────────────────────────────────────────────────────
 
-function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectMeta | null; onBack: () => void; onHome: () => void; fromLevel: string | null }) {
+function ProjectView({
+  project,
+  onBack,
+  onHome,
+  fromLevel,
+  workspaceSearch,
+}: {
+  project: ProjectMeta | null
+  onBack: () => void
+  onHome: () => void
+  fromLevel: string | null
+  workspaceSearch: string
+}) {
   const navigate = useNavigate()
   const relatedLevels = project ? getProjectLevels(project, levels) : []
   const projectReadme = project ? projectContent[project.id]?.readme ?? '' : ''
   const hasProjectReadme = !!projectReadme && !isSeededPlaceholder(projectReadme)
   const handleBack = fromLevel
-    ? () => navigate(`/workspace/level/${fromLevel}`)
+    ? () => navigate(withWorkspaceSearch(`/workspace/level/${fromLevel}`, workspaceSearch))
     : onBack
 
   if (!project) {
@@ -464,7 +500,7 @@ function ProjectView({ project, onBack, onHome, fromLevel }: { project: ProjectM
                   <button
                     key={level.id}
                     className="tag"
-                    onClick={() => navigate(`/workspace/level/${level.id}`)}
+                    onClick={() => navigate(withWorkspaceSearch(`/workspace/level/${level.id}`, workspaceSearch))}
                   >
                     {level.id}
                   </button>

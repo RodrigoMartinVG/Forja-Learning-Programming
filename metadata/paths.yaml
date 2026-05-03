@@ -1,17 +1,17 @@
 paths:
   - id: path-1
     title: "Sistemas primero"
-    description: "Base completa en C y Rust antes de profundizar en sistemas, redes, runtime y kernel."
-    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L52, L53]
+    description: "Vista tematica del bloque systems extendido. Resalta POSIX, concurrencia, persistencia, redes, runtime y distribucion; asume el puente obligatorio L32-L37."
+    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L51, L52, L53]
   - id: path-2
     title: "Plan completo"
     description: "El recorrido curricular entero. Recomendado como vista canonica del mapa."
     levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L32, L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L51, L52, L53, L54, L55, L56, L57]
   - id: path-3
     title: "Compiladores primero"
-    description: "C y Rust completos al inicio, y desvio temprano al arco de compiladores."
+    description: "Vista tematica del arco de compiladores. Asume la base systems necesaria para abrir L32 y el tramo avanzado que despues conduce a L54."
     levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L32, L33, L34, L35, L36, L37, L54]
   - id: path-4
     title: "Integracion vertical"
-    description: "Sistemas y compiladores entrelazados, priorizando proyectos que cruzan varios dominios."
+    description: "Vista tematica para seguir proyectos integradores que cruzan varios dominios. Asume los prerrequisitos omitidos cuando un arco reaparece mas adelante."
     levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L32, L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L51, L52, L53, L54, L55, L56, L57]

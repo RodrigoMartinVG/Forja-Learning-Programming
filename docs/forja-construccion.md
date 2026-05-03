@@ -12,7 +12,7 @@ La regla base es esta:
 
 - primero existen unas pocas fases previas para dejar listas las bases del proyecto
 - después se construyen los niveles uno por uno
-- después de cada nivel, se construyen los proyectos que ese nivel deja efectivamente habilitados
+- después de cada nivel, se construyen los proyectos que ese nivel deja efectivamente habilitados, si ese nivel realmente habilita alguno
 - si un proyecto vuelve a abrirse más adelante por depender de otro nivel, eso aparece como una nueva fase de proyecto en el punto correspondiente
 
 La unidad de avance pasa a ser una **fase lineal** con foco explícito.
@@ -25,6 +25,12 @@ La separación correcta de fuentes es esta:
 - `meta.yaml` replica por carpeta la metadata estructural de cada nivel para mantener el contenido autocontenido.
 
 Con esas dos capas, el orden maestro de construcción puede fijarse desde ahora mismo sin depender de prose suelta ni de decisiones tomadas a ojo.
+
+### 1.1 Estado operativo actual
+
+Las tres fases base ya quedaron absorbidas materialmente por el repo actual. El canon visible, la metadata estructural y la primera versión navegable de la web ya existen.
+
+El cuello de botella ya no es "sembrar Base 2": es convertir ese canon visible en authoría real nivel por nivel y proyecto por proyecto, sin mentir sobre el estado editorial de lo que todavía sigue en placeholder.
 
 ---
 
@@ -67,6 +73,8 @@ Incluye:
 
 Una fase de nivel se considera cerrada cuando un usuario puede leer el nivel completo y entender con claridad qué proyectos quedan habilitados después de ese nivel.
 
+Si un nivel todavía está solo en placeholder estructural, eso no cuenta como fase de nivel cerrada. Cuenta como infraestructura editorial del canon, no como authoría real terminada.
+
 ### 2.3 Fase de proyecto
 
 Una fase de proyecto toma un proyecto concreto y lo construye en el punto exacto en que ya tiene sentido hacerlo.
@@ -83,6 +91,8 @@ Incluye:
 
 Una fase de proyecto se abre solo cuando el conjunto de niveles ya construidos la hace pedagógica y técnicamente razonable.
 
+Que un proyecto exista ya como placeholder estructural en `content/projects/**` tampoco equivale a fase de proyecto cerrada. La authoría real empieza cuando el README del proyecto, su código y sus fases materiales dejan de ser solo estructura mínima.
+
 ---
 
 ## 3. Regla general de orden
@@ -90,7 +100,7 @@ Una fase de proyecto se abre solo cuando el conjunto de niveles ya construidos l
 El orden de las fases sigue esta lógica fija:
 
 1. primero se ejecutan las fases base
-2. después se recorren los niveles en orden canónico: `L0` a `L49`
+2. después se recorren los niveles en orden canónico: `L0` a `L57`
 3. después de cerrar cada fase de nivel, se ejecutan todas las fases de proyecto que ese nivel deja habilitadas
 4. no se abre una fase nueva mientras la fase actual no esté cerrada y verificada
 
@@ -104,20 +114,20 @@ Eso no se decide a ojo ni leyendo prose suelta: se decide leyendo `project.yaml`
 
 En los casos simples, esto coincide con su nivel de anclaje:
 
-- `spl_stat` queda habilitado después de `L19`
-- `thread-pool` queda habilitado después de `L25`
-- `minidocker` queda habilitado después de `L44`
+- `spl_stat` queda habilitado después de `L20`
+- `thread-pool` queda habilitado después de `L27`
+- `minidocker` queda habilitado después de `L51`
 
 En los proyectos multi-nivel, la construcción vuelve a abrir una fase de proyecto cuando aparece un nuevo tramo claramente asociado a un nivel posterior. En la especificación actual, eso ocurre así:
 
-- `mini-debugger`: tramo `L20`, luego tramo `L22`
-- `mish`: tramo `L20`, luego `L28`, luego `L29`
-- `Semtex`: tramo `L31`, luego `L32`, luego `L33`, luego `L34`
-- `Logico`: tramo `L31`, luego `L32`, luego `L33`, luego `L34`, luego `L47`
-- `KVolt`: tramo `L35`, luego `L39`, y luego `L46`
-- `TCP/IP stack`: tramo `L41`, luego `L45`
+- `mini-debugger`: reaparece en `L21` y `L24`
+- `mish`: reaparece en `L21`, `L31` y `L32`
+- `semtex`: reaparece en `L34`, `L35`, `L36` y `L37`
+- `logico`: reaparece en `L34`, `L35`, `L36`, `L37` y `L54`
+- `kvolt`: reaparece en `L41`, `L45` y `L53`
+- `tcp-ip-stack`: reaparece en `L48` y `L52`
 
-No toda mención de un proyecto a otro nivel implica una fase nueva de construcción. A veces ese nivel solo aporta prerequisitos o contexto. El ejemplo más claro sigue siendo `Logico`: `L24` aporta el allocator que después usa el GC, pero no obliga a abrir una fase de proyecto `Logico` antes de que exista el propio intérprete.
+No toda mención de un proyecto en `forja-contenido.md` implica una fase nueva de construcción. A veces ese nivel solo aporta prerequisitos o contexto. El ejemplo más claro sigue siendo `logico`: `L26` y `L39` preparan piezas conceptuales relevantes, pero la fase estructural del proyecto aparece recién a partir de `L34`.
 
 ---
 
@@ -167,13 +177,13 @@ Toda fase, sea base, de nivel o de proyecto, debe cerrar además:
 
 Con las reglas actuales, el plan macro queda así:
 
-- **3 fases base**
-- **50 fases de nivel** (`L0` a `L49`)
+- **3 fases base ya materializadas en el repo actual**
+- **58 fases de nivel** (`L0` a `L57`)
 - **fases de proyecto derivadas de `project.yaml`**, con reaperturas explícitas cuando un proyecto tenga `stages` o tramos posteriores
 
 Las subfases internas de cada proyecto no cuentan acá: pertenecen a la implementación del proyecto, no al orden macro de construcción del repositorio. La cifra exacta de fases de proyecto se deja derivada de metadata para evitar que el documento vuelva a desfasarse cuando cambie el número de reaperturas obligatorias u opcionales.
 
-### 5.1 Fases base
+### 5.1 Fases base ya fijadas
 
 **Base 0** — estructura inicial del repo y convenciones de contenido.
 
@@ -181,13 +191,13 @@ Las subfases internas de cada proyecto no cuentan acá: pertenecen a la implemen
 
 **Base 2** — metadata base, plantillas y web mínima capaz de renderizar y navegar contenido.
 
-El alcance concreto de `Base 2` debería incluir:
+Ese tramo ya quedó absorbido en el estado actual del repo. En concreto, hoy ya existen:
 
-- crear `metadata/levels.yaml` con el catálogo canónico `L0-L57`
-- crear `meta.yaml` en cada carpeta de nivel
-- crear `project.yaml` en cada carpeta de proyecto
-- dejar cargados, al menos, estos campos en cada `project.yaml`: `anchor_level`, `display_levels`, `required_levels`, `expansion_levels`, `stages`
-- dejar la web preparada para leer esos archivos aunque todavía haya proyectos sin implementación completa
+- `metadata/levels.yaml` con el catálogo canónico `L0-L57`
+- `meta.yaml` en cada carpeta de nivel
+- `project.yaml` en cada carpeta de proyecto del catálogo visible
+- placeholders mínimos honestos para niveles y proyectos todavía no escritos en authoría real
+- una web capaz de leer esos archivos y navegar el contenido ya materializado
 
 ### 5.2 Orden maestro por nivel
 
@@ -205,46 +215,46 @@ Después de las fases base, el orden queda fijado así:
 | `L15` | `data-structures-rust` |
 | `L16` | `custom-iterator`, `parser-combinators` |
 | `L18` | `ffi-demo` |
-| `L19` | `spl_stat`, `spl_ls`, `spl_du`, `file-monitor` |
-| `L20` | `spl_pstree`, `impl_abort`, `impl_alarm`, `mish` (tramo `L20`), `mini-debugger` (tramo `L20`) |
-| `L21` | `scheduler-sim` |
-| `L22` | `vma-explorer`, `cow-demo`, `spl_cp`, `mini-debugger` (tramo `L22`) |
-| `L23` | `mini-linker` |
-| `L24` | `custom-malloc` (tramo `L24`) |
-| `L25` | `thread-pool`, `prod-cons`, `rwlock-impl` |
-| `L26` | `impl_arc` |
-| `L27` | `lock-free-queue`, `rcu-demo` |
-| `L28` | `named-pipe-sem`, `ipc-explorer`, `miniqueue`, `mish` (tramo `L28`) |
-| `L29` | `mish` (tramo `L29`) |
-| `L30` | `regex-engine` |
-| `L31` | `expr-parser`, `Semtex` (tramo `L31`), `Logico` (tramo `L31`) |
-| `L32` | `Semtex` (tramo `L32`), `Logico` (tramo `L32`) |
-| `L33` | `Semtex` (tramo `L33`), `Logico` (tramo `L33`) |
-| `L34` | `Semtex` (tramo `L34`), `Logico` (tramo `L34`) |
-| `L35` | `KVolt` (tramo `L35`) |
-| `L36` | `MiniSQL` |
-| `L37` | `mem-cache` (tramo `L37`) |
-| `L38` | `mini-broker` (tramo `L38`) |
-| `L39` | `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, `false-sharing-exp`, `KVolt` (tramo `L39`) |
-| `L40` | `HTTP server` (tramo `L40`), `shell remoto TCP`, `minisync` (tramo `L40`), `mini-dns-resolver`, `mini-tcpdump` |
-| `L41` | `websocket-server`, `http2-server`, `TCP/IP stack` (tramo `L41`) |
-| `L42` | `impl_script`, `tinyssh` (tramo `L42`) |
-| `L43` | `async-runtime`, `io_uring-echo` |
-| `L44` | `minidocker` |
-| `L45` | `orquestador`, `TCP/IP stack` (tramo `L45`) |
-| `L46` | `raft-lite`, `KVolt` (tramo opcional `L46`) |
-| `L47` | `JIT-Brain`, `Logico` (tramo `L47`) |
-| `L48` | `char-driver` |
-| `L49` | `RAM-FileSystem`, `KVM mini-hypervisor`, `ebpf-tracer` |
+| `L20` | `spl_stat`, `spl_ls`, `spl_du`, `file-monitor` |
+| `L21` | `spl_pstree`, `impl_abort`, `impl_alarm`, `mish`, `mini-debugger` |
+| `L23` | `scheduler-sim` |
+| `L24` | `vma-explorer`, `cow-demo`, `spl_cp`, `mini-debugger` |
+| `L25` | `mini-linker` |
+| `L26` | `custom-malloc` |
+| `L27` | `thread-pool`, `prod-cons`, `rwlock-impl` |
+| `L28` | `impl_arc` |
+| `L30` | `lock-free-queue`, `rcu-demo` |
+| `L31` | `named-pipe-sem`, `ipc-explorer`, `miniqueue`, `mish` |
+| `L32` | `mish` |
+| `L33` | `regex-engine` |
+| `L34` | `expr-parser`, `semtex`, `logico` |
+| `L35` | `semtex`, `logico` |
+| `L36` | `semtex`, `logico` |
+| `L37` | `semtex`, `logico` |
+| `L41` | `kvolt` |
+| `L42` | `minisql` |
+| `L43` | `mem-cache` |
+| `L44` | `mini-broker` |
+| `L45` | `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, `false-sharing-exp`, `kvolt` |
+| `L47` | `http-server`, `shell-remoto-tcp`, `minisync`, `mini-dns-resolver`, `mini-tcpdump` |
+| `L48` | `http2-server`, `websocket-server`, `tcp-ip-stack` |
+| `L49` | `tinyssh`, `impl_script` |
+| `L50` | `async-runtime`, `io_uring-echo` |
+| `L51` | `minidocker` |
+| `L52` | `orquestador`, `tcp-ip-stack` |
+| `L53` | `raft-lite`, `kvolt` |
+| `L54` | `jit-brain`, `logico` |
+| `L56` | `char-driver` |
+| `L57` | `ram-filesystem`, `kvm-mini-hypervisor`, `ebpf-tracer` |
 
 ### 5.3 Notas sobre el orden maestro
 
 - La tabla anterior fija el orden macro de construcción.
-- `L1-L7`, `L13` y `L17` no abren una fase macro de proyecto nueva: profundizan base teórica.
-- `mem-cache`, `mini-broker` y `raft-lite` se tratan como proyectos independientes. No son subfases de `KVolt` ni de `orquestador`, aunque puedan interoperar con ellos en tramos posteriores.
-- Las subfases internas de proyectos como `custom-malloc`, `KVolt`, `MiniSQL`, `tinyssh` o `async-runtime` existen, pero viven dentro de su fase de proyecto correspondiente.
-- El revisit opcional del `HTTP server` en `L43` para `io_uring` no está contado como fase macro obligatoria. Si se decide hacerlo, se agrega como tramo explícito en `project.yaml` posterior a `io_uring-echo`.
-- Del mismo modo, los tramos de replicación en `L46` para `KVolt`, `mem-cache` y `mini-broker` solo cuentan como fases macro si quedan marcados como obligatorios en `project.yaml`.
+- `L1-L7`, `L13`, `L17`, `L19`, `L22`, `L29`, `L38`, `L39`, `L40`, `L46` y `L55` no abren hoy una fase macro de proyecto nueva. Siguen siendo niveles canónicos y fases de nivel válidas, solo que sin proyecto directo en el catálogo actual.
+- `mish`, `mini-debugger`, `semtex`, `logico`, `kvolt` y `tcp-ip-stack` reaparecen porque su asociación a varios niveles ya está fijada estructuralmente en metadata actual.
+- `mem-cache`, `mini-broker` y `raft-lite` se tratan como proyectos independientes. No son subfases de `kvolt` ni de `orquestador`, aunque puedan interoperar con ellos en tramos posteriores.
+- Las subfases internas de proyectos como `custom-malloc`, `kvolt`, `minisql`, `tinyssh` o `async-runtime` existen, pero viven dentro de su fase de proyecto correspondiente.
+- La tabla debe leerse como orden de construcción derivado de metadata actual, no como promesa de authoría real inmediata para todos esos niveles y proyectos. El placeholder estructural honesto sigue siendo un estado válido del canon mientras no se abra authoría real.
 - La resolución de dependencias no sale de la tabla humana del documento curricular sino del `project.yaml` guardado dentro de cada proyecto. La tabla sirve para lectura; la metadata local sirve para construir y navegar.
 
 Este es el orden maestro de trabajo. Si se respeta, la construcción siempre puede describirse de forma sencilla: nivel recién cerrado, proyectos recién habilitados, y siguiente fase claramente visible.
@@ -270,6 +280,8 @@ Si la fase intenta cerrar demasiadas cosas a la vez, ya se volvió difícil de v
 Se crean o actualizan carpetas, `meta.yaml`, `project.yaml`, `README.md` y rutas mínimas. La idea es que el contenido nuevo exista pronto en el repo y pueda conectarse temprano con la web.
 
 En proyectos, esto incluye mantener actualizado el `project.yaml` con las dependencias reales de niveles y con los tramos del proyecto que el orden maestro usa para habilitarlo.
+
+Si la fase todavía no entra en authoría real completa, el estado mínimo debe quedar explícito como placeholder estructural. Lo que no se hace es simular capítulos, fases o README finales que todavía no existen.
 
 ### Paso 3 — Terminar el contenido principal
 
@@ -379,15 +391,50 @@ Forja tiene MVP cuando se cumplen estas tres condiciones al mismo tiempo:
 2. Esa secuencia incluye niveles, proyectos asociados y un integrador útil
 3. Repo, web y laboratorio funcionan juntos como un único sistema de aprendizaje
 
-En la estrategia actual, el primer candidato serio a MVP es completar esta primera secuencia editorialmente defendible del plan:
+En la estrategia actual, el primer candidato serio a MVP ya no es "terminar Base 2" sino cerrar una primera ruta de authoría real end-to-end sobre el canon visible que ya existe.
 
-`Base 0 → Base 1 → Base 2 → L0 → devcontainer-setup → L1 → L2 → L3 → L4 → L5 → L6 → L7 → L8 → hello-c → caesar-cipher → word-count → L9 → stringlib → L10 → dynamic-array → L11 → elf-explorer → L12 → getopt-impl → L19 → spl_stat → spl_ls → spl_du → file-monitor → L20 → spl_pstree → impl_abort → impl_alarm → mish (tramo L20) → mini-debugger (tramo L20) → L21 → scheduler-sim → L22 → vma-explorer → cow-demo → spl_cp → mini-debugger (tramo L22) → L23 → mini-linker → L28 → named-pipe-sem → ipc-explorer → miniqueue → mish (tramo L28)`
+El corte más razonable hoy es este:
 
-Eso equivale, en contenido, a esta primera ruta:
+- `L0` + `devcontainer-setup`
+- `L1-L19` con los proyectos focalizados que metadata ya asocia a ese tramo y el cierre actual del bloque de lenguajes
+- `L20-L31` con el primer arco POSIX/IPC y los proyectos que ahí reaparecen
+- `L32` como puente hacia compiladores y reapertura de `mish`
 
-`L0 → L1 → L2 → L3 → L4 → L5 → L6 → L7 → L8 → L9 → L10 → L11 → L12 → L19 → L20 → L21 → L22 → L23 → L28`, con `mish` y `mini-debugger` abiertos en sus primeros tramos naturales.
+Dicho más corto: el primer MVP serio es completar de verdad el arco `L0-L32` junto con los proyectos que metadata habilita en ese tramo.
 
-No porque sea la única posible, sino porque es la primera que produce una experiencia de Forja claramente defendible como producto y, además, es fácil de verificar fase por fase siguiendo el orden maestro.
+No porque sea la única posible, sino porque es la primera que produce una experiencia de Forja claramente defendible como producto: laboratorio reproducible, base de C y Rust, primer arco de sistemas reales y un integrador temprano (`mish`) que ya volvió a abrirse varias veces dentro del plan.
+
+### 11.1 Checklist operativa del primer MVP
+
+Para considerar realmente cerrado ese MVP, no alcanza con que el canon exista en metadata. Debe quedar completa esta checklist minima de authoria y validacion:
+
+**A. Niveles con authoria real utilizable**
+
+- `L0-L32` deben tener `README.md` real, ejemplos y ejercicios en estado usable.
+- Los niveles sin proyecto directo en ese corte (`L1-L7`, `L13`, `L17`, `L19`, `L22`, `L29`) tambien deben quedar cerrados como fases de nivel reales; no pueden quedar como huecos documentales en medio de la ruta MVP.
+- Cada nivel del corte debe tener `meta.yaml` coherente con `metadata/levels.yaml` y con los links reales que la web expone.
+
+**B. Proyectos minimos que el corte debe materializar**
+
+- Setup y arranque: `devcontainer-setup`.
+- Base C: `hello-c`, `caesar-cipher`, `word-count`, `stringlib`, `dynamic-array`, `elf-explorer`, `getopt-impl`.
+- Base Rust y FFI: `hello-rust`, `fizzbuzz-rust`, `mini-calculator`, `data-structures-rust`, `custom-iterator`, `parser-combinators`, `ffi-demo`.
+- Arco POSIX, procesos y memoria: `spl_stat`, `spl_ls`, `spl_du`, `file-monitor`, `spl_pstree`, `impl_abort`, `impl_alarm`, `scheduler-sim`, `vma-explorer`, `cow-demo`, `spl_cp`, `mini-debugger`, `mini-linker`, `custom-malloc`.
+- Arco concurrencia e IPC temprano: `thread-pool`, `prod-cons`, `rwlock-impl`, `impl_arc`, `lock-free-queue`, `rcu-demo`, `named-pipe-sem`, `ipc-explorer`, `miniqueue`, `regex-engine`, `mish`.
+
+**C. Integracion producto completa**
+
+- La web debe poder navegar de `L0` a `L32` y abrir todos los proyectos asociados sin enlaces rotos.
+- La vista mapa debe seguir mostrando solo asociaciones directas reales del metadata vigente.
+- La vista proyectos -> niveles debe mostrar correctamente los niveles asociados para cada proyecto del corte MVP.
+- El laboratorio y los comandos documentados deben ser suficientes para recorrer el arco sin pasos ocultos fuera del repo.
+
+**D. Validacion de cierre**
+
+- Dentro del devcontainer de laboratorio, `bash ./verify-setup.sh` debe pasar desde la raiz.
+- `cd web && npm run build` debe pasar desde host con Node disponible.
+- Debe poder hacerse una pasada manual del arco MVP en la web abriendo niveles y proyectos del corte sin errores visibles de render o navegacion.
+- La documentacion de entrada (`README.md`, `docs/README.md`, `content/README.md`, `metadata/README.md`) debe describir ese estado sin vender authoria que todavia no existe.
 
 ---
 
@@ -395,7 +442,7 @@ No porque sea la única posible, sino porque es la primera que produce una exper
 
 Una vez que exista esa primera ruta completa, hay tres opciones sanas de expansión:
 
-- retomar el orden canónico en el primer nivel todavía no construido del plan general; en el recorte de MVP propuesto, eso significa volver a `L13` y continuar desde ahí
+- retomar el orden canónico en el primer nivel todavía no construido del plan general; en el recorte de MVP propuesto, eso significa seguir por `L33`
 - o, si se decide un corte de MVP antes, congelar publicación y retomar después exactamente donde el orden maestro quedó pausado
 - o priorizar un subconjunto del orden maestro para acelerar una primera publicación, sin cambiar la regla general de construcción
 

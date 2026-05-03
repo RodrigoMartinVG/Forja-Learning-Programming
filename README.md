@@ -1,30 +1,43 @@
 # Forja
 
-Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, Rust, sistemas operativos, compiladores y herramientas de bajo nivel.
+Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, Rust, sistemas operativos, compiladores, redes, persistencia, runtimes y herramientas de bajo nivel.
 
-## Estado actual
+## Estado editorial actual
 
-- Base 0 completada: estructura inicial del repo y convenciones de contenido
-- Base 1 completada: devcontainer, script de verificacion y tooling comun
-- Base 2 en curso: metadata local/global, plantillas y web minima ya sembradas
+- El canon visible del repo ya esta fijado: `L0-L57` en teoria y el catalogo estructural actual de proyectos en `content/projects/**`.
+- Solo `L0` esta hoy en authoria real dentro del track teorico.
+- Solo `content/projects/focused/devcontainer-setup/README.md` esta hoy en authoria real como README raiz de proyecto.
+- El resto del canon puede seguir viviendo como placeholder estructural honesto sin perder validez curricular.
 
-## Documentos fuente
+## Como se organiza el repo
 
-- `docs/forja-contenido.md`: especificacion curricular, niveles y navegacion del plan
-- `docs/forja-proyectos.md`: catalogo de proyectos, taxonomia y arcos integradores
-- `docs/forja-arquitectura.md`: estructura objetivo del repo, metadata y web
-- `docs/forja-construccion.md`: orden maestro de fases y criterio operativo
-
-## Estructura actual
-
-- `docs/`: documentos maestros del proyecto
+- `docs/`: documentos maestros del proyecto y del plan
+- `content/`: contenido que la web realmente renderiza
+- `metadata/`: catalogo canonico y relaciones globales (`levels.yaml`, `paths.yaml`, `cross-refs.yaml`)
 - `.devcontainer/`: laboratorio Linux reproducible para C, Rust y herramientas de sistemas
-- `verify-setup.sh`: verificacion comun del laboratorio C/Rust
-- `scripts/forja.py`: scaffolder de Base 2 para niveles, proyectos y metadata base
-- `content/`: track teorico y track practico
-- `metadata/`: metadata global base (`paths.yaml` y `cross-refs.yaml`)
-- `web/`: app React + TypeScript + Vite del MVP, a ejecutar desde el host
+- `verify-setup.sh`: verificacion comun del laboratorio dentro del devcontainer
+- `scripts/forja.py`: scaffolder y validacion estructural
+- `web/`: app React + TypeScript + Vite que lee el repo en build time
 - `libros-consulta/`: carpeta local para referencias privadas, ignorada por Git
+
+## Documentos maestros
+
+- `docs/forja-contenido.md`: plan curricular humano, niveles y caminos de navegacion
+- `docs/forja-proyectos.md`: catalogo de proyectos, taxonomia y arcos integradores
+- `docs/forja-arquitectura.md`: estructura del repo, metadata, web y laboratorio
+- `docs/forja-construccion.md`: orden maestro de construccion y criterio operativo
+
+## Reglas de lectura rapidas
+
+- `docs/` define el canon, la arquitectura y el orden de trabajo. Puede ir por delante del material todavia no escrito.
+- `content/` contiene el cuerpo real que la web renderiza.
+- `metadata/levels.yaml`, `meta.yaml` y `project.yaml` son la verdad estructural que repo y web consumen.
+- La web no inventa contenido: solo navega archivos reales ya presentes en `content/` y `metadata/`.
+
+## Validacion rapida
+
+- Web desde host con Node: `cd web && npm run build`
+- Laboratorio dentro del devcontainer: `bash ./verify-setup.sh`
 
 ## Entornos de trabajo
 
@@ -32,15 +45,9 @@ Forja es un monorepo de aprendizaje de programacion de sistemas centrado en C, R
 - Host del usuario: instalar dependencias de la web y correr `npm run dev`, `npm run build` y `npm run preview`.
 - Si el repo se abre desde WSL o dentro del devcontainer, ese terminal no ve el Node instalado en Windows. La web debe correrse desde el host que tenga Node disponible.
 
-## Que sigue pendiente
-
-- completar el contenido real de niveles y proyectos sobre el esqueleto de Base 2
-- validar la web minima desde un host con Node disponible
-- cerrar Base 2 con betatest de navegacion, metadata y comandos documentados
-
 ## Convenciones
 
-Las convenciones iniciales del repo viven en `CONVENTIONS.md`. Los slugs canonicos de niveles viven en `metadata/levels.yaml`; los de proyectos viven en `project.yaml` dentro de `content/projects/`.
+Las reglas editoriales y estructurales viven en `CONVENTIONS.md`. Los slugs canonicos de niveles viven en `metadata/levels.yaml`; los de proyectos viven en `project.yaml` dentro de `content/projects/**`.
 
 ## Biblioteca local
 

@@ -415,7 +415,18 @@ a      { color: inherit; text-decoration: none; }
   .map-view { padding: 1.5rem 1.25rem 3rem; }
 }
 
-.map-view__header { margin-bottom: 2.5rem; }
+.map-view__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.map-view__header-copy {
+  max-width: 48rem;
+}
 
 .map-view__title {
   font-family: var(--font-display);
@@ -431,8 +442,32 @@ a      { color: inherit; text-decoration: none; }
   font-weight: 400;
 }
 
+.map-view__toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  background: var(--surface);
+}
+
+.map-view__toggle .content-tab {
+  white-space: nowrap;
+}
+
 .map-intro-row {
   margin-bottom: 2rem;
+}
+
+@media (max-width: 700px) {
+  .map-view__toggle {
+    width: 100%;
+  }
+
+  .map-view__toggle .content-tab {
+    flex: 1;
+    text-align: center;
+  }
 }
 
 /* Stats row */
@@ -584,6 +619,79 @@ a      { color: inherit; text-decoration: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+}
+
+.project-section__grid {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 15px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color var(--ease), background var(--ease), transform var(--ease);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  opacity: 0;
+  transition: opacity var(--ease);
+}
+
+.project-card--focused::before { background: var(--border-strong); }
+.project-card--integrating::before { background: var(--accent-text); }
+
+.project-card:hover {
+  border-color: var(--border-md);
+  background: var(--surface-2);
+  transform: translateY(-1px);
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+.project-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.project-card__langs {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.project-card__codename {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.project-card__title {
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--text-2);
+}
+
+.project-card__levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
 }
 
 .proj-chip {

@@ -1,6 +1,6 @@
 # Forja — Contenido Curricular
 
-> Este documento define el plan curricular humano de Forja: qué se enseña, en qué orden, con qué foco, cómo se relacionan los niveles entre sí y qué ampliaciones ya quedaron aprobadas a nivel documental.
+> Este documento define el plan curricular humano de Forja: qué se enseña, en qué orden, con qué foco, cómo se relacionan los niveles entre sí y qué densificaciones ya forman parte del canon visible, aunque todavía sigan en placeholder dentro de `content/`.
 >
 > El catálogo consolidado de proyectos vive en `forja-proyectos.md`. La arquitectura técnica del repo y de la web vive en `forja-arquitectura.md`. La dinámica operativa de construcción vive en `forja-construccion.md`.
 
@@ -85,6 +85,14 @@ La relación no es "primero teoría y después práctica". Es una red de referen
 
 El usuario puede recorrer el grafo en distintos órdenes, siempre que respete las dependencias reales.
 
+### 3.4 Estado editorial actual
+
+El mapa curricular completo de Forja ya es `L0-L57`. Esa secuencia es canónica aunque gran parte del contenido todavía no haya entrado en authoría real.
+
+Hoy, dentro del track teórico, solo `L0` tiene outline y capítulos escritos como contenido real. El resto del canon puede seguir como placeholder mínimo sin perder validez curricular.
+
+En el track práctico pasa algo análogo: el catálogo visible ya está fijado, pero solo `devcontainer-setup` tiene por ahora un `README.md` de proyecto escrito como documento real de recorrido y criterio de terminado.
+
 ---
 
 ## 4. Filosofía del rediseño
@@ -105,19 +113,19 @@ Cambios estructurales principales:
 - el antiguo L4 se divide en L16, L17 y L18 para separar tipos/traits, errores/testing y FFI/OS
 - C gana un nivel explícito de errores y testing en L13
 - Rust gana un nivel explícito de errores y testing en L17
-- concurrencia se separa en L25, L26 y L27: usar primitivas, entender el hardware, diseñar primitivas
-- el salto a compiladores se suaviza con el puente L29
-- Hindley-Milner se divide en L33 y L34: práctica manual antes del algoritmo W
-- SQL deja de ser un prerrequisito tácito y pasa a estar dentro de L36
-- el arco de persistencia se expande con L37 y L38 para cubrir cachés, evicción, event logs y brokers durables antes de entrar en red
+- concurrencia deja de comprimirse y pasa a L27-L30: usar primitivas, entender el hardware, resolver coordinación práctica y recién después diseñar lock-free
+- el salto a compiladores se suaviza con el puente L32
+- Hindley-Milner se divide en L36 y L37: práctica manual antes del algoritmo W
+- SQL deja de ser un prerrequisito tácito y pasa a estar dentro de L42
+- el arco de persistencia queda explícitamente estirado en L41-L44, con L43 y L44 dedicados a cachés, evicción, event logs y brokers durables antes de entrar en red
 - Performance Engineering se mueve después del arco de persistencia local y antes de Redes para que el HTTP server, `mem-cache` y `mini-broker` se construyan ya con metodología de medición
-- orquestación y consenso dejan de convivir en un mismo nivel y se separan en L45 y L46
+- orquestación y consenso dejan de convivir en un mismo nivel y se separan en L52 y L53
 
-Este rediseño lleva el plan de 26 niveles efectivos a 50 niveles con foco más fino, menor densidad por unidad y mejor continuidad conceptual.
+Este rediseño lleva el plan de 26 niveles efectivos a 58 niveles canónicos con foco más fino, menor densidad por unidad y mejor continuidad conceptual.
 
-La columna vertebral operativa visible ya es `L0-L57`. Las densificaciones aprobadas dejaron de vivir solo como notas: Rust systems avanzado, POSIX fino, concurrencia práctica, formatos y serialización, GC, runtimes/object layout/VMs, observabilidad distribuida y frontera user/kernel ya quedaron integrados al canon, aunque sigan en placeholder dentro de `content/`.
+La columna vertebral curricular visible ya es `L0-L57`. Las densificaciones aprobadas dejaron de vivir solo como notas: Rust systems avanzado, POSIX fino, concurrencia práctica, formatos y serialización, GC, runtimes/object layout/VMs, observabilidad distribuida y frontera user/kernel ya quedaron integrados al canon, aunque sigan en placeholder dentro de `content/`.
 
-Mientras estas piezas no entren en turno de authoring, se documentan aquí como ampliaciones en consolidación. No obligan a crear `outline.md`, `chapters/` ni contenido final por adelantado.
+Mientras estas piezas no entren en turno de authoring, pueden seguir viviendo como placeholders mínimos. Ya no se tratan como ampliaciones tentativas: forman parte de la historia principal del mapa, pero no obligan a crear `outline.md`, `chapters/` ni contenido final por adelantado.
 
 ---
 
@@ -138,9 +146,9 @@ Mientras estas piezas no entren en turno de authoring, se documentan aquí como 
 | 10 | L54 | Compiladores avanzados |
 | 11 | L55-L57 | Frontera user/kernel y kernel space |
 
-### Capas y puentes a incorporar sobre el canon actual
+### Capas y puentes ya integrados en el canon
 
-| Pieza | Tipo documental | Ubicación pedagógica | Motivo principal |
+| Pieza | Estado curricular | Ubicación pedagógica | Motivo principal |
 |---|---|---|---|
 | Rust systems avanzado | Integrado en el canon | `L19` | Hacer explícitos `Rc`, `Arc`, `Weak`, interior mutability, `Pin`, `Send`, `Sync` y wrappers seguros sobre primitivas inseguras |
 | POSIX fino / Unix real | Integrado en el canon | `L22` | Descomprimir APIs avanzadas, PTY/TTY, redirecciones, `openat`/`fcntl` y la continuidad `poll` -> `epoll` |
@@ -154,6 +162,10 @@ Mientras estas piezas no entren en turno de authoring, se documentan aquí como 
 ---
 
 ## 6. Los niveles del plan: L0-L57
+
+Nota editorial de esta sección: el mapa completo ya es canónico. Eso no implica authoría real nivel por nivel. Hoy solo `L0` existe como nivel escrito con outline y capítulos; el resto puede seguir como placeholder mínimo hasta que le llegue turno real de trabajo.
+
+En cada nivel, la línea `Proyectos asociados` nombra solo asociaciones estructurales que hoy existen en `metadata/` y `content/projects/**`. Si una práctica todavía vive como ejercicio interno del nivel o como candidato documental, se dice explícitamente.
 
 ### Bloque 0 — El laboratorio y el modelo mental
 
@@ -181,7 +193,7 @@ Temas centrales:
 - direcciones y registros
 - código vs datos en memoria
 
-Proyectos asociados: ninguno; unidad conceptual base.
+Proyectos asociados hoy en repo: ninguno; unidad conceptual base.
 
 #### L2 — Representación de la información
 
@@ -194,7 +206,7 @@ Temas centrales:
 - hexadecimal y endianness
 - intuición de floating point
 
-Proyectos asociados: mini-labs de inspección binaria y endianness.
+Proyectos asociados hoy en repo: ninguno. La inspección binaria y la práctica de endianness siguen viviendo como ejercicios internos del nivel, no como proyectos canónicos separados.
 
 #### L3 — El pipeline de compilación en C
 
@@ -207,7 +219,7 @@ Temas centrales:
 - linking estático vs dinámico
 - flags básicas y `make`
 
-Proyectos asociados: laboratorios de compilación manual de `hello.c`.
+Proyectos asociados hoy en repo: ninguno. La compilación manual de `hello.c` se trabaja acá como práctica interna del nivel, no como proyecto canónico independiente.
 
 #### L4 — El sistema de build de Rust
 
@@ -220,7 +232,7 @@ Temas centrales:
 - crates, workspaces y toolchains
 - comparación explícita con el flujo de C
 
-Proyectos asociados: crate mínimo con dependencia y tests.
+Proyectos asociados hoy en repo: ninguno. El crate mínimo con dependencia y tests funciona como práctica guiada del nivel, no como proyecto canónico aparte.
 
 #### L5 — Herramientas de observabilidad I
 
@@ -233,7 +245,7 @@ Temas centrales:
 - memoria desde debugger
 - `rust-analyzer`, `rustfmt`, `clang-format`, `clippy`
 
-Proyectos asociados: mini-labs de debugging en C y Rust.
+Proyectos asociados hoy en repo: ninguno. El debugging en C y Rust se ejercita dentro del nivel y reaparece más adelante como criterio de trabajo, no como proyecto propio.
 
 #### L6 — Herramientas de observabilidad II
 
@@ -246,7 +258,7 @@ Temas centrales:
 - `strace`
 - preview de `perf` y flamegraphs
 
-Proyectos asociados: mini-labs de lectura de diagnósticos de memoria.
+Proyectos asociados hoy en repo: ninguno. Sanitizers, valgrind y `strace` se practican aquí como diagnóstico guiado del nivel, no como proyecto canónico separado.
 
 #### L7 — Alfabetización assembly
 
@@ -259,7 +271,7 @@ Temas centrales:
 - instrucciones mínimas para leer código compilado
 - comparación `-O0` vs `-O2`
 
-Proyectos asociados: mini-labs de lectura de `.s`, stepping en `gdb` y conexión con syscalls.
+Proyectos asociados hoy en repo: ninguno. La lectura de `.s`, el stepping en `gdb` y la conexión con syscalls siguen siendo práctica interna del nivel.
 
 ### Bloque 1 — C como lenguaje
 
@@ -339,7 +351,7 @@ Temas centrales:
 - `assert()` vs manejo real de errores
 - golden files, fuzzing y sanitizers como suite
 
-Proyectos asociados: extensión de `stringlib` y `dynamic-array` con testing explícito.
+Proyectos asociados hoy en repo: ninguno. El nivel endurece `stringlib` y `dynamic-array` con testing explícito, pero sin abrir todavía un proyecto propio.
 
 ### Bloque 2 — Rust como lenguaje
 
@@ -393,7 +405,7 @@ Temas centrales:
 - tests unitarios e integración
 - property-based testing con `proptest`
 
-Proyectos asociados: extensión de `data-structures-rust` y `parser-combinators`.
+Proyectos asociados hoy en repo: ninguno. El objetivo es consolidar manejo de errores y testing antes de abrir `ffi-demo`; las reaperturas posteriores no cuentan aquí como proyecto propio.
 
 #### L18 — Rust: FFI, unsafe y el sistema operativo
 
@@ -419,7 +431,7 @@ Temas centrales:
 - `Pin`, invariantes de memoria y `Send`/`Sync`
 - wrappers seguros sobre primitivas y APIs inseguras
 
-Proyectos asociados: sin proyecto nuevo; prepara reaperturas de `ffi-demo`, estructuras concurrentes y futuros runtimes.
+Proyectos asociados hoy en repo: ninguno. Es un nivel puente para consolidar Rust systems antes de POSIX y de las reaperturas posteriores en runtimes, async y concurrencia.
 
 ### Bloque 3 — Sistemas POSIX
 
@@ -460,7 +472,7 @@ Temas centrales:
 - `poll`, `select` y transición conceptual hacia `epoll`
 - contratos finos entre procesos, shell, terminal y kernel
 
-Proyectos asociados: sin proyecto nuevo; prepara `mish`, `shell remoto TCP` y el bloque async.
+Proyectos asociados hoy en repo: ninguno. Funciona como capa de APIs y patrones de Unix real antes de sus reaperturas prácticas posteriores, pero sin proyecto directo propio en el catálogo actual.
 
 #### L23 — Scheduling
 
@@ -553,7 +565,7 @@ Temas centrales:
 - event loops, ownership de mensajes y dispatch
 - separación entre coordinación práctica y diseño lock-free
 
-Proyectos asociados: sin proyecto nuevo; prepara `lock-free-queue`, `miniqueue` y el futuro proyecto de task queues.
+Proyectos asociados hoy en repo: ninguno. Ordena patrones de coordinación práctica antes de reaparecer en proyectos posteriores, pero no abre todavía un proyecto canónico propio.
 
 #### L30 — Concurrencia III: lock-free y concurrencia avanzada
 
@@ -598,7 +610,7 @@ Temas centrales:
 
 Proyectos asociados: inicio de `mish` Fase 5.
 
-Prioridad documental actual: `L32` deja de ser un simple escalón de transición y pasa a tratarse como un puente estructural de alta prioridad dentro de Forja.
+Nota de diseño curricular: `L32` deja de ser un simple escalón de transición y pasa a tratarse como un puente estructural de alta prioridad dentro de Forja.
 
 ### Bloque 7 — Compiladores
 
@@ -652,7 +664,7 @@ Temas centrales:
 - constraints y unificación manual
 - union-find como estructura de apoyo
 
-Proyectos asociados: ejercicios en papel; sin proyecto nuevo.
+Proyectos asociados: `logico`, `semtex`. Aun así, el corazón del nivel sigue viviendo en práctica manual y ejercicios previos a la implementación completa del algoritmo.
 
 #### L37 — Inferencia de tipos: el algoritmo W
 
@@ -684,7 +696,7 @@ Temas centrales:
 - checksums, corrupción y límites de confianza
 - endianness, layout estable y compatibilidad entre procesos
 
-Proyectos asociados: sin proyecto nuevo; prepara `miniqueue`, `mini-broker`, `KVolt` y futuros laboratorios de formato.
+Proyectos asociados hoy en repo: ninguno. Este nivel explicita una capa del canon que todavía no tiene proyecto focalizado propio dentro del catálogo estructural.
 
 #### L39 — GC fundamental
 
@@ -697,7 +709,7 @@ Temas centrales:
 - pausas, throughput y tradeoffs de diseño
 - relación entre allocators, object graphs y collectors
 
-Proyectos asociados: sin proyecto nuevo; prepara `Logico`, `custom-malloc` y el futuro `gc-lab`.
+Proyectos asociados hoy en repo: ninguno. La capa de GC queda incorporada al canon antes de reaparecer dentro de runtimes e intérpretes, pero todavía sin proyecto propio materializado.
 
 #### L40 — Runtimes, object layout y VMs
 
@@ -710,7 +722,7 @@ Temas centrales:
 - bytecode, dispatch loops y VMs sencillas
 - organización interna de un runtime local y de un executor cooperativo
 
-Proyectos asociados: sin proyecto nuevo; prepara `bytecode-vm`, `mini-runtime` y `coroutine-executor`.
+Proyectos asociados hoy en repo: ninguno. El nivel formaliza la capa runtime/VM antes del async runtime, aunque los proyectos dedicados a bytecode y runtime sigan fuera del catálogo estructural.
 
 #### L41 — Persistencia I: durabilidad y B-Trees
 
@@ -789,7 +801,7 @@ Temas centrales:
 - SLOs, debugging de fallas y señales de salud
 - observabilidad como insumo de diseño, no solo de operación
 
-Proyectos asociados: sin proyecto nuevo; prepara reaperturas de `HTTP server`, `minisync`, `orquestador` y `raft-lite`.
+Proyectos asociados hoy en repo: ninguno. La observabilidad distribuida queda como capa transversal del canon antes de reaparecer en servicios y sistemas distribuidos, pero sin proyecto propio hoy.
 
 #### L47 — Redes I: fundamentos TCP y HTTP
 
@@ -912,7 +924,7 @@ Temas centrales:
 - fronteras de privilegio, sandboxing y memoria compartida con kernel
 - por qué contenedores, JIT, eBPF y drivers rozan esta frontera de formas distintas
 
-Proyectos asociados: sin proyecto nuevo; prepara `minidocker`, `char-driver`, `ebpf-tracer` y el bloque kernel.
+Proyectos asociados hoy en repo: ninguno. Es el puente conceptual hacia `char-driver`, `ram-filesystem`, `kvm-mini-hypervisor` y `ebpf-tracer`, no un nivel con proyecto directo propio por ahora.
 
 ### Bloque 11 — Kernel space
 
@@ -984,19 +996,21 @@ Las mejoras propuestas no son decorativas. Son el momento en que el aprendizaje 
 
 ## 9. Caminos posibles de navegación
 
-El grafo de dependencias admite varios recorridos. Estos son los cuatro caminos explícitos del plan.
+El canon actual tiene una columna vertebral bastante más lineal que el plan previo. Por eso estos caminos no deben leerse como atajos que ignoran prerrequisitos, sino como vistas de énfasis sobre el mismo grafo.
 
-Estos caminos ya describen el canon visible actual, incluyendo las densificaciones de Rust systems, POSIX fino, concurrencia práctica, formatos, GC, runtimes, observabilidad distribuida y frontera user/kernel.
+Cuando un camino resalta un bloque alto, se asume siempre el puente obligatorio que lo habilita. Las densificaciones de Rust systems, POSIX fino, concurrencia práctica, formatos, GC, runtimes, observabilidad distribuida y frontera user/kernel ya forman parte de todos estos recorridos, aunque algunas aparezcan solo como base necesaria y no como foco principal.
 
 ### Camino 1 — Sistemas primero
 
-Para quien quiere consolidar primero lenguajes, POSIX, redes, contenedores y kernel.
+Para quien quiere poner el peso del segundo tramo en POSIX, concurrencia, persistencia, redes y distribución.
 
-Recorrido sugerido:
+Énfasis principal:
 
 `L0-L19 -> L20-L31 -> L38-L50 -> L52-L53`
 
-Luego puede cerrar compiladores con `L32-L37` y `L54`.
+Puente obligatorio antes del bloque avanzado: `L32-L37`.
+
+Cierre recomendado: `L51` y `L54-L57`.
 
 ### Camino 2 — Plan completo
 
@@ -1008,21 +1022,33 @@ Recorrido sugerido:
 
 ### Camino 3 — Compiladores primero
 
-Para quien quiere llegar cuanto antes a parsing, intérpretes, tipos y JIT sin saltear la caja de herramientas base.
+Para quien quiere girar a compiladores tan pronto como el grafo lo permite y tratar JIT como horizonte de largo plazo, no como atajo artificial.
 
-Recorrido sugerido:
+Base obligatoria antes del desvío:
 
-`L0-L19 -> L32-L37 -> L54`
+`L0-L31`
 
-Complemento recomendado después: `L20-L31`, `L38-L53` y finalmente `L55-L57`.
+Énfasis principal:
+
+`L32-L37`
+
+Para cerrar el arco hasta JIT, después hace falta recorrer `L38-L54`.
+
+Kernel y frontera user/kernel quedan al final: `L55-L57`.
 
 ### Camino 4 — Integración vertical
 
-Para quien quiere alternar sistemas y compiladores siguiendo dependencias naturales entre proyectos.
+Para quien quiere seguir primero los puntos donde los proyectos integradores reaparecen y cruzan dominios.
 
-Recorrido sugerido:
+Base necesaria:
 
-`L0-L26 -> L32-L57`
+`L0-L31`
+
+Énfasis principal:
+
+`L32-L37`, `L41-L45`, `L47-L54`
+
+Complemento recomendado para cerrar el mapa sin huecos: `L38-L40`, `L46` y `L55-L57`.
 
 ---
 
