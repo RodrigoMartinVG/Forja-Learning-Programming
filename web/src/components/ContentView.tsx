@@ -5,6 +5,7 @@ import { introContent, levelContent, projectContent } from 'virtual:forja-conten
 import type { LevelMeta, ProjectMeta } from 'virtual:forja-content'
 import { getProgress } from '../lib/progress'
 import { getLevelProjects, getProjectLevels } from '../lib/curriculum'
+import LevelSimulator from './LevelSimulator'
 
 const MdRenderer = lazy(() => import('./MdRenderer'))
 
@@ -199,7 +200,7 @@ function IntroView({
 
 // ─── Level view ───────────────────────────────────────────────────────────────
 
-type Tab = 'teoria' | 'ejercicios' | 'proyectos'
+type Tab = 'teoria' | 'ejercicios' | 'simulador' | 'proyectos'
 
 function LevelView({
   level,
@@ -215,20 +216,32 @@ function LevelView({
   const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('teoria')
   const [activeChapterIdx, setActiveChapterIdx] = useState(0)
+  const [activeExerciseIdx, setActiveExerciseIdx] = useState(0)
   const [selectedProject, setSelectedProject] = useState<ProjectMeta | null>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const scrollTop = () => bodyRef.current?.scrollTo({ top: 0, behavior: 'instant' })
 
-  const content      = levelContent[level.id]
-  const hasChapters  = (content?.chapters?.length ?? 0) > 0
-  const hasReadme    = !!content?.readme && !isSeededPlaceholder(content.readme)
-  const hasContent   = hasChapters || hasReadme
-  const hasExercises = !!content?.exercises && !isSeededPlaceholder(content.exercises)
-  const levelProjs   = getLevelProjects(level, projects)
+  const content            = levelContent[level.id]
+  const chapters           = content?.chapters ?? []
+  const exerciseEntries    = content?.exerciseEntries ?? []
+  const simulatorPresets   = content?.simulatorPresets ?? []
+  const hasChapters        = chapters.length > 0
+  const hasReadme          = !!content?.readme && !isSeededPlaceholder(content.readme)
+  const hasContent         = hasChapters || hasReadme
+  const hasSimulator       = !!content?.simulator && !isSeededPlaceholder(content.simulator)
+  const hasExerciseEntries = exerciseEntries.length > 0
+  const hasLegacyExercises = !!content?.exercises && !isSeededPlaceholder(content.exercises)
+  const hasExercises       = hasExerciseEntries || hasLegacyExercises
+  const levelProjs         = getLevelProjects(level, projects)
   const { completed } = getProgress()
 
-  const chapters = content?.chapters ?? []
-  const activeChapter = chapters[activeChapterIdx]
+  const currentChapterIdx = Math.min(activeChapterIdx, Math.max(chapters.length - 1, 0))
+  const currentExerciseIdx = Math.min(activeExerciseIdx, Math.max(exerciseEntries.length - 1, 0))
+  const activeChapter = chapters[currentChapterIdx]
+  const activeExercise = exerciseEntries[currentExerciseIdx]
+  const navEntries = tab === 'teoria' ? chapters : exerciseEntries
+  const activeNavIdx = tab === 'teoria' ? currentChapterIdx : currentExerciseIdx
+  const showNav = (tab === 'teoria' && hasChapters) || (tab === 'ejercicios' && hasExerciseEntries)
   const selectedProjectReadme = selectedProject ? projectContent[selectedProject.id]?.readme ?? '' : ''
 
   return (
@@ -260,6 +273,9 @@ function LevelView({
           {hasExercises && (
             <TabBtn id="ejercicios" active={tab} label="ejercicios"     onClick={t => { setTab(t); setSelectedProject(null) }} />
           )}
+          {hasSimulator && (
+            <TabBtn id="simulador" active={tab} label="simulador"     onClick={t => { setTab(t); setSelectedProject(null) }} />
+          )}
           {levelProjs.length > 0 && (
             <TabBtn id="proyectos"  active={tab} label={`proyectos\u00a0(${levelProjs.length})`} onClick={t => { setTab(t); setSelectedProject(null) }} />
           )}
@@ -274,14 +290,21 @@ function LevelView({
       {/* ── Body layout: optional chapters sidebar + content ── */}
       <div className="content-layout">
 
-        {/* Chapters sidebar — only when in teoría tab and we have chapters */}
-        {tab === 'teoria' && hasChapters && (
+        {/* Indexed content sidebar — theory chapters or split exercises */}
+        {showNav && (
           <aside className="chapters-nav">
-            {chapters.map((s, i) => (
+            {navEntries.map((s, i) => (
               <button
                 key={s.slug}
-                className={`chapters-nav__item ${i === activeChapterIdx ? 'chapters-nav__item--active' : ''}`}
-                onClick={() => { setActiveChapterIdx(i); scrollTop() }}
+                className={`chapters-nav__item ${i === activeNavIdx ? 'chapters-nav__item--active' : ''}`}
+                onClick={() => {
+                  if (tab === 'teoria') {
+                    setActiveChapterIdx(i)
+                  } else {
+                    setActiveExerciseIdx(i)
+                  }
+                  scrollTop()
+                }}
               >
                 <span className="chapters-nav__num">{s.slug.match(/^(\d+)/)?.[1] ?? String(i + 1).padStart(2, '0')}</span>
                 <span className="chapters-nav__title">{s.title}</span>
@@ -292,7 +315,7 @@ function LevelView({
 
         {/* Scrollable content */}
         <div ref={bodyRef} className="content-body">
-          <div className="content-body__inner">
+          <div className={`content-body__inner ${tab === 'simulador' ? 'content-body__inner--wide' : ''}`.trim()}>
 
             {/* Hero */}
             <div className="content-hero">
@@ -331,21 +354,21 @@ function LevelView({
                     <MarkdownContent>{activeChapter.body}</MarkdownContent>
                     {/* Prev / Next navigation */}
                     <div className="section-pager">
-                      {activeChapterIdx > 0 && (
+                      {currentChapterIdx > 0 && (
                         <button
                           className="section-pager__btn section-pager__btn--prev"
-                          onClick={() => { setActiveChapterIdx(activeChapterIdx - 1); scrollTop() }}
+                          onClick={() => { setActiveChapterIdx(currentChapterIdx - 1); scrollTop() }}
                         >
-                          ← {chapters[activeChapterIdx - 1].title}
+                          ← {chapters[currentChapterIdx - 1].title}
                         </button>
                       )}
                       <div className="section-pager__spacer" />
-                      {activeChapterIdx < chapters.length - 1 && (
+                      {currentChapterIdx < chapters.length - 1 && (
                         <button
                           className="section-pager__btn section-pager__btn--next"
-                          onClick={() => { setActiveChapterIdx(activeChapterIdx + 1); scrollTop() }}
+                          onClick={() => { setActiveChapterIdx(currentChapterIdx + 1); scrollTop() }}
                         >
-                          {chapters[activeChapterIdx + 1].title} →
+                          {chapters[currentChapterIdx + 1].title} →
                         </button>
                       )}
                     </div>
@@ -361,9 +384,43 @@ function LevelView({
             {/* ── Ejercicios tab ── */}
             {tab === 'ejercicios' && (
               hasExercises ? (
-                <MarkdownContent>{content.exercises}</MarkdownContent>
+                hasExerciseEntries && activeExercise ? (
+                  <>
+                    <MarkdownContent>{activeExercise.body}</MarkdownContent>
+                    <div className="section-pager">
+                      {currentExerciseIdx > 0 && (
+                        <button
+                          className="section-pager__btn section-pager__btn--prev"
+                          onClick={() => { setActiveExerciseIdx(currentExerciseIdx - 1); scrollTop() }}
+                        >
+                          ← {exerciseEntries[currentExerciseIdx - 1].title}
+                        </button>
+                      )}
+                      <div className="section-pager__spacer" />
+                      {currentExerciseIdx < exerciseEntries.length - 1 && (
+                        <button
+                          className="section-pager__btn section-pager__btn--next"
+                          onClick={() => { setActiveExerciseIdx(currentExerciseIdx + 1); scrollTop() }}
+                        >
+                          {exerciseEntries[currentExerciseIdx + 1].title} →
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <MarkdownContent>{content.exercises}</MarkdownContent>
+                )
               ) : (
                 <Pending label="pendiente" message="Los ejercicios de este nivel aún no fueron producidos." />
+              )
+            )}
+
+            {/* ── Simulador tab ── */}
+            {tab === 'simulador' && (
+              hasSimulator ? (
+                <LevelSimulator levelId={level.id} presets={simulatorPresets} />
+              ) : (
+                <Pending label="pendiente" message="El simulador de este nivel aún no fue producido." />
               )
             )}
 

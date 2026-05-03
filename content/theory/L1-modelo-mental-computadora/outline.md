@@ -86,11 +86,11 @@ Que la persona pueda describir un programa en ejecución como una máquina de es
 
 ## Ejercicios
 
-- Dada una traza simple, identificar qué cambia en PC, registros y memoria después de cada instrucción.
-- Clasificar afirmaciones típicas como confusión entre CPU, registro, memoria, dirección, código o dato.
-- Explicar qué cambia y qué no cambia cuando una instrucción salta a otra dirección.
-- Distinguir source, ejecutable, memoria cargada y programa en ejecución en ejemplos concretos.
-- Justificar con ejemplos por qué este nivel va antes de `L2`, `L3` y `L7`.
+- `exercises/01-seguir-una-traza.md`: dada una traza simple, identificar qué cambia en `pc`, registros y memoria después de cada instrucción.
+- `exercises/02-distinguir-las-piezas.md`: clasificar afirmaciones típicas como confusión entre CPU, registro, memoria, dirección, código o dato.
+- `exercises/03-salto-condicional.md`: dado un salto condicional y varios estados posibles, elegir cómo queda el `pc` en cada caso.
+- `exercises/04-source-codigo-y-proceso.md`: clasificar ejemplos concretos como source, código cargado, dato o programa en ejecución.
+- `exercises/05-comparar-estados.md`: comparar dos estados simples para decidir si cambió el código cargado, el estado de ejecución o solo los datos.
 
 ## Decisiones de diseño
 

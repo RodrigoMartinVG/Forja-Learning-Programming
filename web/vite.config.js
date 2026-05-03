@@ -95,33 +95,91 @@ function extractMdTitle(md, fallback) {
     var match = md.match(/^#\s+(.+)$/m);
     return match ? match[1].trim() : fallback;
 }
+function readMarkdownEntriesDir(base, dirname) {
+    var entriesDir = join(base, dirname);
+    var entries = [];
+    if (!existsSync(entriesDir) || !isDir(entriesDir)) {
+        return entries;
+    }
+    var files = readdirSync(entriesDir)
+        .filter(function (file) { return file.endsWith('.md'); })
+        .sort(); // lexicographic: 01-, 02-, …
+    for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
+        var file = files_1[_i];
+        var body = readFileSync(join(entriesDir, file), 'utf-8');
+        var slug = file.replace(/\.md$/, '');
+        var title = extractMdTitle(body, slug);
+        entries.push({ slug: slug, title: title, body: body });
+    }
+    return entries;
+}
+function extractFirstParagraph(md) {
+    var blocks = md
+        .replace(/^#\s+.+$/m, '')
+        .split(/\r?\n\r?\n/)
+        .map(function (block) { return block.trim(); })
+        .filter(Boolean);
+    for (var _i = 0, blocks_1 = blocks; _i < blocks_1.length; _i++) {
+        var block = blocks_1[_i];
+        if (block.startsWith('```') || block.startsWith('##')) {
+            continue;
+        }
+        return block.replace(/\r?\n+/g, ' ');
+    }
+    return '';
+}
+function extractNamedFence(md, names) {
+    for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
+        var name_1 = names_1[_i];
+        var marker = "```".concat(name_1);
+        var start = md.indexOf(marker);
+        if (start === -1) {
+            continue;
+        }
+        var content = md.slice(start + marker.length);
+        if (content.startsWith('\r\n')) {
+            content = content.slice(2);
+        }
+        else if (content.startsWith('\n')) {
+            content = content.slice(1);
+        }
+        var end = content.indexOf('```');
+        if (end === -1) {
+            continue;
+        }
+        return content.slice(0, end).trim();
+    }
+    return '';
+}
+function readSimulatorPresetsDir(base, dirname) {
+    return readMarkdownEntriesDir(base, dirname)
+        .map(function (entry) { return ({
+        slug: entry.slug,
+        title: entry.title,
+        note: extractFirstParagraph(entry.body),
+        program: extractNamedFence(entry.body, ['forja-program', 'sim-program', 'program']),
+        data: extractNamedFence(entry.body, ['forja-data', 'sim-data', 'data']),
+    }); })
+        .filter(function (entry) { return entry.program.length > 0; });
+}
 function readLevelContent(theoryDir) {
     if (!theoryDir) {
-        return { readme: '', exercises: '', chapters: [] };
+        return { readme: '', exercises: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] };
     }
     var base = join(repoRoot, theoryDir);
     var readFile = function (name) {
         var p = join(base, name);
         return existsSync(p) ? readFileSync(p, 'utf-8') : '';
     };
-    // Read chapters/ subdirectory if it exists
-    var chaptersDir = join(base, 'chapters');
-    var chapters = [];
-    if (existsSync(chaptersDir) && isDir(chaptersDir)) {
-        var files = readdirSync(chaptersDir)
-            .filter(function (file) { return file.endsWith('.md'); })
-            .sort(); // lexicographic: 01-, 02-, …
-        for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
-            var file = files_1[_i];
-            var body = readFileSync(join(chaptersDir, file), 'utf-8');
-            var slug = file.replace(/\.md$/, '');
-            var title = extractMdTitle(body, slug);
-            chapters.push({ slug: slug, title: title, body: body });
-        }
-    }
+    var chapters = readMarkdownEntriesDir(base, 'chapters');
+    var exerciseEntries = readMarkdownEntriesDir(base, 'exercises');
+    var simulatorPresets = readSimulatorPresetsDir(base, 'simulator-presets');
     return {
         readme: readFile('README.md'),
         exercises: readFile('exercises.md'),
+        simulator: readFile('simulador.md'),
+        simulatorPresets: simulatorPresets,
+        exerciseEntries: exerciseEntries,
         chapters: chapters,
     };
 }

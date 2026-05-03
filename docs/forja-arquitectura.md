@@ -175,7 +175,8 @@ L20-posix-filesystem/
 ├── meta.yaml               # Metadatos locales del nivel
 ├── outline.md              # Diseño detallado del nivel
 ├── chapters/               # Cuerpo real cuando el nivel ya fue escrito
-├── exercises.md            # Ejercicios puntuales (preguntas + modificaciones)
+├── exercises.md            # Ejercicios puntuales en archivo único (compatibilidad)
+├── exercises/              # Ejercicios en entradas navegables con índice lateral
 └── src/                    # Fragmentos de código ilustrativos
 ```
 
@@ -379,7 +380,7 @@ cross_refs:
 
 ### Índices generados en build time
 
-La web no edita ni mantiene índices globales a mano. En build time lee `metadata/levels.yaml`, `metadata/paths.yaml` y `content/projects/**/project.yaml`; para el cuerpo de teoría usa el `theory_dir` de cada nivel y carga `README.md`, `exercises.md` y, si existen, los archivos de `chapters/`. `meta.yaml` queda como espejo local y fallback si alguna vez falta el catálogo canónico.
+La web no edita ni mantiene índices globales a mano. En build time lee `metadata/levels.yaml`, `metadata/paths.yaml` y `content/projects/**/project.yaml`; para el cuerpo de teoría usa el `theory_dir` de cada nivel y carga `README.md`, `exercises.md` como fallback heredado y, si existen, los archivos de `chapters/` y `exercises/`. `meta.yaml` queda como espejo local y fallback si alguna vez falta el catálogo canónico.
 
 Los candidatos que todavía viven solo en `docs/forja-contenido.md` o `docs/forja-proyectos.md` no entran en ese circuito hasta que exista su metadata estructural real. `docs/` puede ir por delante del repo materializado; la web y el build no.
 

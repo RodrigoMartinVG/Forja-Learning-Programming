@@ -63,7 +63,7 @@ Cuando se abre un nivel, conviene distinguir cuatro piezas:
 
 - `00-introduccion.md`, para ubicar el nivel en el mapa y entender que cubre y que no.
 - los capitulos, donde vive el cuerpo principal del contenido.
-- `exercises.md`, para verificar el recorrido con evidencia.
+- los ejercicios, en `exercises.md` o en entradas separadas dentro de `exercises/`, para verificar el recorrido con evidencia.
 - el proyecto asociado, cuando exista, como siguiente paso natural del nivel.
 
 No todos los niveles tienen hoy la misma profundidad editorial, pero la forma de entrar no cambia: primero las introducciones, despues `L0`, y recien ahi el resto del mapa.

@@ -120,13 +120,97 @@ function extractMdTitle(md: string, fallback: string): string {
   return match ? match[1].trim() : fallback
 }
 
+type MarkdownEntry = { slug: string; title: string; body: string }
+type SimulatorPresetEntry = { slug: string; title: string; note: string; program: string; data: string }
+
+function readMarkdownEntriesDir(base: string, dirname: string): MarkdownEntry[] {
+  const entriesDir = join(base, dirname)
+  const entries: MarkdownEntry[] = []
+
+  if (!existsSync(entriesDir) || !isDir(entriesDir)) {
+    return entries
+  }
+
+  const files = readdirSync(entriesDir)
+    .filter((file: string) => file.endsWith('.md'))
+    .sort() // lexicographic: 01-, 02-, …
+
+  for (const file of files) {
+    const body = readFileSync(join(entriesDir, file), 'utf-8')
+    const slug = file.replace(/\.md$/, '')
+    const title = extractMdTitle(body, slug)
+    entries.push({ slug, title, body })
+  }
+
+  return entries
+}
+
+function extractFirstParagraph(md: string): string {
+  const blocks = md
+    .replace(/^#\s+.+$/m, '')
+    .split(/\r?\n\r?\n/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+
+  for (const block of blocks) {
+    if (block.startsWith('```') || block.startsWith('##')) {
+      continue
+    }
+
+    return block.replace(/\r?\n+/g, ' ')
+  }
+
+  return ''
+}
+
+function extractNamedFence(md: string, names: string[]): string {
+  for (const name of names) {
+    const marker = `\`\`\`${name}`
+    const start = md.indexOf(marker)
+    if (start === -1) {
+      continue
+    }
+
+    let content = md.slice(start + marker.length)
+    if (content.startsWith('\r\n')) {
+      content = content.slice(2)
+    } else if (content.startsWith('\n')) {
+      content = content.slice(1)
+    }
+
+    const end = content.indexOf('```')
+    if (end === -1) {
+      continue
+    }
+
+    return content.slice(0, end).trim()
+  }
+
+  return ''
+}
+
+function readSimulatorPresetsDir(base: string, dirname: string): SimulatorPresetEntry[] {
+  return readMarkdownEntriesDir(base, dirname)
+    .map((entry) => ({
+      slug: entry.slug,
+      title: entry.title,
+      note: extractFirstParagraph(entry.body),
+      program: extractNamedFence(entry.body, ['forja-program', 'sim-program', 'program']),
+      data: extractNamedFence(entry.body, ['forja-data', 'sim-data', 'data']),
+    }))
+    .filter((entry) => entry.program.length > 0)
+}
+
 function readLevelContent(theoryDir: string): {
   readme: string
   exercises: string
-  chapters: { slug: string; title: string; body: string }[]
+  simulator: string
+  simulatorPresets: SimulatorPresetEntry[]
+  exerciseEntries: MarkdownEntry[]
+  chapters: MarkdownEntry[]
 } {
   if (!theoryDir) {
-    return { readme: '', exercises: '', chapters: [] }
+    return { readme: '', exercises: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] }
   }
 
   const base = join(repoRoot, theoryDir)
@@ -134,27 +218,16 @@ function readLevelContent(theoryDir: string): {
     const p = join(base, name)
     return existsSync(p) ? readFileSync(p, 'utf-8') : ''
   }
-
-  // Read chapters/ subdirectory if it exists
-  const chaptersDir = join(base, 'chapters')
-  const chapters: { slug: string; title: string; body: string }[] = []
-
-  if (existsSync(chaptersDir) && isDir(chaptersDir)) {
-    const files = readdirSync(chaptersDir)
-      .filter((file: string) => file.endsWith('.md'))
-      .sort() // lexicographic: 01-, 02-, …
-
-    for (const file of files) {
-      const body = readFileSync(join(chaptersDir, file), 'utf-8')
-      const slug = file.replace(/\.md$/, '')
-      const title = extractMdTitle(body, slug)
-      chapters.push({ slug, title, body })
-    }
-  }
+  const chapters = readMarkdownEntriesDir(base, 'chapters')
+  const exerciseEntries = readMarkdownEntriesDir(base, 'exercises')
+  const simulatorPresets = readSimulatorPresetsDir(base, 'simulator-presets')
 
   return {
     readme: readFile('README.md'),
     exercises: readFile('exercises.md'),
+    simulator: readFile('simulador.md'),
+    simulatorPresets,
+    exerciseEntries,
     chapters,
   }
 }
