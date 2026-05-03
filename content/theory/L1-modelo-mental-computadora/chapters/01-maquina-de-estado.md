@@ -14,6 +14,8 @@ Dicho de manera más directa:
 
 El resto del capítulo despliega esa idea de menor a mayor. Primero conviene ganar intuición sobre por qué algo almacenado puede leerse como dato o como instrucción. Después conviene entender por qué eso vuelve general a la máquina. Recién entonces vale la pena poner nombres técnicos a las piezas y seguir una traza concreta.
 
+> Simulador: si cargás `suma base`, cada snapshot del historial se puede leer como un estado distinto de la máquina. La pregunta útil mientras avanzás no es "qué hace el programa", sino "qué parte del estado cambió entre este punto y el siguiente?".
+
 ## Dato e instrucción: cambia la lectura, no la materia
 
 La primera intuición importante de este capítulo es esta: decir que en memoria puede haber datos e instrucciones no significa que existan dos materias distintas dentro de la RAM. Significa que el mismo contenido almacenado puede cumplir dos roles distintos según como se lo interprete.

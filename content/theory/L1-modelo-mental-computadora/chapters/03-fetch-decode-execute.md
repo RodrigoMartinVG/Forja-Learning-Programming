@@ -23,6 +23,8 @@ Y este estado inicial:
 | `mem[41]` | `5` |
 | `mem[42]` | `0` |
 
+> Simulador: cambiá a modo `micro` y recorré un preset simple. Ahí `fetch`, `decode` y `execute` dejan de ser nombres recitados y pasan a verse como tres momentos distintos del mismo paso.
+
 ## Qué significa fetch
 
 `fetch` es el paso donde la CPU usa el valor actual del `pc` para buscar cuál es la instrucción que toca considerar ahora.
@@ -57,6 +59,13 @@ Con el mismo ejemplo:
 - `ADD r0, [41]` se decodifica como: tomar el valor actual de `r0`, sumarle el contenido de `mem[41]` y dejar el resultado otra vez en `r0`
 - `STORE r0, [42]` se decodifica como: copiar el valor actual de `r0` hacia `mem[42]`
 - `HALT` se decodifica como: detener la ejecución
+
+Si apareciera `MOV`, la idea sería igual de directa:
+
+- `MOV r0, 5` se decodifica como: dejar el valor `5` en `r0`
+- `MOV r1, r0` se decodifica como: copiar el valor actual de `r0` en `r1`
+
+Eso también ayuda a que decode no mezcle cosas distintas: una instrucción puede querer leer memoria, escribir memoria, operar sobre registros o cambiar el flujo. `MOV` deja visible el caso más simple de movimiento interno de estado.
 
 Decode no es todavía el cambio de estado. Es el momento donde queda claro qué partes del estado estarán involucradas si la instrucción se ejecuta.
 

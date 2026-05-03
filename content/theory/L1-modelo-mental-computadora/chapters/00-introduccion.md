@@ -4,6 +4,8 @@ L1 existe para evitar otra confusión cara: pensar que un programa corre por art
 
 Antes de bits, compiladores, punteros o assembly, hace falta una idea más simple y más fuerte: una computadora como estado que cambia cuando una instrucción actúa sobre CPU, registros y memoria.
 
+> Simulador: durante L1 conviene leer la teoría con la solapa `simulador` abierta. No reemplaza la lectura, pero sí vuelve visibles `pc`, registros, memoria e historial mientras el nivel les pone nombre.
+
 ## Qué es este nivel
 
 Este nivel fija ese modelo mínimo. El foco no está en escribir sistemas todavía, sino en poder decir con claridad:

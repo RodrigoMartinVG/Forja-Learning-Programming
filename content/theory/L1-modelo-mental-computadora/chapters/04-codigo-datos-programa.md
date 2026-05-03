@@ -23,6 +23,8 @@ Y en este estado inicial:
 | `mem[41]` | `5` |
 | `mem[42]` | `0` |
 
+> Simulador: en este capítulo conviene tocar el editor, cargar cambios y después comparar la memoria cargada con la línea de tiempo. Esa separación visible entre texto editable, código cargado y programa en ejecución es exactamente la distinción que estamos buscando fijar.
+
 ## Código y datos viven en memoria
 
 En `01` ya apareció la idea fuerte: dato e instrucción no son dos materias distintas. En `02` esa idea quedó más concreta cuando vimos una tabla de memoria donde unas direcciones se leían como instrucciones y otras como datos.

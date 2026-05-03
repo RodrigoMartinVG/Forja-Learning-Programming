@@ -2,6 +2,8 @@
 
 Para cada caso, elegí una sola categoría entre `CPU`, `registro`, `memoria`, `dirección`, `código` o `dato`.
 
+> Simulador: usá la pantalla del simulador como apoyo visual. La idea es que puedas señalar en la UI dónde aparece cada una de esas categorías antes de completar la tabla.
+
 ## Consigna
 
 | Caso | Categoría |

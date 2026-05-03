@@ -2,6 +2,8 @@
 
 Para cada caso, elegí una sola categoría entre `source`, `código cargado`, `dato` o `programa en ejecución`.
 
+> Simulador: apoyate en el editor, el botón de cargar y el historial. Este ejercicio está pensado para que esa separación entre texto editable, memoria ya cargada y ejecución quede visible, no sólo nombrada.
+
 ## Consigna
 
 | Caso | Categoría |

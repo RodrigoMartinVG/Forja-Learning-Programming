@@ -23,6 +23,8 @@ Y este estado inicial:
 | `mem[41]` | `5` |
 | `mem[42]` | `0` |
 
+> Simulador: este capítulo se deja leer muy bien con `suma base` cargado. Después conviene pasar a `indireccion registro` para ver la misma idea cuando la dirección a usar ya no está escrita fija en la instrucción, sino guardada en un registro.
+
 ## CPU como ejecutor
 
 La CPU no es "toda la computadora". Tampoco es el lugar donde vive entero el programa. En este nivel conviene pensarla como la pieza que ejecuta el paso actual y empuja la máquina hacia el estado siguiente.
@@ -60,6 +62,40 @@ Los registros no son "memoria con otro nombre". Cumplen otro rol en el modelo me
 - muchas instrucciones operan primero sobre ellos
 
 Más adelante aparecerán registros especiales como `pc` y, en otros contextos, también `sp`. Por ahora alcanza con entender que un registro es una parte chica pero muy importante del estado de la máquina.
+
+## `MOV`: mover estado sin leer memoria
+
+Otra instrucción importante del simulador es `MOV`. Sí: es una idea muy típica en assembly, aunque en arquitecturas reales el detalle exacto puede cambiar de una ISA a otra.
+
+En L1 conviene leerla de estas dos maneras mínimas:
+
+```text
+MOV r0, 5
+MOV r1, r0
+```
+
+- `MOV r0, 5` deja el valor `5` en `r0`
+- `MOV r1, r0` copia el valor actual de `r0` hacia `r1`
+
+La idea clave es esta: `MOV` no está leyendo memoria. Está moviendo o copiando estado dentro del espacio de registros, o cargando un valor inmediato en un registro.
+
+Eso importa porque deja una frontera más clara entre instrucciones distintas:
+
+- `LOAD` y `STORE` hablan de tráfico entre registros y memoria
+- `MOV` habla de copiar o preparar valores sin tocar memoria
+
+Esa separación ayuda bastante en L1. Si no existiera `MOV`, sería fácil mezclar dos cosas distintas bajo una sola intuición borrosa:
+
+- leer un dato desde memoria
+- cargar un valor fijo o copiar un registro en otro
+
+Con `MOV`, en cambio, queda más visible qué clase de cambio de estado está ocurriendo.
+
+También sirve para casos muy comunes:
+
+- inicializar contadores o banderas
+- copiar un valor antes de modificarlo
+- guardar una dirección en un registro y usar otro para trabajar sobre el dato
 
 ## Memoria: espacio direccionable
 
@@ -101,6 +137,76 @@ En `LOAD r0, [40]`, el `40` no es el dato que termina en `r0`. El `40` sirve par
 Lo mismo vale para `STORE r0, [42]`: `42` no es el valor que se escribe, sino la dirección donde se escribe. El valor escrito será el que tenga `r0` en ese momento.
 
 Este punto parece chico, pero evita muchas confusiones futuras. Antes de hablar de punteros formales o de representación binaria hace falta que esto quede firme: una dirección nombra una ubicación; un valor es el contenido que puede haber en esa ubicación.
+
+## Cuando la dirección vive en un registro
+
+Hasta acá usamos direcciones escritas de manera directa dentro de la instrucción, como `LOAD r0, [40]`. Pero también existe otra forma muy común en assembly: que la dirección a usar no esté escrita como un número fijo, sino guardada en un registro.
+
+En el simulador eso aparece así:
+
+```text
+LOAD r1, [r0]
+STORE r2, [r3]
+```
+
+La idea operativa sigue siendo la misma:
+
+- los corchetes siguen queriendo decir "usar memoria"
+- el registro dentro de los corchetes no aporta el dato final, sino la dirección donde hay que mirar o escribir
+- primero se mira qué dirección contiene ese registro; después se usa esa dirección sobre memoria
+
+Por ejemplo, si el estado actual fuera este:
+
+| Pieza | Valor |
+|---|---|
+| `r0` | `40` |
+| `r1` | `0` |
+| `mem[40]` | `7` |
+
+entonces `LOAD r1, [r0]` se lee así:
+
+1. mirar cuánto vale `r0`
+2. usar ese valor como dirección de memoria
+3. leer el contenido de esa celda
+4. copiar ese contenido en `r1`
+
+Después de ejecutar la instrucción, `r1` pasa a valer `7`.
+
+Lo mismo con `STORE`. Si `r3=42` y `r2=12`, entonces `STORE r2, [r3]` significa: escribir el valor `12` en `mem[42]`.
+
+El nombre habitual para esto es **indirección por registro** o **direccionamiento indirecto por registro**. Sí: es una idea muy típica en assembly. No es una rareza del simulador, sino una versión chica de una familia de mecanismos muy normales en ISAs reales.
+
+## Para qué sirve
+
+La utilidad principal es separar estas dos preguntas:
+
+- qué valor quiero leer o escribir
+- en qué lugar de memoria quiero hacerlo
+
+Con una dirección fija, como `LOAD r0, [40]`, el programa siempre mira el mismo lugar. Con indirección por registro, la misma instrucción puede mirar lugares distintos según el valor que tenga el registro en ese momento.
+
+Eso vuelve posible cosas como estas:
+
+- recorrer una tabla o una secuencia de celdas moviendo una dirección guardada en un registro
+- decidir durante la ejecución en qué celda escribir un resultado
+- copiar datos entre regiones de memoria sin hardcodear cada dirección
+- preparar el terreno mental para entender después punteros, arrays, buffers, nodos enlazados y stack
+
+En L1 no hace falta ir todavía a punteros formales ni a aritmética de direcciones compleja. Alcanza con esta idea: a veces un registro no guarda el dato que quiero procesar, sino la dirección del lugar donde ese dato vive.
+
+## Qué casos conviene mostrar en L1
+
+Para este nivel, los casos más útiles son los más austeros:
+
+- un `LOAD r1, [r0]` donde `r0` contiene la dirección de un dato
+- un `STORE r2, [r3]` donde `r3` contiene la dirección de destino
+- una pequeña secuencia donde se cambia el registro-dirección y, por eso, la misma instrucción termina leyendo otra celda
+
+Eso ya alcanza para dejar sembradas intuiciones valiosas:
+
+- una dirección también puede vivir dentro del estado de la máquina
+- el flujo del programa puede ser el mismo aunque cambie el lugar de memoria sobre el que trabaja
+- más adelante, cuando aparezcan C, Rust y assembly más real, no va a sonar raro que un registro se use como base para acceder a memoria
 
 ## El program counter como ancla del flujo
 

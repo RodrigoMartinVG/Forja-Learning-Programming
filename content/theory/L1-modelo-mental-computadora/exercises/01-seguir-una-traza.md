@@ -2,6 +2,8 @@
 
 Usá la misma traza de `02` y `03` para seguir, paso a paso, cómo cambia el estado.
 
+> Simulador: resolvelo primero en papel. Después verificá la tabla con el preset `suma base`, avanzando una instrucción por vez y mirando `pc`, `r0` y `mem[42]`.
+
 ## Programa
 
 ```text

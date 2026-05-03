@@ -2,6 +2,8 @@
 
 Este ejercicio usa la misma lógica de `03`: decidir cómo queda el `pc` cuando una instrucción puede cambiar el flujo.
 
+> Simulador: cargá `salto condicional`, detenete justo antes de `JNZ` y usalo para comprobar cómo cambia el próximo `pc` según el valor del registro.
+
 ## Programa
 
 ```text

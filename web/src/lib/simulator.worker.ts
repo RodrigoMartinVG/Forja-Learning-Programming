@@ -1,13 +1,18 @@
 import { stepMachine, type SimulatorMachine } from './simulator'
-import type { SimulatorWorkerCommand, SimulatorWorkerEvent, SimulatorWorkerStopReason } from './simulator-runtime'
-
-const AUTOPLAY_INTERVAL_MS = 260
-const AUTOPLAY_MAX_STEPS = 256
+import {
+  DEFAULT_AUTOPLAY_INTERVAL_MS,
+  DEFAULT_AUTOPLAY_MAX_STEPS,
+  type SimulatorWorkerCommand,
+  type SimulatorWorkerEvent,
+  type SimulatorWorkerStopReason,
+} from './simulator-runtime'
 
 let currentMachine: SimulatorMachine | null = null
 let timerId: ReturnType<typeof setInterval> | null = null
 let autoplayStepCount = 0
 let currentMode: SimulatorWorkerCommand['stepMode'] = 'instruction'
+let currentIntervalMs = DEFAULT_AUTOPLAY_INTERVAL_MS
+let currentMaxSteps = DEFAULT_AUTOPLAY_MAX_STEPS
 
 const workerScope = self as unknown as {
   postMessage: (message: SimulatorWorkerEvent) => void
@@ -66,14 +71,14 @@ function runAutoplayStep(): boolean {
     return false
   }
 
-  if (autoplayStepCount >= AUTOPLAY_MAX_STEPS) {
+  if (autoplayStepCount >= currentMaxSteps) {
     currentMachine = pushRuntimeHistory(
       {
         ...currentMachine,
-        statusMessage: `pausa automática tras ${AUTOPLAY_MAX_STEPS} pasos; podés inspeccionar el estado o reanudar`,
+        statusMessage: `pausa automática tras ${currentMaxSteps} pasos; podés inspeccionar el estado o reanudar`,
       },
       'pausa automática',
-      `se alcanzó el límite de seguridad de ${AUTOPLAY_MAX_STEPS} pasos continuos`,
+      `se alcanzó el límite de seguridad de ${currentMaxSteps} pasos continuos`,
     )
 
     stopWith('limit')
@@ -92,6 +97,8 @@ workerScope.onmessage = (event) => {
   stopTimer()
   currentMachine = message.machine
   currentMode = message.stepMode
+  currentIntervalMs = message.intervalMs > 0 ? message.intervalMs : DEFAULT_AUTOPLAY_INTERVAL_MS
+  currentMaxSteps = message.maxSteps > 0 ? message.maxSteps : DEFAULT_AUTOPLAY_MAX_STEPS
   autoplayStepCount = 0
 
   if (!runAutoplayStep()) {
@@ -100,5 +107,5 @@ workerScope.onmessage = (event) => {
 
   timerId = setInterval(() => {
     runAutoplayStep()
-  }, AUTOPLAY_INTERVAL_MS)
+  }, currentIntervalMs)
 }
