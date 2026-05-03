@@ -14,9 +14,9 @@
 
 ## Capitulos
 
-| Archivo | Titulo |
-|---|---|
-| `chapters/00-introduccion.md` | Introduccion |
+| Archivo | Titulo | Nota |
+|---|---|---|
+| `chapters/00-introduccion.md` | Introduccion | Ubica L0 en el mapa y fija su alcance. |
 | `chapters/01-devcontainer.md` | El devcontainer como contrato de trabajo | Imagen, contenedor y workspace no son lo mismo. |
 | `chapters/02-workflow.md` | Workflow del dia cero | Abrir, verificar y dejar evidencia minima. |
 | `chapters/03-diagnostico.md` | Diagnostico y recuperacion | Como volver al contrato cuando el entorno se desvia. |

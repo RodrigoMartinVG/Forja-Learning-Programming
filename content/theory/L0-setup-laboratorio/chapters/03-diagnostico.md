@@ -33,13 +33,13 @@ grep -n 'cargo expand' verify-setup.sh
 command -v cargo-expand || true
 ```
 
-Con eso ya podes separar "nunca se instala", "se instala pero no se verifica" y "se instala pero no esta visible en PATH".
+Con eso ya se puede separar "nunca se instala", "se instala pero no se verifica" y "se instala pero no esta visible en PATH".
 
 ## Cambios en Dockerfile que no aparecen
 
 Este es el error mas comun del dia cero: editar el Dockerfile y seguir usando un contenedor viejo.
 
-La regla practica es simple: si la definicion de la imagen cambia, espera hacer rebuild. Si no lo haces, observas el estado viejo y el repo parece mentir.
+La regla practica es simple: si la definicion de la imagen cambia, espera hacer rebuild. Si eso no se hace, se observa el estado viejo y el repo parece mentir.
 
 Para anclar esa regla en archivos del repo:
 
@@ -51,7 +51,7 @@ Ese par de referencias muestra que una parte del estado del contenedor se decide
 
 ## Host y contenedor diciendo cosas distintas
 
-A veces el host y el contenedor muestran versiones o paths distintos. Eso no es automaticamente un bug. Muchas veces solo significa que estas mezclando dos entornos.
+A veces el host y el contenedor muestran versiones o paths distintos. Eso no es automaticamente un bug. Muchas veces solo significa que se estan mezclando dos entornos.
 
 Para L0, la prioridad es que el recorrido documentado funcione dentro del contenedor. El host importa como plataforma para lanzar VS Code y Docker, no como referencia principal de toolchain.
 

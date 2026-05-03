@@ -94,6 +94,8 @@ La regla es:
 
 La carpeta `libros-consulta/` queda reservada para materiales privados de consulta personal. Debe permanecer fuera de Git y del remoto.
 
+Su uso correcto es como apoyo de segunda pasada. No define el primer outline, no fija el alcance del nivel o del proyecto y no dicta la estructura canonica de Forja.
+
 ---
 
 ## Filosofía de autoría de contenido
@@ -153,6 +155,17 @@ El outline se escribe **antes** de escribir el contenido del nivel y se actualiz
 Esto aplica cuando el nivel ya paso de plan documental a trabajo editorial real. Si un nivel todavia existe solo como parte del mapa curricular o como carpeta dummy, no se crea un `outline.md` por inercia.
 
 El criterio del outline no es economizar capitulos o fases. Cuando exista un outline de nivel o un outline/plan de proyecto, debe ser lo mas exhaustivo, amplio y profundo que haga falta para modelar la pieza completa. Si el problema pide ocho capitulos, seis fases o varios desvios de implementacion, se listan todos. No se escatima esfuerzo para que el outline capture la estructura real del trabajo.
+
+### Dos pasadas bien separadas
+
+Cuando se desarrolla un nivel o un proyecto, el proceso correcto es este:
+
+- **Primera pasada: outline propio, sin consultar `libros-consulta/`.** Primero se hace el mayor esfuerzo de diseño interno para desmenuzar la pieza completa: objetivo, capitulos o fases, secciones, experimentos, errores tipicos, relaciones con otros niveles y todo lo que haga falta. Esta pasada no se recorta por falta de apoyo externo ni se arma siguiendo el indice de un libro.
+- **Segunda pasada: contraste y enriquecimiento con fuentes.** Recién despues de tener un outline fuerte, se consultan algunas referencias para ganar ideas, detectar huecos, sumar mejores ejemplos, afinar vocabulario o corregir errores de enfoque.
+
+Estos dos momentos no deben mezclarse. El outline de Forja nace primero desde la logica del plan y del repo; las fuentes entran despues para tensionarlo y mejorarlo, no para reemplazarlo.
+
+Si una fuente externa obliga a cambiar algo importante, ese cambio se hace explicitamente en el outline ya existente. Nunca se reemplaza el diseño por una traduccion encubierta del capitulo de un libro.
 
 **Formato mínimo de `outline.md`:**
 

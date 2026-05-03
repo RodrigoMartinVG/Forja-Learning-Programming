@@ -7,7 +7,7 @@ const PILLARS = [
   {
     num: '01',
     title: 'Código real como punto de partida',
-    desc: 'Cada proyecto arranca con una implementación generada para estudiar y mejorar. No arrancás de cero ni recibís la solución. Estudiar código es una habilidad y Forja la trabaja.',
+    desc: 'Cada proyecto arranca con una implementación generada para estudiar y mejorar. No se arranca de cero ni se recibe la solución. Estudiar código es una habilidad y Forja la trabaja.',
   },
   {
     num: '02',
@@ -17,7 +17,7 @@ const PILLARS = [
   {
     num: '03',
     title: 'Del toolchain al kernel',
-    desc: '50 niveles desde configurar el ambiente hasta escribir módulos de kernel. El mapa sigue siendo no lineal: hay cuatro caminos de entrada y un plan canonico comun.',
+    desc: '58 niveles, desde fijar el laboratorio hasta escribir módulos de kernel. El mapa sigue siendo no lineal: hay cuatro caminos de entrada y un plan canonico comun.',
   },
 ]
 
@@ -55,14 +55,14 @@ export default function Landing() {
         {/* ─── Hero ─────────────────────────────────── */}
         <div className="landing__brand">
           <h1 className="landing__name">Forja</h1>
-          <span className="landing__tag">// sistemas desde cero</span>
+          <span className="landing__tag">// sistemas desde la base</span>
         </div>
 
         <p className="landing__desc">
           Un laboratorio de programación de bajo nivel construido sobre una idea simple:{' '}
           <strong>se aprende construyendo cosas reales</strong>, no resolviendo puzzles.
           Shells, allocators, parsers, compiladores y piezas de kernel — en C y en Rust.
-          Sin frameworks que te oculten lo que importa.
+          Sin frameworks que te oculten lo que importa. Forja no se usa como lectura pasiva: se trabaja con el repositorio abierto en una IDE y el contenedor Linux operativo sobre ese mismo repo.
         </p>
 
         {/* ─── Pillars ────────────────────────────────── */}

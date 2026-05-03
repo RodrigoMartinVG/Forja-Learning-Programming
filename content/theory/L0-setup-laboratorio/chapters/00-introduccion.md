@@ -13,6 +13,8 @@ Este nivel define el contrato minimo del laboratorio:
 
 No es un curso de Docker. Es una unidad de entrada para que el resto del plan no quede montado sobre un setup ambiguo.
 
+Tambien fija una regla de uso para todo Forja: niveles, ejercicios y proyectos se trabajan con el repositorio abierto en la IDE y con el contenedor Linux de ese mismo repo operativo. La web sola no alcanza para sacarle jugo al recorrido.
+
 ## Que cubre
 
 | Pieza | Para que entra en L0 |
@@ -39,16 +41,17 @@ No es un curso de Docker. Es una unidad de entrada para que el resto del plan no
 Recorrido recomendado:
 
 1. leer la introduccion general en `content/theory/README.md`
-2. recorrer `01-devcontainer.md`, `02-workflow.md` y `03-diagnostico.md` en orden
-3. ejecutar dentro del contenedor:
+2. abrir el repo en VS Code y entrar al devcontainer
+3. recorrer `01-devcontainer.md`, `02-workflow.md` y `03-diagnostico.md` en orden
+4. ejecutar dentro del contenedor:
 
    ```bash
    bash verify-setup.sh
    bash content/theory/L0-setup-laboratorio/src/toolchain_snapshot.sh
    ```
 
-4. resolver `exercises.md`
-5. pasar al proyecto `devcontainer-setup`
+5. resolver `exercises.md`
+6. pasar al proyecto `devcontainer-setup`
 
 La regla del nivel es simple: cada afirmacion importante sobre el entorno deberia poder apoyarse en un archivo o en un comando del repo.
 

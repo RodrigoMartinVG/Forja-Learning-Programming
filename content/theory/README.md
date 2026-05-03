@@ -1,35 +1,41 @@
 # Introduccion al Workspace
 
-Si ya entendiste que es Forja como plataforma, el siguiente paso es mas operativo: entender como se usa este workspace sin perderse en el mapa.
+Si ya entendiste que es Forja como plataforma, el siguiente paso es mas operativo: entender como se entra a este workspace y como se recorre sin perderse en el mapa.
 
 Esta introduccion no es un nivel. Es la puerta de entrada editorial al workspace y al recorrido que arranca en `L0`.
 
+Hay una regla operativa que conviene dejar explicita desde el principio: Forja se trabaja con el repositorio abierto en una IDE, idealmente VS Code, y con el contenedor Linux de ese mismo repo ya levantado. La web ayuda a navegar y leer, pero no reemplaza ese entorno de trabajo.
+
 ## Que vas a encontrar en el workspace
 
-El workspace de Forja organiza varias piezas a la vez:
+Al abrir Forja aparecen cuatro piezas principales:
 
-- el mapa curricular general
-- los niveles `L0-L57`
-- los proyectos focalizados e integradores
-- los documentos internos que sirven para diseñar y mantener el contenido
+- `Que es Forja`, para ubicar motivacion, expectativas y tono del plan
+- esta introduccion, para entender por donde conviene entrar
+- el mapa curricular con niveles `L0-L57`
+- proyectos focalizados e integradores que reaparecen a medida que el recorrido avanza
 
-La relacion entre piezas es esta:
+No hace falta entender toda la estructura interna del repo para empezar. Al principio alcanza con distinguir que se lee, que se ejecuta y que se construye.
 
-- `docs/forja-contenido.md` describe el mapa curricular completo
-- `content/theory/Lx-.../chapters/` contiene el material teorico que se lee en la web
-- `content/projects/**` materializa esa teoria en proyectos focalizados e integradores
-- `content/theory/Lx-.../README.md` documenta el estado editorial de cada nivel; `outline.md` solo aparece cuando ese nivel entra en authoria real
+## Como se relacionan esas piezas
+
+- `Que es Forja` explica por que existe la plataforma y que tipo de recorrido propone.
+- `L0` fija el laboratorio para que el resto del plan no se apoye en un setup ambiguo.
+- Los niveles desarrollan teoria, ejemplos y ejercicios observables.
+- Los proyectos reutilizan y tensionan esa teoria en artefactos concretos.
 
 ## Como se recorre
 
 La secuencia recomendada al entrar al workspace no es saltar al primer tema que suene atractivo. Conviene seguir una ruta corta y disciplinada:
 
-1. leer esta introduccion para entender el mapa
-2. abrir `L0` y recorrer sus capitulos en orden
-3. ejecutar los comandos o mini-labs mientras lees
-4. resolver `exercises.md` como verificacion observable
-5. pasar al proyecto asociado cuando exista
-6. volver al mapa para seguir el siguiente tramo del recorrido
+1. leer `Que es Forja`
+2. leer esta introduccion
+3. abrir el repo en la IDE, entrar al devcontainer y dejar una terminal lista dentro del contenedor
+4. abrir `L0` y recorrer sus capitulos en orden
+5. ejecutar los comandos o mini-labs mientras se lee
+6. resolver `exercises.md` como verificacion observable
+7. pasar al proyecto asociado cuando exista
+8. volver al mapa para seguir el siguiente tramo del recorrido
 
 La idea no es separar teoria y practica como si fueran dos productos distintos. El workspace existe justamente para hacer visible como se referencian entre si.
 
@@ -43,36 +49,21 @@ Si el compilador, el debugger o el entorno cambian de una maquina a otra, despue
 
 Si estas entrando por primera vez, la secuencia recomendada es:
 
-1. leer esta introduccion
-2. abrir `L0` y leer `content/theory/L0-setup-laboratorio/chapters/00-introduccion.md`
-3. recorrer `L0` completo
-4. hacer `content/projects/focused/devcontainer-setup/`
-5. volver al mapa y continuar con `L1`
+1. leer `Que es Forja`
+2. leer esta introduccion
+3. abrir el repo en la IDE y entrar al devcontainer
+4. abrir `L0` y empezar por `content/theory/L0-setup-laboratorio/chapters/00-introduccion.md`
+5. recorrer `L0` completo
+6. hacer `content/projects/focused/devcontainer-setup/`
+7. volver al mapa y continuar con `L1`
 
-## Estructura de un nivel
+## Que mirar dentro de un nivel
 
-Un nivel canonico puede existir en dos estados.
+Cuando se abre un nivel, conviene distinguir cuatro piezas:
 
-Placeholder minimo:
+- `00-introduccion.md`, para ubicar el nivel en el mapa y entender que cubre y que no.
+- los capitulos, donde vive el cuerpo principal del contenido.
+- `exercises.md`, para verificar el recorrido con evidencia.
+- el proyecto asociado, cuando exista, como siguiente paso natural del nivel.
 
-```text
-Lx-slug/
-├── README.md
-└── meta.yaml
-```
-
-Nivel en authoria real:
-
-```text
-Lx-slug/
-├── README.md
-├── chapters/
-├── outline.md
-├── src/
-├── exercises.md
-└── meta.yaml
-```
-
-Hoy solo `L0` esta en authoria real. El resto del canon puede quedarse en placeholder minimo sin fingir capitulos ni outlines todavia no escritos.
-
-El catalogo canonico de niveles vive en `metadata/levels.yaml`.
+No todos los niveles tienen hoy la misma profundidad editorial, pero la forma de entrar no cambia: primero las introducciones, despues `L0`, y recien ahi el resto del mapa.

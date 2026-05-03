@@ -10,7 +10,7 @@ Hay tres lugares que conviene ubicar de memoria:
 - `.devcontainer/devcontainer.json`: como VS Code abre el repo dentro del contenedor
 - `verify-setup.sh`: que checks rapidos se consideran suficientes para dar el laboratorio por sano
 
-Si no sabes donde vive una decision del entorno, ese es el primer sitio para mirar.
+Si no queda claro donde vive una decision del entorno, ese es el primer sitio para mirar.
 
 ## Imagen, contenedor y workspace
 
@@ -20,7 +20,7 @@ Conviene separar tres cosas que suelen mezclarse:
 - contenedor: instancia concreta creada a partir de esa imagen
 - workspace: copia del repo que editas desde VS Code
 
-La imagen cambia cuando cambias el Dockerfile y reconstruis. El contenedor cambia cuando se crea de nuevo. El workspace son tus archivos del repo y puede persistir aunque tires abajo el contenedor.
+La imagen cambia cuando cambia el Dockerfile y se reconstruye. El contenedor cambia cuando se crea de nuevo. El workspace es la copia del repo que se edita desde VS Code y puede persistir aunque el contenedor se descarte.
 
 ## Que persiste y que se reconstruye
 
@@ -44,13 +44,13 @@ sed -n '1,40p' .devcontainer/Dockerfile
 jq '{dockerfile: .build.dockerfile, remoteUser: .remoteUser}' .devcontainer/devcontainer.json
 ```
 
-Si esos tres comandos no te dejan claro donde vive cada decision, todavia no tenes agarrado el nivel.
+Si esos tres comandos todavia no dejan claro donde vive cada decision, todavia falta ubicar bien el contrato del entorno.
 
 ## Donde mirar cuando algo no coincide
 
 Cuando el entorno declarado y el entorno observado dicen cosas distintas, usa esta secuencia:
 
-1. confirmar si estas dentro del contenedor correcto
+1. confirmar que la terminal abierta pertenece al contenedor correcto
 2. revisar el Dockerfile o `devcontainer.json` que deberian explicar el estado esperado
 3. correr `bash verify-setup.sh`
 4. decidir si el problema es falta de rebuild, PATH distinto o herramienta ausente
