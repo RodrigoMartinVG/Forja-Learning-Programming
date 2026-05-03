@@ -46,6 +46,13 @@
   --c-adv-dim:    rgba(224, 82, 120, 0.10);
   --c-adv-border: rgba(224, 82, 120, 0.22);
 
+  /* Editorial intros */
+  --c-intro:        #97745a;
+  --c-intro-dim:    rgba(151, 116, 90, 0.14);
+  --c-intro-border: rgba(151, 116, 90, 0.30);
+  --c-intro-soft:   #d8ccc0;
+  --c-intro-muted:  #b69f8d;
+
   /* Typography */
   --font-display: 'Syne', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
@@ -499,7 +506,7 @@ a      { color: inherit; text-decoration: none; }
   border-radius: var(--r-lg);
   cursor: pointer;
   background:
-    radial-gradient(circle at top right, rgba(204, 92, 34, 0.12), transparent 34%),
+    radial-gradient(circle at top right, var(--c-intro-dim), transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0)),
     var(--surface);
   transition: transform var(--ease), border-color var(--ease), background var(--ease);
@@ -510,16 +517,27 @@ a      { color: inherit; text-decoration: none; }
   position: absolute;
   inset: 0 auto 0 0;
   width: 3px;
-  background: linear-gradient(180deg, var(--accent-text), var(--c-lang));
+  background: linear-gradient(180deg, var(--c-intro), var(--c-intro-muted));
+  opacity: 0;
+  transition: opacity var(--ease);
 }
 
 .map-intro-card:hover {
   transform: translateY(-1px);
-  border-color: rgba(204, 92, 34, 0.35);
+  border-color: var(--c-intro-border);
+  background:
+    radial-gradient(circle at top right, rgba(151, 116, 90, 0.18), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+    var(--surface-2);
+}
+
+.map-intro-card:hover::before,
+.map-intro-card:focus-visible::before {
+  opacity: 1;
 }
 
 .map-intro-card:focus-visible {
-  outline: 2px solid rgba(204, 92, 34, 0.4);
+  outline: 2px solid rgba(151, 116, 90, 0.42);
   outline-offset: 2px;
 }
 
@@ -528,7 +546,7 @@ a      { color: inherit; text-decoration: none; }
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent-text);
+  color: var(--c-intro);
 }
 
 .map-intro-card__title {
@@ -536,7 +554,7 @@ a      { color: inherit; text-decoration: none; }
   font-size: 17px;
   line-height: 1.1;
   letter-spacing: -0.03em;
-  color: var(--text);
+  color: var(--c-intro-soft);
   margin-top: 2px;
 }
 

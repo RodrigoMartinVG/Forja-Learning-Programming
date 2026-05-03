@@ -166,7 +166,7 @@ export default function MapView() {
 function IntroCard({ eyebrow, title, onSelect }: { eyebrow: string; title: string; onSelect: () => void }) {
   return (
     <div
-      className="level-card level-card--languages"
+      className="map-intro-card"
       onClick={onSelect}
       role="button"
       tabIndex={0}
@@ -177,8 +177,8 @@ function IntroCard({ eyebrow, title, onSelect }: { eyebrow: string; title: strin
         }
       }}
     >
-      <div className="level-card__id level-card__id--languages">{eyebrow}</div>
-      <div className="level-card__title">{title}</div>
+      <div className="map-intro-card__eyebrow">{eyebrow}</div>
+      <div className="map-intro-card__title">{title}</div>
     </div>
   )
 }
