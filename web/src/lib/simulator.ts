@@ -17,6 +17,10 @@ export type MachineStatus = 'ready' | 'halted' | 'error'
 
 type RegisterName = 'r0' | 'r1'
 
+type AddressRef =
+  | { kind: 'direct'; address: number }
+  | { kind: 'indirect'; register: RegisterName }
+
 type Operand =
   | { kind: 'immediate'; value: number }
   | { kind: 'register'; register: RegisterName }
@@ -24,8 +28,8 @@ type Operand =
 
 type Instruction =
   | { kind: 'mov'; address: number; text: string; dest: RegisterName; source: Exclude<Operand, { kind: 'memory' }> }
-  | { kind: 'load'; address: number; text: string; dest: RegisterName; sourceAddress: number }
-  | { kind: 'store'; address: number; text: string; source: RegisterName; targetAddress: number }
+  | { kind: 'load'; address: number; text: string; dest: RegisterName; sourceRef: AddressRef }
+  | { kind: 'store'; address: number; text: string; source: RegisterName; targetRef: AddressRef }
   | { kind: 'add'; address: number; text: string; dest: RegisterName; operand: Operand }
   | { kind: 'sub'; address: number; text: string; dest: RegisterName; operand: Operand }
   | { kind: 'jmp'; address: number; text: string; target: number }
@@ -155,14 +159,32 @@ function describeResolvedOperand(machine: SimulatorMachine, operand: Operand): s
   }
 }
 
+function formatAddressRef(ref: AddressRef): string {
+  switch (ref.kind) {
+    case 'direct':
+      return `[${ref.address}]`
+    case 'indirect':
+      return `[${ref.register}]`
+  }
+}
+
+function describeAddressRefForDecode(ref: AddressRef): string {
+  switch (ref.kind) {
+    case 'direct':
+      return `mem[${ref.address}] (directa)`
+    case 'indirect':
+      return `mem[${ref.register}] (indirecta)`
+  }
+}
+
 function describeInstructionOperands(instruction: Instruction): string {
   switch (instruction.kind) {
     case 'mov':
       return `destino ${instruction.dest}; origen ${describeOperandForDecode(instruction.source)}`
     case 'load':
-      return `destino ${instruction.dest}; fuente mem[${instruction.sourceAddress}]`
+      return `destino ${instruction.dest}; fuente ${describeAddressRefForDecode(instruction.sourceRef)}`
     case 'store':
-      return `fuente ${instruction.source}; destino mem[${instruction.targetAddress}]`
+      return `fuente ${instruction.source}; destino ${describeAddressRefForDecode(instruction.targetRef)}`
     case 'add':
     case 'sub':
       return `acumulador ${instruction.dest}; operando ${describeOperandForDecode(instruction.operand)}`
@@ -336,13 +358,15 @@ function buildExecuteTrace(before: SimulatorMachine, after: SimulatorMachine): M
     }
 
     case 'load': {
+      const resolved = resolveAddressRef(before, instruction.sourceRef)
       return {
         phase: 'execute',
         title: 'execute',
         instructionText,
-        summary: `La CPU lee mem[${instruction.sourceAddress}] = ${before.data[instruction.sourceAddress]} y copia ese dato a ${instruction.dest}.`,
+        summary: `La CPU resuelve ${formatAddressRef(instruction.sourceRef)} como ${resolved.source}, lee ${resolved.source} = ${before.data[resolved.address]} y copia ese dato a ${instruction.dest}.`,
         bullets: [
-          { label: 'lee memoria', detail: `mem[${instruction.sourceAddress}] = ${before.data[instruction.sourceAddress]}` },
+          { label: 'dirección efectiva', detail: `${formatAddressRef(instruction.sourceRef)} -> ${resolved.source}` },
+          { label: 'lee memoria', detail: `${resolved.source} = ${before.data[resolved.address]}` },
           { label: 'escribe registro', detail: `${instruction.dest} = ${after.registers[instruction.dest]}` },
           { label: 'flujo', detail: `al terminar, el pc pasa a ${after.pc}` },
         ],
@@ -351,14 +375,16 @@ function buildExecuteTrace(before: SimulatorMachine, after: SimulatorMachine): M
     }
 
     case 'store': {
+      const resolved = resolveAddressRef(before, instruction.targetRef)
       return {
         phase: 'execute',
         title: 'execute',
         instructionText,
-        summary: `La CPU toma ${instruction.source} = ${before.registers[instruction.source]} y lo escribe en mem[${instruction.targetAddress}].`,
+        summary: `La CPU toma ${instruction.source} = ${before.registers[instruction.source]}, resuelve ${formatAddressRef(instruction.targetRef)} como ${resolved.source} y escribe allí el valor.`,
         bullets: [
           { label: 'lee registro', detail: `${instruction.source} = ${before.registers[instruction.source]}` },
-          { label: 'escribe memoria', detail: `mem[${instruction.targetAddress}] = ${after.data[instruction.targetAddress]}` },
+          { label: 'dirección efectiva', detail: `${formatAddressRef(instruction.targetRef)} -> ${resolved.source}` },
+          { label: 'escribe memoria', detail: `${resolved.source} = ${after.data[resolved.address]}` },
           { label: 'flujo', detail: `al terminar, el pc pasa a ${after.pc}` },
         ],
         changes: collectStateChanges(before, after),
@@ -494,6 +520,21 @@ function parseOperand(value: string): Operand | null {
   return null
 }
 
+function parseAddressRef(value: string): AddressRef | null {
+  const memoryAddress = value.match(/^\[(\d+)\]$/)
+  if (memoryAddress) {
+    return { kind: 'direct', address: Number(memoryAddress[1]) }
+  }
+
+  const memoryRegister = value.match(/^\[(r[01])\]$/i)
+  if (memoryRegister) {
+    const register = parseRegister(memoryRegister[1])
+    return register ? { kind: 'indirect', register } : null
+  }
+
+  return null
+}
+
 function validateInstruction(opcode: string, operands: string): string | null {
   switch (opcode) {
     case 'MOV':
@@ -501,13 +542,13 @@ function validateInstruction(opcode: string, operands: string): string | null {
         ? null
         : 'usa `MOV rX, inmediato|registro`'
     case 'LOAD':
-      return /^(r[01])\s*,\s*\[(\d+)\]$/i.test(operands)
+      return /^(r[01])\s*,\s*\[(\d+|r[01])\]$/i.test(operands)
         ? null
-        : 'usa `LOAD rX, [dir]`'
+        : 'usa `LOAD rX, [dir|rY]`'
     case 'STORE':
-      return /^(r[01])\s*,\s*\[(\d+)\]$/i.test(operands)
+      return /^(r[01])\s*,\s*\[(\d+|r[01])\]$/i.test(operands)
         ? null
-        : 'usa `STORE rX, [dir]`'
+        : 'usa `STORE rX, [dir|rY]`'
     case 'ADD':
     case 'SUB':
       return /^(r[01])\s*,\s*(r[01]|-?\d+|\[\d+\])$/i.test(operands)
@@ -549,28 +590,30 @@ function parseInstruction(address: number, opcode: string, operands: string): In
     }
 
     case 'LOAD': {
-      const match = operands.match(/^(r[01])\s*,\s*\[(\d+)\]$/i)
+      const match = operands.match(/^(r[01])\s*,\s*(\[(?:\d+|r[01])\])$/i)
       const dest = parseRegister(match?.[1] ?? 'r0') ?? 'r0'
-      const sourceAddress = Number(match?.[2] ?? '0')
+      const sourceToken = (match?.[2] ?? '[0]').toLowerCase()
+      const sourceRef = parseAddressRef(sourceToken) ?? { kind: 'direct' as const, address: 0 }
       return {
         kind: 'load',
         address,
-        text: `LOAD ${dest}, [${sourceAddress}]`,
+        text: `LOAD ${dest}, ${sourceToken}`,
         dest,
-        sourceAddress,
+        sourceRef,
       }
     }
 
     case 'STORE': {
-      const match = operands.match(/^(r[01])\s*,\s*\[(\d+)\]$/i)
+      const match = operands.match(/^(r[01])\s*,\s*(\[(?:\d+|r[01])\])$/i)
       const source = parseRegister(match?.[1] ?? 'r0') ?? 'r0'
-      const targetAddress = Number(match?.[2] ?? '0')
+      const targetToken = (match?.[2] ?? '[0]').toLowerCase()
+      const targetRef = parseAddressRef(targetToken) ?? { kind: 'direct' as const, address: 0 }
       return {
         kind: 'store',
         address,
-        text: `STORE ${source}, [${targetAddress}]`,
+        text: `STORE ${source}, ${targetToken}`,
         source,
-        targetAddress,
+        targetRef,
       }
     }
 
@@ -797,6 +840,17 @@ function readOperand(machine: SimulatorMachine, operand: Operand): { value: numb
   }
 }
 
+function resolveAddressRef(machine: SimulatorMachine, ref: AddressRef): { address: number; source: string } {
+  switch (ref.kind) {
+    case 'direct':
+      return { address: ref.address, source: `mem[${ref.address}]` }
+    case 'indirect': {
+      const resolved = machine.registers[ref.register]
+      return { address: resolved, source: `mem[${ref.register}=${resolved}]` }
+    }
+  }
+}
+
 function doExecute(machine: SimulatorMachine): SimulatorMachine {
   const instruction = machine.currentInstruction
   if (!instruction) {
@@ -823,34 +877,36 @@ function doExecute(machine: SimulatorMachine): SimulatorMachine {
     }
 
     case 'load': {
-      if (!(instruction.sourceAddress in base.data)) {
-        return withRuntimeError(base, `la dirección de datos ${instruction.sourceAddress} no está cargada`)
+      const resolved = resolveAddressRef(base, instruction.sourceRef)
+      if (!(resolved.address in base.data)) {
+        return withRuntimeError(base, `la dirección de datos ${resolved.address} no está cargada (${resolved.source})`)
       }
 
-      const value = base.data[instruction.sourceAddress]
+      const value = base.data[resolved.address]
       return pushHistory(
         {
           ...base,
           registers: { ...base.registers, [instruction.dest]: value },
           pc: nextAddress ?? base.pc,
-          statusMessage: `${instruction.dest} <- mem[${instruction.sourceAddress}] = ${value}`,
+          statusMessage: `${instruction.dest} <- ${resolved.source} = ${value}`,
         },
         'execute',
-        `${instruction.dest} <- mem[${instruction.sourceAddress}] = ${value}`,
+        `${instruction.dest} <- ${resolved.source} = ${value}`,
       )
     }
 
     case 'store': {
+      const resolved = resolveAddressRef(base, instruction.targetRef)
       const value = base.registers[instruction.source]
       return pushHistory(
         {
           ...base,
-          data: { ...base.data, [instruction.targetAddress]: value },
+          data: { ...base.data, [resolved.address]: value },
           pc: nextAddress ?? base.pc,
-          statusMessage: `mem[${instruction.targetAddress}] <- ${value}`,
+          statusMessage: `${resolved.source} <- ${value}`,
         },
         'execute',
-        `mem[${instruction.targetAddress}] <- ${value}`,
+        `${resolved.source} <- ${value}`,
       )
     }
 

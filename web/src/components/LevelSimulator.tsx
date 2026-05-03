@@ -48,6 +48,23 @@ const PRESETS: Preset[] = [
 		].join('\n'),
 		data: '50: 3',
 	},
+	{
+		id: 'indireccion-registro',
+		label: 'indirección por registro',
+		note: 'Usa LOAD/STORE con [rX] para mostrar dirección efectiva calculada en runtime.',
+		program: [
+			'300: MOV r0, 60',
+			'301: LOAD r1, [r0]',
+			'302: ADD r1, 8',
+			'303: MOV r0, 61',
+			'304: STORE r1, [r0]',
+			'305: HALT',
+		].join('\n'),
+		data: [
+			'60: 34',
+			'61: 0',
+		].join('\n'),
+	},
 ]
 
 function resolvePresets(presets?: Array<{ slug: string; title: string; note: string; program: string; data: string }>): Preset[] {
