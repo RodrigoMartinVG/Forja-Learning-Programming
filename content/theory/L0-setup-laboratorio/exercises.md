@@ -1,8 +1,8 @@
 # Ejercicios - L0
 
-Estos ejercicios buscan que el laboratorio deje de ser algo que solo "se abre" y pase a ser algo que podes verificar con evidencia.
+Estos ejercicios buscan que el laboratorio deje de ser algo que solo "se abre" y pase a ser algo que podés verificar con evidencia.
 
-## Ejercicio 1 - Donde vive cada decision
+## Ejercicio 1 - Dónde vive cada decisión
 
 Corre:
 
@@ -12,7 +12,7 @@ jq '{dockerfile: .build.dockerfile, remoteUser: .remoteUser}' .devcontainer/devc
 sed -n '1,20p' verify-setup.sh
 ```
 
-Pregunta: cual de estos archivos declara la instalacion de herramientas base como `clang`, `gdb` y `jq`?
+Pregunta: cuál de estos archivos declara la instalación de herramientas base como `clang`, `gdb` y `jq`?
 
 - A. `.devcontainer/devcontainer.json`
 - B. `.devcontainer/Dockerfile`
@@ -20,9 +20,9 @@ Pregunta: cual de estos archivos declara la instalacion de herramientas base com
 
 **Correcta:** B.
 
-Verificacion: en la salida del Dockerfile tiene que aparecer `apt-get install -y` seguido de esas herramientas.
+Verificación: en la salida del Dockerfile tiene que aparecer `apt-get install -y` seguido de esas herramientas.
 
-## Ejercicio 2 - Que archivo describe la apertura del contenedor
+## Ejercicio 2 - Qué archivo describe la apertura del contenedor
 
 Corre:
 
@@ -30,7 +30,7 @@ Corre:
 jq '{dockerfile: .build.dockerfile, remoteUser: .remoteUser, terminal: .customizations.vscode.settings["terminal.integrated.defaultProfile.linux"]}' .devcontainer/devcontainer.json
 ```
 
-Pregunta: que archivo fija el `remoteUser` y la configuracion de VS Code dentro del devcontainer?
+Pregunta: qué archivo fija el `remoteUser` y la configuración de VS Code dentro del devcontainer?
 
 - A. `.devcontainer/devcontainer.json`
 - B. `.devcontainer/Dockerfile`
@@ -38,7 +38,7 @@ Pregunta: que archivo fija el `remoteUser` y la configuracion de VS Code dentro 
 
 **Correcta:** A.
 
-Verificacion: la salida JSON del comando debe mostrar `remoteUser` y la configuracion del terminal leidos desde `devcontainer.json`.
+Verificación: la salida JSON del comando debe mostrar `remoteUser` y la configuración del terminal leídos desde `devcontainer.json`.
 
 ## Ejercicio 3 - Contrato base versus snapshot manual
 
@@ -50,7 +50,7 @@ grep -n '^run_check' verify-setup.sh | sed -n '1,12p'
 bash content/theory/L0-setup-laboratorio/src/toolchain_snapshot.sh
 ```
 
-Pregunta: cual de estas herramientas aparece en el snapshot manual pero no se verifica con `run_check` en `verify-setup.sh`?
+Pregunta: cuál de estas herramientas aparece en el snapshot manual pero no se verifica con `run_check` en `verify-setup.sh`?
 
 - A. `clang`
 - B. `cargo`
@@ -58,7 +58,7 @@ Pregunta: cual de estas herramientas aparece en el snapshot manual pero no se ve
 
 **Correcta:** C.
 
-Verificacion: `verify-setup.sh` tiene `run_check` para `cargo`, pero no para `rustc`; `toolchain_snapshot.sh` si imprime `rustc --version`.
+Verificación: `verify-setup.sh` tiene `run_check` para `cargo`, pero no para `rustc`; `toolchain_snapshot.sh` sí imprime `rustc --version`.
 
 ## Ejercicio 4 - Perfil base y nightly opcional
 
@@ -69,15 +69,15 @@ jq -r '.build.args.FORJA_INSTALL_NIGHTLY' .devcontainer/devcontainer.json
 grep -n 'nightly' verify-setup.sh
 ```
 
-Pregunta: con la configuracion actual del repo, que pasa con nightly y `miri` en el perfil base?
+Pregunta: con la configuración actual del repo, qué pasa con nightly y `miri` en el perfil base?
 
 - A. Se instalan y se exigen siempre.
-- B. No se instalan por defecto; el script los marca como `skip` si no estan.
+- B. No se instalan por defecto; el script los marca como `skip` si no están.
 - C. No aparecen ni en la build ni en la verificacion.
 
 **Correcta:** B.
 
-Verificacion: `FORJA_INSTALL_NIGHTLY` vale `false` y `verify-setup.sh` tiene una rama que imprime `[skip] not installed in base profile`.
+Verificación: `FORJA_INSTALL_NIGHTLY` vale `false` y `verify-setup.sh` tiene una rama que imprime `[skip] not installed in base profile`.
 
 ## Ejercicio 5 - Transferencia al proyecto
 
@@ -87,12 +87,12 @@ Corre:
 grep -n '^run_check' verify-setup.sh | tail -n 8
 ```
 
-Tarea: propon un check nuevo para `devcontainer-setup` siguiendo este formato minimo:
+Tarea: proponé un check nuevo para `devcontainer-setup` siguiendo este formato mínimo:
 
 - herramienta
 - comando exacto de verificacion
-- por que importa en Forja
+- por qué importa en Forja
 - primer nivel o proyecto donde esperas usarla
 
-La respuesta sigue siendo valida solo si puede agregarse al script usando el patron `run_check "label" "comando"`.
+La respuesta sigue siendo válida solo si puede agregarse al script usando el patrón `run_check "label" "comando"`.
 

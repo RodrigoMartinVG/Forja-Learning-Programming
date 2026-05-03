@@ -1,10 +1,10 @@
-# Que es Forja
+# Qué es Forja
 
-Forja es una plataforma de aprendizaje para estudiar programacion de sistemas con una ruta canonica que conecta teoria, ejercicios observables y proyectos reales dentro del mismo workspace.
+Forja es una plataforma de aprendizaje para estudiar programación de sistemas con una ruta canónica que conecta teoría, ejercicios observables y proyectos reales dentro del mismo workspace.
 
-No esta pensada como una coleccion de articulos sueltos ni como una lista de desafios desordenados. La motivacion de Forja es que quien entra pueda construir una comprension profunda, capa por capa, sin perder de vista como se conectan el codigo, las herramientas, el sistema operativo y los programas que terminamos construyendo.
+No está pensada como una colección de artículos sueltos ni como una lista de desafíos desordenados. La motivación de Forja es que quien entra pueda construir una comprensión profunda, capa por capa, sin perder de vista cómo se conectan el código, las herramientas, el sistema operativo y los programas que terminamos construyendo.
 
-## Que la motiva
+## Qué la motiva
 
 Forja nace para atacar tres problemas que aparecen mucho cuando alguien intenta aprender sistemas por su cuenta:
 
@@ -25,7 +25,7 @@ Quien entre a Forja se va a encontrar con:
 
 No promete atajos. Promete contexto, continuidad y una subida de dificultad que tenga sentido.
 
-## Para quien esta pensada
+## Para quién está pensada
 
 Forja esta pensada para alguien que quiere aprender programacion de sistemas en serio.
 

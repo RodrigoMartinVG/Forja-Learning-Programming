@@ -17,7 +17,7 @@ const PILLARS = [
   {
     num: '03',
     title: 'Del toolchain al kernel',
-    desc: '58 niveles, desde fijar el laboratorio hasta escribir módulos de kernel. El mapa sigue siendo no lineal: hay cuatro caminos de entrada y un plan canonico comun.',
+    desc: '58 niveles, desde fijar el laboratorio hasta escribir módulos de kernel. El mapa sigue siendo no lineal: hay cuatro caminos de entrada y un plan canónico común.',
   },
 ]
 

@@ -1,12 +1,12 @@
-# Introduccion al Workspace
+# Introducción al Workspace
 
-Si ya entendiste que es Forja como plataforma, el siguiente paso es mas operativo: entender como se entra a este workspace y como se recorre sin perderse en el mapa.
+Si ya entendiste qué es Forja como plataforma, el siguiente paso es más operativo: entender cómo se entra a este workspace y cómo se recorre sin perderse en el mapa.
 
-Esta introduccion no es un nivel. Es la puerta de entrada editorial al workspace y al recorrido que arranca en `L0`.
+Esta introducción no es un nivel. Es la puerta de entrada editorial al workspace y al recorrido que arranca en `L0`.
 
-Hay una regla operativa que conviene dejar explicita desde el principio: Forja se trabaja con el repositorio abierto en una IDE, idealmente VS Code, y con el contenedor Linux de ese mismo repo ya levantado. La web ayuda a navegar y leer, pero no reemplaza ese entorno de trabajo.
+Hay una regla operativa que conviene dejar explícita desde el principio: Forja se trabaja con el repositorio abierto en una IDE, idealmente VS Code, y con el contenedor Linux de ese mismo repo ya levantado. La web ayuda a navegar y leer, pero no reemplaza ese entorno de trabajo.
 
-## Que vas a encontrar en el workspace
+## Qué vas a encontrar en el workspace
 
 Al abrir Forja aparecen cuatro piezas principales:
 
