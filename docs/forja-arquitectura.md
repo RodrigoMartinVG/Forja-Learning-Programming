@@ -146,7 +146,7 @@ forja/
 
 ## Estructura de una unidad teórica
 
-Cada nivel de `theory/` tiene esta estructura interna:
+Cuando un nivel entra en authoring real, su estructura interna objetivo es esta:
 
 ```text
 L20-procesos-senales/
@@ -161,6 +161,8 @@ L20-procesos-senales/
 ```
 
 `README.md` es el documento principal. Sigue la estructura del nivel definida en `forja-contenido.md` — tema y motivación, desarrollo conceptual, código de ilustración, errores típicos, referencias cruzadas, lectura adicional.
+
+Si un nivel todavía está solo documentado en `docs/` o existe como carpeta dummy, puede no tener todavía `outline.md`, `chapters/` desarrollados ni contenido final. Esa ausencia no contradice el plan; solo indica que su turno editorial no llegó.
 
 Los archivos de `src/` se referencian desde `README.md`. No son proyectos — son fragmentos que demuestran un concepto puntual.
 
@@ -204,6 +206,8 @@ projects/focused/spl_stat/
 
 Misma estructura, con más fases. Los proyectos que solo tienen implementación en C (L23: char-driver, RAM-FileSystem, KVM mini-hypervisor) solo tienen el directorio `c/`. Los proyectos que tienen implementación dual tienen ambos.
 
+Igual que en teoría, esta es la estructura objetivo cuando el proyecto ya entró en authoring real. Un proyecto que hoy exista solo como candidato documental en `forja-proyectos.md` no necesita todavía carpeta completa, `project.yaml` ni fases materiales.
+
 ### Proyectos single-language
 
 Algunos proyectos son single-language por naturaleza del dominio:
@@ -242,7 +246,7 @@ prerequisites: [L7]
 
 `metadata/levels.yaml` es el catálogo canónico de niveles que consume la web. Cada directorio `content/theory/LN-slug/` replica esos campos esenciales en `meta.yaml` para mantener el contenido autocontenido y habilitar fallbacks locales.
 
-Los niveles navegables del sistema son nodos planos `L0` a `L49`. Cada uno tiene su propio directorio canónico bajo `content/theory/`; ya no hay subniveles tipo `L1a/L1b` ni carpetas compartidas por varios niveles.
+Los niveles navegables del sistema son nodos planos `L0` a `L57`. Cada uno tiene su propio directorio canónico bajo `content/theory/`; ya no hay subniveles tipo `L1a/L1b` ni carpetas compartidas por varios niveles.
 
 ### `project.yaml` dentro de cada proyecto
 
@@ -251,31 +255,40 @@ id: mish
 codename: mish
 title: "Mini Shell"
 type: integrating
-anchor_level: L6
-display_levels: [L6, L11]
-required_levels: [L6]
-expansion_levels: [L11]
+anchor_level: L21
+display_levels: [L21, L31, L32]
+required_levels: [L21]
+expansion_levels: [L31, L32]
 languages: [c, rust]
 equivalent: "bash, zsh, dash"
 dir: content/projects/integrating/mish
 stages:
-  - id: mish-l6
-    label: "Tramo L6"
+  - id: mish-l21
+    label: "Tramo L21"
     kind: project-stage
-    required_levels: [L6]
-    unlock_level: L6
+    required_levels: [L21]
+    unlock_level: L21
     covers_impl_phases:
       c: [1, 2]
       rust: [1, 2]
 
-  - id: mish-l11
-    label: "Tramo L11"
+  - id: mish-l31
+    label: "Tramo L31"
     kind: project-stage
-    required_levels: [L6, L11]
-    unlock_level: L11
+    required_levels: [L21, L31]
+    unlock_level: L31
     covers_impl_phases:
       c: [3, 4]
       rust: [3, 4]
+
+  - id: mish-l32
+    label: "Tramo L32"
+    kind: project-stage
+    required_levels: [L21, L31, L32]
+    unlock_level: L32
+    covers_impl_phases:
+      c: [5]
+      rust: [5]
 
 ---
 
@@ -283,9 +296,9 @@ id: spl_stat
 codename: spl_stat
 title: "spl_stat"
 type: focused
-anchor_level: L5
-display_levels: [L5]
-required_levels: [L5]
+anchor_level: L20
+display_levels: [L20]
+required_levels: [L20]
 expansion_levels: []
 languages: [c, rust]
 equivalent: "stat(1)"
@@ -294,8 +307,8 @@ stages:
   - id: spl-stat-main
     label: "Fase única"
     kind: project-stage
-    required_levels: [L5]
-    unlock_level: L5
+    required_levels: [L20]
+    unlock_level: L20
     covers_impl_phases:
       c: [1]
       rust: [1]
@@ -320,25 +333,25 @@ paths:
   - id: path-1
     title: "Sistemas primero"
     description: "Base completa en C y Rust antes de profundizar en sistemas, redes, runtime y kernel."
-    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L35, L36, L37, L38, L39, L40, L41, L42, L43, L45, L46]
+    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L52, L53]
 
   - id: path-2
     title: "Plan completo"
     description: "El recorrido curricular entero. Recomendado como vista canonica del mapa."
-    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L32, L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49]
+    levels: [L0, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10, L11, L12, L13, L14, L15, L16, L17, L18, L19, L20, L21, L22, L23, L24, L25, L26, L27, L28, L29, L30, L31, L32, L33, L34, L35, L36, L37, L38, L39, L40, L41, L42, L43, L44, L45, L46, L47, L48, L49, L50, L51, L52, L53, L54, L55, L56, L57]
 ```
 
 ### `metadata/cross-refs.yaml`
 
 ```yaml
 cross_refs:
-  - theory: L22
+  - theory: L24
     projects: [vma-explorer, cow-demo, spl_cp, mini-debugger]
 
-  - theory: L23
+  - theory: L25
     projects: [mini-linker]
 
-  - theory: L24
+  - theory: L26
     projects: [custom-malloc, logico]
     note: "El GC de Logico usa custom-malloc."
 ```
@@ -346,6 +359,8 @@ cross_refs:
 ### Índices generados en build time
 
 La web no edita ni mantiene índices globales a mano. En build time lee `metadata/levels.yaml`, `metadata/paths.yaml` y `content/projects/**/project.yaml`; para el cuerpo de teoría usa el `theory_dir` de cada nivel y carga `README.md`, `exercises.md` y, si existen, los archivos de `chapters/`. `meta.yaml` queda como espejo local y fallback si alguna vez falta el catálogo canónico.
+
+Los candidatos que todavía viven solo en `docs/forja-contenido.md` o `docs/forja-proyectos.md` no entran en ese circuito hasta que exista su metadata estructural real. `docs/` puede ir por delante del repo materializado; la web y el build no.
 
 La resolución de dependencias de proyectos respecto a niveles sale de `project.yaml`, no de inferir prose ni de parsear tablas de `forja-contenido.md` o `forja-proyectos.md`. Los documentos sirven como mapa humano del plan; `project.yaml` sirve como contrato estructurado para repo y web.
 
@@ -562,9 +577,9 @@ La estrategia recomendada sigue siendo priorizar un camino natural que permita p
 
 1. `Base 0`, `Base 1`, `Base 2`
 2. `L0` + `devcontainer-setup`, luego `L1` hasta `L7` para cerrar la base de laboratorio, modelo mental y assembly
-3. `L8` hasta `L20` con los proyectos focalizados que cada nivel va habilitando
-4. `mish` (tramo `L20`) como primer integrador usable
-5. `L28` + `mish` (tramo `L28`) para cerrar pipes, redirecciones y job control
+3. `L8` hasta `L21` con los proyectos focalizados que cada nivel va habilitando
+4. `mish` (tramo `L21`) como primer integrador usable
+5. `L31` + `mish` (tramo `L31`) para cerrar pipes, redirecciones y job control
 
 Este orden permite betatestear el curso real sin apartarse de la secuencia de `forja-construccion.md`. Cada bloque nuevo se valida recorriéndolo como usuario, no solo leyéndolo como autor.
 

@@ -1,0 +1,8 @@
+id: L52
+title: "Orquestacion de contenedores"
+slug: "l52-orquestacion-contenedores"
+domain: advanced
+order: 53
+theory_dir: content/theory/L52-orquestacion-contenedores
+projects: [orquestador, tcp-ip-stack]
+prerequisites: [L51]

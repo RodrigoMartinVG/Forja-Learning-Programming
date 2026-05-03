@@ -1,0 +1,8 @@
+id: L36
+title: "Sistemas de tipos: practica antes del algoritmo"
+slug: "l36-sistemas-tipos-practica"
+domain: compilers
+order: 37
+theory_dir: content/theory/L36-sistemas-tipos-practica
+projects: [semtex, logico]
+prerequisites: [L35]

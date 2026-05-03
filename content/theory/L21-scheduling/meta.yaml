@@ -1,8 +1,0 @@
-id: L21
-title: "Scheduling"
-slug: "l21-scheduling"
-domain: systems
-order: 22
-theory_dir: content/theory/L21-scheduling
-projects: [scheduler-sim]
-prerequisites: [L20]

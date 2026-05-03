@@ -1,0 +1,8 @@
+id: L39
+title: "GC fundamental"
+slug: "l39-gc-fundamental"
+domain: advanced
+order: 40
+theory_dir: content/theory/L39-gc-fundamental
+projects: []
+prerequisites: [L38]

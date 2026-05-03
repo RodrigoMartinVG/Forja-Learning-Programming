@@ -1,0 +1,8 @@
+id: L44
+title: "Persistencia IV: event logs y brokers durables"
+slug: "l44-persistencia-4"
+domain: advanced
+order: 45
+theory_dir: content/theory/L44-persistencia-4
+projects: [mini-broker]
+prerequisites: [L43]

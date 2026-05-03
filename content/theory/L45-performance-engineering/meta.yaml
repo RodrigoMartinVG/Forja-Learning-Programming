@@ -1,0 +1,8 @@
+id: L45
+title: "Performance Engineering"
+slug: "l45-performance-engineering"
+domain: advanced
+order: 46
+theory_dir: content/theory/L45-performance-engineering
+projects: [perf-benchmarks, flamegraph-lab, cache-locality-exp, false-sharing-exp, kvolt]
+prerequisites: [L44]

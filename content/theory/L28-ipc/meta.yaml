@@ -1,8 +1,0 @@
-id: L28
-title: "IPC y comunicacion entre procesos"
-slug: "l28-ipc"
-domain: systems
-order: 29
-theory_dir: content/theory/L28-ipc
-projects: [named-pipe-sem, ipc-explorer, miniqueue, mish]
-prerequisites: [L27]

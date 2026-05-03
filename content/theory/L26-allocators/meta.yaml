@@ -1,0 +1,8 @@
+id: L26
+title: "Allocators"
+slug: "l26-allocators"
+domain: systems
+order: 27
+theory_dir: content/theory/L26-allocators
+projects: [custom-malloc]
+prerequisites: [L25]

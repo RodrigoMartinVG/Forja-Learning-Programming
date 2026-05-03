@@ -1,0 +1,8 @@
+id: L19
+title: "Rust systems avanzado"
+slug: "l19-rust-systems-avanzado"
+domain: languages
+order: 20
+theory_dir: content/theory/L19-rust-systems-avanzado
+projects: []
+prerequisites: [L18]

@@ -2,9 +2,9 @@ id: async-runtime
 codename: async-runtime
 title: "async-runtime"
 type: integrating
-anchor_level: L43
-display_levels: [L43]
-required_levels: [L43]
+anchor_level: L50
+display_levels: [L50]
+required_levels: [L50]
 expansion_levels: []
 languages: [rust]
 dir: content/projects/integrating/async-runtime
@@ -12,5 +12,5 @@ stages:
   - id: async-runtime-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L43]
-    unlock_level: L43
+    required_levels: [L50]
+    unlock_level: L50

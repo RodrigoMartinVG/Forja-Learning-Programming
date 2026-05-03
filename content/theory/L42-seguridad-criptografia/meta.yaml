@@ -1,8 +1,0 @@
-id: L42
-title: "Seguridad y criptografia"
-slug: "l42-seguridad-criptografia"
-domain: advanced
-order: 43
-theory_dir: content/theory/L42-seguridad-criptografia
-projects: [tinyssh, impl_script]
-prerequisites: [L41]

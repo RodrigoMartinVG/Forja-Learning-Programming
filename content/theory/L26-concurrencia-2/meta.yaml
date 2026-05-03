@@ -1,8 +1,0 @@
-id: L26
-title: "Concurrencia II: el hardware debajo de las primitivas"
-slug: "l26-concurrencia-2"
-domain: systems
-order: 27
-theory_dir: content/theory/L26-concurrencia-2
-projects: [impl_arc]
-prerequisites: [L25]

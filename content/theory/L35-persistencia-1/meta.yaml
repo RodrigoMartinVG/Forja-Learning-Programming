@@ -1,8 +1,0 @@
-id: L35
-title: "Persistencia I: durabilidad y B-Trees"
-slug: "l35-persistencia-1"
-domain: advanced
-order: 36
-theory_dir: content/theory/L35-persistencia-1
-projects: [kvolt]
-prerequisites: [L34]

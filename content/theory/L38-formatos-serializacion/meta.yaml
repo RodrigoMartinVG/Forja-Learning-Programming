@@ -1,0 +1,8 @@
+id: L38
+title: "Formatos y serializacion"
+slug: "l38-formatos-serializacion"
+domain: advanced
+order: 39
+theory_dir: content/theory/L38-formatos-serializacion
+projects: []
+prerequisites: [L37]

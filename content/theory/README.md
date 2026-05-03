@@ -9,7 +9,7 @@ Esta introduccion no es un nivel. Es la puerta de entrada editorial al workspace
 El workspace de Forja organiza varias piezas a la vez:
 
 - el mapa curricular general
-- los niveles `L0-L49`
+- los niveles `L0-L57`
 - los proyectos focalizados e integradores
 - los documentos internos que sirven para diseñar y mantener el contenido
 
@@ -18,7 +18,7 @@ La relacion entre piezas es esta:
 - `docs/forja-contenido.md` describe el mapa curricular completo
 - `content/theory/Lx-.../chapters/` contiene el material teorico que se lee en la web
 - `content/projects/**` materializa esa teoria en proyectos focalizados e integradores
-- `content/theory/Lx-.../outline.md` y `README.md` ayudan a diseñar y mantener cada nivel, pero no son el cuerpo principal de estudio
+- `content/theory/Lx-.../README.md` documenta el estado editorial de cada nivel; `outline.md` solo aparece cuando ese nivel entra en authoria real
 
 ## Como se recorre
 
@@ -49,9 +49,19 @@ Si estas entrando por primera vez, la secuencia recomendada es:
 4. hacer `content/projects/focused/devcontainer-setup/`
 5. volver al mapa y continuar con `L1`
 
-## Estructura minima por nivel
+## Estructura de un nivel
 
-Cada nivel deberia terminar con esta forma:
+Un nivel canonico puede existir en dos estados.
+
+Placeholder minimo:
+
+```text
+Lx-slug/
+├── README.md
+└── meta.yaml
+```
+
+Nivel en authoria real:
 
 ```text
 Lx-slug/
@@ -62,5 +72,7 @@ Lx-slug/
 ├── exercises.md
 └── meta.yaml
 ```
+
+Hoy solo `L0` esta en authoria real. El resto del canon puede quedarse en placeholder minimo sin fingir capitulos ni outlines todavia no escritos.
 
 El catalogo canonico de niveles vive en `metadata/levels.yaml`.

@@ -1,0 +1,8 @@
+id: L25
+title: "Formato ELF y linking"
+slug: "l25-elf-linking"
+domain: systems
+order: 26
+theory_dir: content/theory/L25-elf-linking
+projects: [mini-linker]
+prerequisites: [L24]

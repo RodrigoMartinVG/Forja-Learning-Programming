@@ -1,0 +1,8 @@
+id: L51
+title: "Aislamiento y contenedores"
+slug: "l51-aislamiento-contenedores"
+domain: advanced
+order: 52
+theory_dir: content/theory/L51-aislamiento-contenedores
+projects: [minidocker]
+prerequisites: [L50]

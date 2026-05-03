@@ -1,0 +1,8 @@
+id: L48
+title: "Redes II: protocolos modernos"
+slug: "l48-redes-2"
+domain: advanced
+order: 49
+theory_dir: content/theory/L48-redes-2
+projects: [http2-server, websocket-server, tcp-ip-stack]
+prerequisites: [L47]

@@ -2,9 +2,9 @@ id: lock-free-queue
 codename: lock-free-queue
 title: "lock-free-queue"
 type: focused
-anchor_level: L27
-display_levels: [L27]
-required_levels: [L27]
+anchor_level: L30
+display_levels: [L30]
+required_levels: [L30]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/lock-free-queue
@@ -12,5 +12,5 @@ stages:
   - id: lock-free-queue-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L27]
-    unlock_level: L27
+    required_levels: [L30]
+    unlock_level: L30

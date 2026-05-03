@@ -1,0 +1,8 @@
+id: L31
+title: "IPC y comunicacion entre procesos"
+slug: "l31-ipc"
+domain: systems
+order: 32
+theory_dir: content/theory/L31-ipc
+projects: [named-pipe-sem, ipc-explorer, miniqueue, mish]
+prerequisites: [L30]

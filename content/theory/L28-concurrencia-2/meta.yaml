@@ -1,0 +1,8 @@
+id: L28
+title: "Concurrencia II: el hardware debajo de las primitivas"
+slug: "l28-concurrencia-2"
+domain: systems
+order: 29
+theory_dir: content/theory/L28-concurrencia-2
+projects: [impl_arc]
+prerequisites: [L27]

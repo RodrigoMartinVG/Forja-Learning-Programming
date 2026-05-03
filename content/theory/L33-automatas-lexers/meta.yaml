@@ -1,0 +1,8 @@
+id: L33
+title: "Automatas y lexers"
+slug: "l33-automatas-lexers"
+domain: compilers
+order: 34
+theory_dir: content/theory/L33-automatas-lexers
+projects: [regex-engine]
+prerequisites: [L32]

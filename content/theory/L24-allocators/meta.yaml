@@ -1,8 +1,0 @@
-id: L24
-title: "Allocators"
-slug: "l24-allocators"
-domain: systems
-order: 25
-theory_dir: content/theory/L24-allocators
-projects: [custom-malloc]
-prerequisites: [L23]

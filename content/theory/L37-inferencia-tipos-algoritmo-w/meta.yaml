@@ -1,0 +1,8 @@
+id: L37
+title: "Inferencia de tipos: el algoritmo W"
+slug: "l37-inferencia-tipos-algoritmo-w"
+domain: compilers
+order: 38
+theory_dir: content/theory/L37-inferencia-tipos-algoritmo-w
+projects: [semtex, logico]
+prerequisites: [L36]

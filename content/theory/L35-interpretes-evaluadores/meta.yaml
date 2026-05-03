@@ -1,0 +1,8 @@
+id: L35
+title: "Interpretes y evaluadores"
+slug: "l35-interpretes-evaluadores"
+domain: compilers
+order: 36
+theory_dir: content/theory/L35-interpretes-evaluadores
+projects: [semtex, logico]
+prerequisites: [L34]

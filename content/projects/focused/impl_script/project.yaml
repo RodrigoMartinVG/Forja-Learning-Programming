@@ -2,9 +2,9 @@ id: impl_script
 codename: impl_script
 title: "impl_script"
 type: focused
-anchor_level: L42
-display_levels: [L42]
-required_levels: [L42]
+anchor_level: L49
+display_levels: [L49]
+required_levels: [L49]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/impl_script
@@ -12,5 +12,5 @@ stages:
   - id: impl-script-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L42]
-    unlock_level: L42
+    required_levels: [L49]
+    unlock_level: L49

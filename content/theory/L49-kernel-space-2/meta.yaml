@@ -1,8 +1,0 @@
-id: L49
-title: "Kernel space II: VFS, allocators del kernel, CFS y virtualizacion"
-slug: "l49-kernel-space-2"
-domain: advanced
-order: 50
-theory_dir: content/theory/L49-kernel-space-2
-projects: [ram-filesystem, kvm-mini-hypervisor, ebpf-tracer]
-prerequisites: [L48]

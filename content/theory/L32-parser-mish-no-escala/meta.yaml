@@ -1,0 +1,8 @@
+id: L32
+title: "El parser de mish no escala"
+slug: "l32-parser-mish-no-escala"
+domain: compilers
+order: 33
+theory_dir: content/theory/L32-parser-mish-no-escala
+projects: [mish]
+prerequisites: [L31]

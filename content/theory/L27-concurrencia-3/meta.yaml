@@ -1,8 +1,0 @@
-id: L27
-title: "Concurrencia III: lock-free y concurrencia avanzada"
-slug: "l27-concurrencia-3"
-domain: systems
-order: 28
-theory_dir: content/theory/L27-concurrencia-3
-projects: [lock-free-queue, rcu-demo]
-prerequisites: [L26]

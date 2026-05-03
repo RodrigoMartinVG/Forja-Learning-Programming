@@ -1,0 +1,8 @@
+id: L56
+title: "Kernel space I: modulos y drivers"
+slug: "l56-kernel-space-1"
+domain: advanced
+order: 57
+theory_dir: content/theory/L56-kernel-space-1
+projects: [char-driver]
+prerequisites: [L54]

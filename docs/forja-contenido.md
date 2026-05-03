@@ -1,6 +1,6 @@
 # Forja — Contenido Curricular
 
-> Este documento define el plan curricular humano de Forja: qué se enseña, en qué orden, con qué foco, y cómo se relacionan los niveles entre sí.
+> Este documento define el plan curricular humano de Forja: qué se enseña, en qué orden, con qué foco, cómo se relacionan los niveles entre sí y qué ampliaciones ya quedaron aprobadas a nivel documental.
 >
 > El catálogo consolidado de proyectos vive en `forja-proyectos.md`. La arquitectura técnica del repo y de la web vive en `forja-arquitectura.md`. La dinámica operativa de construcción vive en `forja-construccion.md`.
 
@@ -13,7 +13,7 @@
 - [3. Cómo se organiza el plan](#3-cómo-se-organiza-el-plan)
 - [4. Filosofía del rediseño](#4-filosofía-del-rediseño)
 - [5. Mapa general de bloques](#5-mapa-general-de-bloques)
-- [6. Los niveles del plan: L0-L49](#6-los-niveles-del-plan-l0-l49)
+- [6. Los niveles del plan: L0-L57](#6-los-niveles-del-plan-l0-l57)
 - [7. C y Rust como ciudadanos de primera clase](#7-c-y-rust-como-ciudadanos-de-primera-clase)
 - [8. El modelo de aprendizaje con código dado](#8-el-modelo-de-aprendizaje-con-código-dado)
 - [9. Caminos posibles de navegación](#9-caminos-posibles-de-navegación)
@@ -115,6 +115,10 @@ Cambios estructurales principales:
 
 Este rediseño lleva el plan de 26 niveles efectivos a 50 niveles con foco más fino, menor densidad por unidad y mejor continuidad conceptual.
 
+La columna vertebral operativa visible ya es `L0-L57`. Las densificaciones aprobadas dejaron de vivir solo como notas: Rust systems avanzado, POSIX fino, concurrencia práctica, formatos y serialización, GC, runtimes/object layout/VMs, observabilidad distribuida y frontera user/kernel ya quedaron integrados al canon, aunque sigan en placeholder dentro de `content/`.
+
+Mientras estas piezas no entren en turno de authoring, se documentan aquí como ampliaciones en consolidación. No obligan a crear `outline.md`, `chapters/` ni contenido final por adelantado.
+
 ---
 
 ## 5. Mapa general de bloques
@@ -123,20 +127,33 @@ Este rediseño lleva el plan de 26 niveles efectivos a 50 niveles con foco más 
 |---|---|---|
 | 0 | L0-L7 | Laboratorio, arquitectura, representación, compilación, observabilidad, assembly |
 | 1 | L8-L13 | C como lenguaje |
-| 2 | L14-L18 | Rust como lenguaje |
-| 3 | L19-L24 | Sistemas POSIX |
-| 4 | L25-L27 | Concurrencia |
-| 5 | L28 | IPC |
-| 6 | L29 | Puente sistemas → compiladores |
-| 7 | L30-L34 | Compiladores |
-| 8 | L35-L43 | Sistemas avanzados |
-| 9 | L44-L46 | Virtualización y distribución |
-| 10 | L47 | Compiladores avanzados |
-| 11 | L48-L49 | Kernel space |
+| 2 | L14-L19 | Rust como lenguaje y Rust systems |
+| 3 | L20-L26 | Sistemas POSIX |
+| 4 | L27-L30 | Concurrencia |
+| 5 | L31 | IPC |
+| 6 | L32 | Puente sistemas → compiladores |
+| 7 | L33-L37 | Compiladores |
+| 8 | L38-L50 | Sistemas avanzados |
+| 9 | L51-L53 | Virtualización y distribución |
+| 10 | L54 | Compiladores avanzados |
+| 11 | L55-L57 | Frontera user/kernel y kernel space |
+
+### Capas y puentes a incorporar sobre el canon actual
+
+| Pieza | Tipo documental | Ubicación pedagógica | Motivo principal |
+|---|---|---|---|
+| Rust systems avanzado | Integrado en el canon | `L19` | Hacer explícitos `Rc`, `Arc`, `Weak`, interior mutability, `Pin`, `Send`, `Sync` y wrappers seguros sobre primitivas inseguras |
+| POSIX fino / Unix real | Integrado en el canon | `L22` | Descomprimir APIs avanzadas, PTY/TTY, redirecciones, `openat`/`fcntl` y la continuidad `poll` -> `epoll` |
+| Concurrencia práctica intermedia | Integrado en el canon | `L29` | Dar entidad a channels, work queues, event dispatch y patrones no bloqueantes antes de lock-free |
+| Formatos y serialización | Integrado en el canon | `L38` | Explicitar wire formats estables, versionado, compatibilidad y corrupción de datos |
+| GC fundamental | Integrado en el canon | `L39` | Dar una exposición propia a roots, tracing, pausas y tradeoffs de recolección |
+| Runtimes, object layout y VMs | Integrado en el canon | `L40` | Explicar la ejecución más allá del AST antes del async runtime |
+| Observabilidad distribuida | Integrado en el canon | `L46` | Incorporar logs estructurados, correlation IDs, trazas y métricas de sistemas distribuidos |
+| Frontera user/kernel | Integrado en el canon | `L55` | Explicitar syscall ABI, sandboxing, `seccomp`, `capabilities`, `prctl` y `setrlimit` |
 
 ---
 
-## 6. Los niveles del plan: L0-L49
+## 6. Los niveles del plan: L0-L57
 
 ### Bloque 0 — El laboratorio y el modelo mental
 
@@ -391,9 +408,22 @@ Temas centrales:
 
 Proyectos asociados: `ffi-demo`.
 
+#### L19 — Rust systems avanzado
+
+Foco: consolidar el tramo de Rust que aparece en librerías y runtimes reales antes de salir al bloque POSIX.
+
+Temas centrales:
+
+- `Rc`, `Arc`, `Weak` e interior mutability
+- `Cell`, `RefCell`, `Mutex` y `RwLock`
+- `Pin`, invariantes de memoria y `Send`/`Sync`
+- wrappers seguros sobre primitivas y APIs inseguras
+
+Proyectos asociados: sin proyecto nuevo; prepara reaperturas de `ffi-demo`, estructuras concurrentes y futuros runtimes.
+
 ### Bloque 3 — Sistemas POSIX
 
-#### L19 — POSIX: archivos, metadatos y el filesystem
+#### L20 — POSIX: archivos, metadatos y el filesystem
 
 Foco: la abstracción central de Unix.
 
@@ -406,7 +436,7 @@ Temas centrales:
 
 Proyectos asociados: `spl_stat`, `spl_ls`, `spl_du`, `file-monitor`.
 
-#### L20 — Procesos y señales
+#### L21 — Procesos y señales
 
 Foco: procesos, `fork`, `exec`, `wait` y señales.
 
@@ -419,7 +449,20 @@ Temas centrales:
 
 Proyectos asociados: `spl_pstree`, `impl_abort`, `impl_alarm`, inicio de `mish`, inicio de `mini-debugger`.
 
-#### L21 — Scheduling
+#### L22 — POSIX fino y Unix real
+
+Foco: bajar a las APIs y patrones de Unix real que no cabían en el recorrido POSIX base.
+
+Temas centrales:
+
+- PTY/TTY, redirecciones y descriptores heredados
+- `openat`, `dup2`, `fcntl`, `pipe2` y variantes modernas
+- `poll`, `select` y transición conceptual hacia `epoll`
+- contratos finos entre procesos, shell, terminal y kernel
+
+Proyectos asociados: sin proyecto nuevo; prepara `mish`, `shell remoto TCP` y el bloque async.
+
+#### L23 — Scheduling
 
 Foco: cómo decide el kernel qué corre y cuándo.
 
@@ -432,7 +475,7 @@ Temas centrales:
 
 Proyectos asociados: `scheduler-sim`.
 
-#### L22 — Memoria virtual
+#### L24 — Memoria virtual
 
 Foco: paginación, `mmap`, VMAs y copy-on-write.
 
@@ -445,7 +488,7 @@ Temas centrales:
 
 Proyectos asociados: `vma-explorer`, `cow-demo`, `spl_cp`, continuación de `mini-debugger`.
 
-#### L23 — Formato ELF y linking
+#### L25 — Formato ELF y linking
 
 Foco: qué vive dentro de un ejecutable y cómo se enlaza.
 
@@ -458,7 +501,7 @@ Temas centrales:
 
 Proyectos asociados: `mini-linker`.
 
-#### L24 — Allocators
+#### L26 — Allocators
 
 Foco: implementar `malloc` y `free` desde cero.
 
@@ -473,7 +516,7 @@ Proyectos asociados: `custom-malloc`.
 
 ### Bloque 4 — Concurrencia
 
-#### L25 — Concurrencia I: threads y primitivas de sincronización
+#### L27 — Concurrencia I: threads y primitivas de sincronización
 
 Foco: usar concurrencia basada en memoria compartida.
 
@@ -486,7 +529,7 @@ Temas centrales:
 
 Proyectos asociados: `thread-pool`, `prod-cons`, `rwlock-impl`.
 
-#### L26 — Concurrencia II: el hardware debajo de las primitivas
+#### L28 — Concurrencia II: el hardware debajo de las primitivas
 
 Foco: entender por qué existen los modelos de memoria.
 
@@ -497,9 +540,22 @@ Temas centrales:
 - x86-64 TSO vs ARM/POWER
 - MESI y coherencia de cache
 
-Proyectos asociados: mini-labs de ordering; sin proyecto nuevo.
+Proyectos asociados: `impl_arc`.
 
-#### L27 — Concurrencia III: lock-free y concurrencia avanzada
+#### L29 — Concurrencia práctica: channels, colas y dispatch
+
+Foco: resolver coordinación práctica y paso de mensajes antes del salto a lock-free completo.
+
+Temas centrales:
+
+- channels bounded y unbounded
+- work queues, thread pools y backpressure
+- event loops, ownership de mensajes y dispatch
+- separación entre coordinación práctica y diseño lock-free
+
+Proyectos asociados: sin proyecto nuevo; prepara `lock-free-queue`, `miniqueue` y el futuro proyecto de task queues.
+
+#### L30 — Concurrencia III: lock-free y concurrencia avanzada
 
 Foco: diseñar primitivas y estructuras concurrentes con atomics.
 
@@ -510,11 +566,11 @@ Temas centrales:
 - Treiber stack y Michael-Scott queue
 - hazard pointers, ABA y RCU
 
-Proyectos asociados: `impl_arc`, `lock-free-queue`, `rcu-demo`.
+Proyectos asociados: `lock-free-queue`, `rcu-demo`.
 
 ### Bloque 5 — IPC
 
-#### L28 — IPC y comunicación entre procesos
+#### L31 — IPC y comunicación entre procesos
 
 Foco: cómo hablan entre sí procesos distintos.
 
@@ -529,7 +585,7 @@ Proyectos asociados: `named-pipe-sem`, `ipc-explorer`, cierre de `mish`, inicio 
 
 ### Bloque 6 — Puente sistemas → compiladores
 
-#### L29 — El parser de mish no escala
+#### L32 — El parser de mish no escala
 
 Foco: construir la motivación concreta del arco de compiladores.
 
@@ -542,9 +598,11 @@ Temas centrales:
 
 Proyectos asociados: inicio de `mish` Fase 5.
 
+Prioridad documental actual: `L32` deja de ser un simple escalón de transición y pasa a tratarse como un puente estructural de alta prioridad dentro de Forja.
+
 ### Bloque 7 — Compiladores
 
-#### L30 — Autómatas y lexers
+#### L33 — Autómatas y lexers
 
 Foco: transformar texto en tokens con teoría útil.
 
@@ -557,7 +615,7 @@ Temas centrales:
 
 Proyectos asociados: `regex-engine`.
 
-#### L31 — Parsers y gramáticas
+#### L34 — Parsers y gramáticas
 
 Foco: transformar tokens en estructura.
 
@@ -570,7 +628,7 @@ Temas centrales:
 
 Proyectos asociados: `expr-parser`, `Semtex` Fase 1, `Lógico` Fase 1, cierre de `mish` Fase 5.
 
-#### L32 — Intérpretes y evaluadores
+#### L35 — Intérpretes y evaluadores
 
 Foco: ejecutar un AST.
 
@@ -583,7 +641,7 @@ Temas centrales:
 
 Proyectos asociados: `Lógico` v1, `Semtex` Fases 2-3.
 
-#### L33 — Sistemas de tipos: práctica antes del algoritmo
+#### L36 — Sistemas de tipos: práctica antes del algoritmo
 
 Foco: resolver tipos a mano antes de formalizar HM.
 
@@ -596,7 +654,7 @@ Temas centrales:
 
 Proyectos asociados: ejercicios en papel; sin proyecto nuevo.
 
-#### L34 — Inferencia de tipos: el algoritmo W
+#### L37 — Inferencia de tipos: el algoritmo W
 
 Foco: Hindley-Milner formalizado e implementado.
 
@@ -613,7 +671,48 @@ Proyectos asociados: `Lógico` v2, `Semtex` Fase 4.
 
 Nota de diseño del bloque 8: **engine first**. Antes de distribuir o envolver por red, Forja prioriza construir motores locales correctos: primero la estructura de datos y la persistencia, luego la medición, después la redificación y finalmente la resiliencia distribuida.
 
-#### L35 — Persistencia I: durabilidad y B-Trees
+Nota de alcance del bloque 8: este tramo ya quedó descomprimido. Antes de persistencia y de la mitad distribuida aparecen ahora tres capas explícitas: formatos y serialización, GC fundamental, y runtimes/object layout/VMs.
+
+#### L38 — Formatos y serialización
+
+Foco: representar datos fuera del proceso de forma estable y evolucionable.
+
+Temas centrales:
+
+- wire formats binarios y de texto
+- versionado backward y forward compatible
+- checksums, corrupción y límites de confianza
+- endianness, layout estable y compatibilidad entre procesos
+
+Proyectos asociados: sin proyecto nuevo; prepara `miniqueue`, `mini-broker`, `KVolt` y futuros laboratorios de formato.
+
+#### L39 — GC fundamental
+
+Foco: estudiar GC como problema propio antes de esconderlo dentro de un intérprete o VM.
+
+Temas centrales:
+
+- roots, reachability y tracing
+- mark-sweep, copying y compactación
+- pausas, throughput y tradeoffs de diseño
+- relación entre allocators, object graphs y collectors
+
+Proyectos asociados: sin proyecto nuevo; prepara `Logico`, `custom-malloc` y el futuro `gc-lab`.
+
+#### L40 — Runtimes, object layout y VMs
+
+Foco: explicar cómo se organiza la ejecución más allá del AST antes de llegar al async runtime.
+
+Temas centrales:
+
+- object layout, tagging y representación en heap
+- stacks, frames, heaps y entornos de ejecución
+- bytecode, dispatch loops y VMs sencillas
+- organización interna de un runtime local y de un executor cooperativo
+
+Proyectos asociados: sin proyecto nuevo; prepara `bytecode-vm`, `mini-runtime` y `coroutine-executor`.
+
+#### L41 — Persistencia I: durabilidad y B-Trees
 
 Foco: durabilidad y storage engines basados en árbol.
 
@@ -626,7 +725,7 @@ Temas centrales:
 
 Proyectos asociados: `KVolt` Fases 1-2.
 
-#### L36 — Persistencia II: LSM-Trees, MVCC y SQL
+#### L42 — Persistencia II: LSM-Trees, MVCC y SQL
 
 Foco: storage engines orientados a escritura y bases de datos con lenguaje propio.
 
@@ -639,7 +738,7 @@ Temas centrales:
 
 Proyectos asociados: `KVolt` Fases 3-4, `MiniSQL`.
 
-#### L37 — Persistencia III: cachés en memoria y políticas de evicción
+#### L43 — Persistencia III: cachés en memoria y políticas de evicción
 
 Foco: memoria volátil, límites físicos del hardware y diseño de motores de caché antes de envolverlos en red.
 
@@ -652,7 +751,7 @@ Temas centrales:
 
 Proyectos asociados: `mem-cache`.
 
-#### L38 — Persistencia IV: event logs y brokers durables
+#### L44 — Persistencia IV: event logs y brokers durables
 
 Foco: convertir un WAL en un log de eventos y construir mensajería durable antes de entrar al stack de red.
 
@@ -665,7 +764,7 @@ Temas centrales:
 
 Proyectos asociados: `mini-broker`.
 
-#### L39 — Performance Engineering
+#### L45 — Performance Engineering
 
 Foco: medir antes de optimizar.
 
@@ -679,7 +778,20 @@ Temas centrales:
 
 Proyectos asociados: `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, `false-sharing-exp`, optimización de `KVolt`, `mem-cache` o `mini-broker`.
 
-#### L40 — Redes I: fundamentos TCP y HTTP
+#### L46 — Observabilidad distribuida
+
+Foco: instrumentar servicios y flujos distribuidos antes de pasar a redes modernas, seguridad y runtimes async.
+
+Temas centrales:
+
+- structured logging y correlation IDs
+- métricas, tracing y relaciones causales entre servicios
+- SLOs, debugging de fallas y señales de salud
+- observabilidad como insumo de diseño, no solo de operación
+
+Proyectos asociados: sin proyecto nuevo; prepara reaperturas de `HTTP server`, `minisync`, `orquestador` y `raft-lite`.
+
+#### L47 — Redes I: fundamentos TCP y HTTP
 
 Foco: sockets, TCP y HTTP/1.1.
 
@@ -692,7 +804,7 @@ Temas centrales:
 
 Proyectos asociados: `HTTP server` Fases 1-3, `shell remoto TCP`, `minisync`.
 
-#### L41 — Redes II: protocolos modernos
+#### L48 — Redes II: protocolos modernos
 
 Foco: lo que aparece encima de TCP en sistemas reales.
 
@@ -705,7 +817,7 @@ Temas centrales:
 
 Proyectos asociados: `HTTP server` Fase 4, `mini-dns-resolver`, `mini-tcpdump`, `websocket-server`, `http2-server`, `minisync`, `TCP/IP stack`.
 
-#### L42 — Seguridad y criptografía
+#### L49 — Seguridad y criptografía
 
 Foco: criptografía aplicada y protocolos seguros.
 
@@ -718,7 +830,7 @@ Temas centrales:
 
 Proyectos asociados: `tinyssh`, `impl_script`.
 
-#### L43 — I/O asíncrono y runtimes
+#### L50 — I/O asíncrono y runtimes
 
 Foco: readiness, completion y runtimes async.
 
@@ -731,9 +843,11 @@ Temas centrales:
 
 Proyectos asociados: `async-runtime`, `io_uring-echo`, revisita opcional del `HTTP server`, `mem-cache` o `mini-broker` como servicios de alto rendimiento.
 
+Nota de alcance: `L50` sigue siendo la llegada al async runtime y al I/O moderno, pero ya no carga en soledad toda la explicación de runtimes. La infraestructura general de ejecución, layout y VMs aparece antes, en `L40`.
+
 ### Bloque 9 — Virtualización y distribución
 
-#### L44 — Aislamiento y contenedores
+#### L51 — Aislamiento y contenedores
 
 Foco: las primitivas del kernel que hacen posible un contenedor.
 
@@ -746,7 +860,7 @@ Temas centrales:
 
 Proyectos asociados: `minidocker`.
 
-#### L45 — Orquestación de contenedores
+#### L52 — Orquestación de contenedores
 
 Foco: coordinar múltiples contenedores como sistema, todavía con un control plane único.
 
@@ -759,7 +873,7 @@ Temas centrales:
 
 Proyectos asociados: `orquestador`, continuación de `TCP/IP stack`.
 
-#### L46 — Replicación y consenso
+#### L53 — Replicación y consenso
 
 Foco: lograr que varias instancias se comporten como una sola unidad confiable.
 
@@ -774,7 +888,7 @@ Proyectos asociados: `raft-lite`, replicación opcional de `mem-cache`, `mini-br
 
 ### Bloque 10 — Compiladores avanzados
 
-#### L47 — Generación de código y JIT
+#### L54 — Generación de código y JIT
 
 Foco: emitir código ejecutable en runtime.
 
@@ -787,9 +901,22 @@ Temas centrales:
 
 Proyectos asociados: `JIT-Brain`.
 
+#### L55 — Frontera user/kernel
+
+Foco: explicitar el contrato entre userspace y kernel antes de entrar a módulos, drivers y subsistemas internos.
+
+Temas centrales:
+
+- syscall ABI y convenciones de llamada
+- `seccomp`, `capabilities`, `prctl` y `setrlimit`
+- fronteras de privilegio, sandboxing y memoria compartida con kernel
+- por qué contenedores, JIT, eBPF y drivers rozan esta frontera de formas distintas
+
+Proyectos asociados: sin proyecto nuevo; prepara `minidocker`, `char-driver`, `ebpf-tracer` y el bloque kernel.
+
 ### Bloque 11 — Kernel space
 
-#### L48 — Kernel space I: módulos y drivers
+#### L56 — Kernel space I: módulos y drivers
 
 Foco: entrar al kernel por módulos, drivers y eBPF.
 
@@ -798,11 +925,11 @@ Temas centrales:
 - Linux Kernel Modules
 - `file_operations`
 - `copy_to_user` y `copy_from_user`
-- sincronización en kernel y eBPF/XDP
+- sincronización en kernel
 
-Proyectos asociados: `char-driver`, `ebpf-tracer`.
+Proyectos asociados: `char-driver`.
 
-#### L49 — Kernel space II: VFS, allocators del kernel, CFS y virtualización
+#### L57 — Kernel space II: VFS, allocators del kernel, CFS y virtualización
 
 Foco: recorrer las grandes subsistemas internos del kernel que conectan con el resto del plan.
 
@@ -811,9 +938,9 @@ Temas centrales:
 - VFS: `super_block`, `inode`, `dentry`, `file`
 - buddy allocator y slab allocator
 - CFS completo y control groups
-- API KVM y virtualización
+- API KVM, eBPF y virtualización
 
-Proyectos asociados: `RAM-FileSystem`, `KVM mini-hypervisor`.
+Proyectos asociados: `RAM-FileSystem`, `KVM mini-hypervisor`, `ebpf-tracer`.
 
 ---
 
@@ -859,15 +986,17 @@ Las mejoras propuestas no son decorativas. Son el momento en que el aprendizaje 
 
 El grafo de dependencias admite varios recorridos. Estos son los cuatro caminos explícitos del plan.
 
+Estos caminos ya describen el canon visible actual, incluyendo las densificaciones de Rust systems, POSIX fino, concurrencia práctica, formatos, GC, runtimes, observabilidad distribuida y frontera user/kernel.
+
 ### Camino 1 — Sistemas primero
 
 Para quien quiere consolidar primero lenguajes, POSIX, redes, contenedores y kernel.
 
 Recorrido sugerido:
 
-`L0-L18 -> L19-L28 -> L35-L43 -> L45-L46`
+`L0-L19 -> L20-L31 -> L38-L50 -> L52-L53`
 
-Luego puede cerrar compiladores con `L29-L34` y `L47`.
+Luego puede cerrar compiladores con `L32-L37` y `L54`.
 
 ### Camino 2 — Plan completo
 
@@ -875,7 +1004,7 @@ Para quien quiere el recorrido canónico del proyecto completo.
 
 Recorrido sugerido:
 
-`L0-L49` en orden, respetando las reaperturas de proyecto.
+`L0-L57` en orden, respetando las reaperturas de proyecto.
 
 ### Camino 3 — Compiladores primero
 
@@ -883,9 +1012,9 @@ Para quien quiere llegar cuanto antes a parsing, intérpretes, tipos y JIT sin s
 
 Recorrido sugerido:
 
-`L0-L18 -> L29-L34 -> L47`
+`L0-L19 -> L32-L37 -> L54`
 
-Complemento recomendado después: `L19-L28`, `L35-L46` y finalmente `L48-L49`.
+Complemento recomendado después: `L20-L31`, `L38-L53` y finalmente `L55-L57`.
 
 ### Camino 4 — Integración vertical
 
@@ -893,7 +1022,7 @@ Para quien quiere alternar sistemas y compiladores siguiendo dependencias natura
 
 Recorrido sugerido:
 
-`L0-L24 -> L29-L43 -> L44-L49`
+`L0-L26 -> L32-L57`
 
 ---
 

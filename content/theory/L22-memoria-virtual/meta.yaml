@@ -1,8 +1,0 @@
-id: L22
-title: "Memoria virtual"
-slug: "l22-memoria-virtual"
-domain: systems
-order: 23
-theory_dir: content/theory/L22-memoria-virtual
-projects: [vma-explorer, cow-demo, spl_cp, mini-debugger]
-prerequisites: [L21]

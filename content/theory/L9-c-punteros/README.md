@@ -1,18 +1,23 @@
 # L9 - C: punteros
 
-> El contenido de este nivel se escribira en `chapters/`. Este README fija la estructura minima del nivel.
+> Placeholder editorial del nivel.
 >
 > Diseno curricular -> `docs/forja-contenido.md`
-> Outline del nivel -> `outline.md`
 
-## Estado
+## Estado actual
 
-Este nivel fue resembrado como unidad canonica independiente. Todavia no tiene capitulos propios.
+- Este nivel ya existe en el canon y hoy se mantiene como placeholder minimo.
+- Contenido teorico: pendiente.
+- `outline.md`, `chapters/`, `exercises.md` y `src/` aparecen cuando se abre authoria real.
 
-## Capitulos
+## Prerequisitos
 
-| Archivo | Titulo |
-|---|---|
-| `chapters/00-introduccion.md` | Pendiente |
+- L8
 
-Ejercicios en `exercises.md`. Outline en `outline.md`. Meta del nivel en `meta.yaml`.
+## Proyectos asociados
+
+- stringlib
+
+## Proximo paso
+
+Abrir authoria real del nivel, crear un `outline.md` exhaustivo y derivar de ahi los capitulos, ejercicios y artefactos necesarios.

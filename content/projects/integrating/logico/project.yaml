@@ -2,35 +2,35 @@ id: logico
 codename: logico
 title: "Logico"
 type: integrating
-anchor_level: L31
-display_levels: [L31, L32, L33, L34, L47]
-required_levels: [L31]
-expansion_levels: [L32, L33, L34, L47]
+anchor_level: L34
+display_levels: [L34, L35, L36, L37, L54]
+required_levels: [L34]
+expansion_levels: [L35, L36, L37, L54]
 languages: [c, rust]
 dir: content/projects/integrating/logico
 stages:
-  - id: logico-l31
-    label: "Tramo L31"
-    kind: project-stage
-    required_levels: [L31]
-    unlock_level: L31
-  - id: logico-l32
-    label: "Tramo L32"
-    kind: project-stage
-    required_levels: [L31, L32]
-    unlock_level: L32
-  - id: logico-l33
-    label: "Tramo L33"
-    kind: project-stage
-    required_levels: [L31, L32, L33]
-    unlock_level: L33
   - id: logico-l34
     label: "Tramo L34"
     kind: project-stage
-    required_levels: [L31, L32, L33, L34]
+    required_levels: [L34]
     unlock_level: L34
-  - id: logico-l47
-    label: "Tramo L47"
+  - id: logico-l35
+    label: "Tramo L35"
     kind: project-stage
-    required_levels: [L31, L32, L33, L34, L47]
-    unlock_level: L47
+    required_levels: [L34, L35]
+    unlock_level: L35
+  - id: logico-l36
+    label: "Tramo L36"
+    kind: project-stage
+    required_levels: [L34, L35, L36]
+    unlock_level: L36
+  - id: logico-l37
+    label: "Tramo L37"
+    kind: project-stage
+    required_levels: [L34, L35, L36, L37]
+    unlock_level: L37
+  - id: logico-l54
+    label: "Tramo L54"
+    kind: project-stage
+    required_levels: [L34, L35, L36, L37, L54]
+    unlock_level: L54

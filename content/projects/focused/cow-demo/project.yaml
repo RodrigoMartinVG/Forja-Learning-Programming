@@ -2,9 +2,9 @@ id: cow-demo
 codename: cow-demo
 title: "cow-demo"
 type: focused
-anchor_level: L22
-display_levels: [L22]
-required_levels: [L22]
+anchor_level: L24
+display_levels: [L24]
+required_levels: [L24]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/cow-demo
@@ -12,5 +12,5 @@ stages:
   - id: cow-demo-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L22]
-    unlock_level: L22
+    required_levels: [L24]
+    unlock_level: L24

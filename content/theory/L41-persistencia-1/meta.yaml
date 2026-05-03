@@ -1,0 +1,8 @@
+id: L41
+title: "Persistencia I: durabilidad y B-Trees"
+slug: "l41-persistencia-1"
+domain: advanced
+order: 42
+theory_dir: content/theory/L41-persistencia-1
+projects: [kvolt]
+prerequisites: [L37]

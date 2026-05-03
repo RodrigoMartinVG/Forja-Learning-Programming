@@ -2,20 +2,20 @@ id: tcp-ip-stack
 codename: tcp-ip-stack
 title: "TCP/IP stack"
 type: integrating
-anchor_level: L41
-display_levels: [L41, L45]
-required_levels: [L41]
-expansion_levels: [L45]
+anchor_level: L48
+display_levels: [L48, L52]
+required_levels: [L48]
+expansion_levels: [L52]
 languages: [c, rust]
 dir: content/projects/integrating/tcp-ip-stack
 stages:
-  - id: tcp-ip-stack-l41
-    label: "Tramo L41"
+  - id: tcp-ip-stack-l48
+    label: "Tramo L48"
     kind: project-stage
-    required_levels: [L41]
-    unlock_level: L41
-  - id: tcp-ip-stack-l45
-    label: "Tramo L45"
+    required_levels: [L48]
+    unlock_level: L48
+  - id: tcp-ip-stack-l52
+    label: "Tramo L52"
     kind: project-stage
-    required_levels: [L41, L45]
-    unlock_level: L45
+    required_levels: [L48, L52]
+    unlock_level: L52

@@ -2,9 +2,9 @@ id: regex-engine
 codename: regex-engine
 title: "regex-engine"
 type: focused
-anchor_level: L30
-display_levels: [L30]
-required_levels: [L30]
+anchor_level: L33
+display_levels: [L33]
+required_levels: [L33]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/regex-engine
@@ -12,5 +12,5 @@ stages:
   - id: regex-engine-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L30]
-    unlock_level: L30
+    required_levels: [L33]
+    unlock_level: L33

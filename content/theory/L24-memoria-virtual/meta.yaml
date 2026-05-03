@@ -1,0 +1,8 @@
+id: L24
+title: "Memoria virtual"
+slug: "l24-memoria-virtual"
+domain: systems
+order: 25
+theory_dir: content/theory/L24-memoria-virtual
+projects: [vma-explorer, cow-demo, spl_cp, mini-debugger]
+prerequisites: [L23]

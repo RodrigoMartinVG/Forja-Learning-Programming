@@ -1,0 +1,8 @@
+id: L43
+title: "Persistencia III: caches en memoria y politicas de eviccion"
+slug: "l43-persistencia-3"
+domain: advanced
+order: 44
+theory_dir: content/theory/L43-persistencia-3
+projects: [mem-cache]
+prerequisites: [L42]

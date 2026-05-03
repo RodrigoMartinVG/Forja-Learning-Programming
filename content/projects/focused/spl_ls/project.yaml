@@ -2,9 +2,9 @@ id: spl_ls
 codename: spl_ls
 title: "spl_ls"
 type: focused
-anchor_level: L19
-display_levels: [L19]
-required_levels: [L19]
+anchor_level: L20
+display_levels: [L20]
+required_levels: [L20]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/spl_ls
@@ -12,5 +12,5 @@ stages:
   - id: spl-ls-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L19]
-    unlock_level: L19
+    required_levels: [L20]
+    unlock_level: L20

@@ -1,0 +1,8 @@
+id: L29
+title: "Concurrencia practica: channels, colas y dispatch"
+slug: "l29-concurrencia-patrones-practicos"
+domain: systems
+order: 30
+theory_dir: content/theory/L29-concurrencia-patrones-practicos
+projects: []
+prerequisites: [L28]

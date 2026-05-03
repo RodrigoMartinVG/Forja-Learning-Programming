@@ -1,8 +1,0 @@
-id: L29
-title: "El parser de mish no escala"
-slug: "l29-parser-mish-no-escala"
-domain: compilers
-order: 30
-theory_dir: content/theory/L29-parser-mish-no-escala
-projects: [mish]
-prerequisites: [L28]

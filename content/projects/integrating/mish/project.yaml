@@ -2,25 +2,25 @@ id: mish
 codename: mish
 title: "mish"
 type: integrating
-anchor_level: L20
-display_levels: [L20, L28, L29]
-required_levels: [L20]
-expansion_levels: [L28, L29]
+anchor_level: L21
+display_levels: [L21, L31, L32]
+required_levels: [L21]
+expansion_levels: [L31, L32]
 languages: [c, rust]
 dir: content/projects/integrating/mish
 stages:
-  - id: mish-l20
-    label: "Tramo L20"
+  - id: mish-l21
+    label: "Tramo L21"
     kind: project-stage
-    required_levels: [L20]
-    unlock_level: L20
-  - id: mish-l28
-    label: "Tramo L28"
+    required_levels: [L21]
+    unlock_level: L21
+  - id: mish-l31
+    label: "Tramo L31"
     kind: project-stage
-    required_levels: [L20, L28]
-    unlock_level: L28
-  - id: mish-l29
-    label: "Tramo L29"
+    required_levels: [L21, L31]
+    unlock_level: L31
+  - id: mish-l32
+    label: "Tramo L32"
     kind: project-stage
-    required_levels: [L20, L28, L29]
-    unlock_level: L29
+    required_levels: [L21, L31, L32]
+    unlock_level: L32

@@ -1,8 +1,0 @@
-id: L39
-title: "Performance Engineering"
-slug: "l39-performance-engineering"
-domain: advanced
-order: 40
-theory_dir: content/theory/L39-performance-engineering
-projects: [perf-benchmarks, flamegraph-lab, cache-locality-exp, false-sharing-exp, kvolt]
-prerequisites: [L38]

@@ -1,0 +1,8 @@
+id: L23
+title: "Scheduling"
+slug: "l23-scheduling"
+domain: systems
+order: 24
+theory_dir: content/theory/L23-scheduling
+projects: [scheduler-sim]
+prerequisites: [L21]

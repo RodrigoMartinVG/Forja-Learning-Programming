@@ -1,0 +1,8 @@
+id: L34
+title: "Parsers y gramaticas"
+slug: "l34-parsers-gramaticas"
+domain: compilers
+order: 35
+theory_dir: content/theory/L34-parsers-gramaticas
+projects: [expr-parser, semtex, logico]
+prerequisites: [L33]

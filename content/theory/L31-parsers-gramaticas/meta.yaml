@@ -1,8 +1,0 @@
-id: L31
-title: "Parsers y gramaticas"
-slug: "l31-parsers-gramaticas"
-domain: compilers
-order: 32
-theory_dir: content/theory/L31-parsers-gramaticas
-projects: [expr-parser, semtex, logico]
-prerequisites: [L30]

@@ -26,9 +26,14 @@ Cada nivel teorico usara un directorio con este patron:
 - `L0-setup-laboratorio`
 - `L1-modelo-mental-computadora`
 - `...`
-- `L49-kernel-space-2`
+- `L57-kernel-space-2`
 
 En general, el patron es `L<orden>-<slug-canonico>` y se deriva de `metadata/levels.yaml`.
+
+Antes de authoria real, el placeholder minimo de un nivel canonico es:
+
+- `README.md`
+- `meta.yaml`
 
 Cuando llegue la fase de un nivel, su carpeta deberia contener como minimo:
 
@@ -62,13 +67,26 @@ Cuando llegue la fase de un proyecto, su carpeta deberia contener como minimo:
 - subdirectorios `phase-n/`
 - `README.md`, `STUDY_GUIDE.md` e `IMPROVEMENTS.md` dentro de cada fase
 
+Si un proyecto necesita un outline o plan de fases antes o durante authoria real, ese documento se trata con la misma seriedad que un outline de nivel: debe modelar todo el arco necesario y no una version recortada para "dejarlo corto".
+
+El `README.md` raiz de un proyecto puede estar en dos estados:
+
+- placeholder estructural: acompana a `project.yaml`, declara niveles y lenguajes visibles, y deja claro que el arco real todavia no fue escrito
+- README de authoria real: describe el recorrido del proyecto, sus fases, criterio de terminado y relacion con los niveles asociados
+
+Si ambos no dicen lo mismo, mientras el proyecto siga en placeholder manda `project.yaml`. El README gana recien cuando el proyecto entra en authoria real y pasa a ser documento mantenido deliberadamente.
+
 ## Placeholders editoriales
 
-Los README y outlines pueden funcionar como placeholders trackeables mientras un nivel o proyecto todavia no tiene su cuerpo final.
+Los placeholders trackeables son correctos mientras un nivel o proyecto todavia no tiene su cuerpo final.
 
 La regla es:
 
 - la estructura canonica del directorio ya debe existir
+- `meta.yaml` acompana siempre a cada nivel canonico, incluso en placeholder
+- `README.md` puede existir como placeholder desde mucho antes del contenido final
+- `outline.md` no se crea por anticipado para candidatos documentales: aparece cuando un nivel entra en authoria real
+- en proyectos, `project.yaml` existe antes que la documentacion de arco y el `README.md` puede quedarse como placeholder estructural durante mucho tiempo
 - el archivo debe dejar claro si es contenido para estudiar o documento interno de diseno
 - cuando llegue contenido real, el placeholder se reemplaza sin romper la estructura esperada del repo
 
@@ -122,7 +140,7 @@ La parte `Que es Forja` debe explicar plataforma, motivacion, expectativas y per
 
 ### El archivo `outline.md`
 
-Cada nivel debe tener un `outline.md` en la raíz de su directorio (al mismo nivel que `chapters/`, no dentro de él).
+Cada nivel que ya entro en authoria real debe tener un `outline.md` en la raíz de su directorio (al mismo nivel que `chapters/`, no dentro de él).
 
 El outline es un **documento de diseño**, no contenido para el estudiante. No se sirve en la web. Su función:
 - Registrar el objetivo del nivel en una oración verificable.
@@ -131,6 +149,10 @@ El outline es un **documento de diseño**, no contenido para el estudiante. No s
 - Servir como punto de partida para detectar inconsistencias antes de escribir o revisar contenido.
 
 El outline se escribe **antes** de escribir el contenido del nivel y se actualiza cada vez que el contenido cambia. Es la fuente de verdad sobre la intención del nivel.
+
+Esto aplica cuando el nivel ya paso de plan documental a trabajo editorial real. Si un nivel todavia existe solo como parte del mapa curricular o como carpeta dummy, no se crea un `outline.md` por inercia.
+
+El criterio del outline no es economizar capitulos o fases. Cuando exista un outline de nivel o un outline/plan de proyecto, debe ser lo mas exhaustivo, amplio y profundo que haga falta para modelar la pieza completa. Si el problema pide ocho capitulos, seis fases o varios desvios de implementacion, se listan todos. No se escatima esfuerzo para que el outline capture la estructura real del trabajo.
 
 **Formato mínimo de `outline.md`:**
 
@@ -207,30 +229,34 @@ Todos los ejercicios deben ser accionables de una de estas dos formas:
 
 Cuando un ejercicio pide escribir una conclusión, esa conclusión debe salir de una observación previa hecha con un comando concreto. El ejercicio no puede depender solo de memoria o intuición.
 
-### Plantilla de README.md de nivel
+### Plantilla de README.md placeholder de nivel
+
+La plantilla automatica por defecto para niveles que todavia no entraron en authoria real es esta:
 
 ```markdown
 # LN — Nombre del nivel
 
-> El contenido está en `chapters/`. Este README es un documento de diseño interno.
+> Placeholder editorial del nivel.
 >
 > Que es Forja? → `content/theory/forja.md`
 > Introducción al Workspace → `content/theory/README.md`
 > Diseño curricular → `docs/forja-contenido.md`
-> Outline del nivel → `outline.md`
 
 ## Estado editorial
 
-- Objetivo del nivel: ...
-- Proyecto(s) asociado(s): ...
-- Notas de implementación: ...
+- Este nivel ya existe en el canon.
+- Todavia no entro en authoria real.
+- `outline.md`, `chapters/`, `src/` y `exercises.md` aparecen cuando se abra esa fase.
 
-## Capítulos
+## Prerequisitos
 
-| Archivo | Título |
-|---|---|
-| `chapters/00-introduccion.md` | Introducción |
-| `chapters/01-...md` | ... |
+...
 
-Ejercicios en `exercises.md`. Outline en `outline.md`. Meta del nivel en `meta.yaml`.
+## Proyectos asociados
+
+...
+
+## Proximo paso
+
+Abrir authoria real del nivel, crear un `outline.md` exhaustivo y derivar de ahi los capitulos, ejercicios y artefactos necesarios.
 ```

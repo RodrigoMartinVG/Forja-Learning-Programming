@@ -1,0 +1,8 @@
+id: L27
+title: "Concurrencia I: threads y primitivas de sincronizacion"
+slug: "l27-concurrencia-1"
+domain: systems
+order: 28
+theory_dir: content/theory/L27-concurrencia-1
+projects: [thread-pool, prod-cons, rwlock-impl]
+prerequisites: [L26]

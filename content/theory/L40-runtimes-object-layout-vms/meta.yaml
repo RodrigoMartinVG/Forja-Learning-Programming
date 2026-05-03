@@ -1,0 +1,8 @@
+id: L40
+title: "Runtimes, object layout y VMs"
+slug: "l40-runtimes-object-layout-vms"
+domain: advanced
+order: 41
+theory_dir: content/theory/L40-runtimes-object-layout-vms
+projects: []
+prerequisites: [L39]

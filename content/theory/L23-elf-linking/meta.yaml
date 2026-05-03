@@ -1,8 +1,0 @@
-id: L23
-title: "Formato ELF y linking"
-slug: "l23-elf-linking"
-domain: systems
-order: 24
-theory_dir: content/theory/L23-elf-linking
-projects: [mini-linker]
-prerequisites: [L22]

@@ -1,6 +1,6 @@
 # Forja — Proyectos
 
-> Este documento consolida el track práctico de Forja: taxonomía, tabla completa de proyectos, arcos integradores y criterio de implementación.
+> Este documento consolida el track práctico de Forja: taxonomía, tabla completa de proyectos, arcos integradores, criterio de implementación y ampliaciones de proyectos ya aprobadas a nivel documental.
 >
 > El mapa curricular humano de niveles vive en `forja-contenido.md`. La arquitectura del repo y de la web vive en `forja-arquitectura.md`.
 
@@ -33,6 +33,16 @@ El track práctico existe en dos escalas:
 
 - proyectos focalizados, para aislar un concepto o mecanismo
 - proyectos integradores, para construir sistemas multi-fase que reabren contenido de varios bloques
+
+El canon visible del track práctico sigue siendo el catálogo actual. Las ampliaciones que todavía no tienen numeración, `project.yaml` definitivo o carpeta desarrollada en `content/projects/**` se registran acá como candidatos documentales. Su presencia en este documento no obliga a crear contenido real por adelantado.
+
+### 1.1 Estado editorial actual del track practico
+
+Hoy solo `devcontainer-setup` tiene un `README.md` de proyecto escrito como documento real de recorrido, entregable y criterio de terminado.
+
+El resto de los `README.md` en `content/projects/**` se consideran placeholders estructurales. Sirven para hacer visible el proyecto en el arbol del repo, pero no deben leerse como documentacion completa de arco, fases o implementacion.
+
+Mientras un proyecto siga en ese estado, `project.yaml` manda sobre niveles visibles, lenguajes y reaperturas.
 
 ---
 
@@ -71,6 +81,8 @@ Ejemplos:
 
 ## 3. Tabla completa de proyectos
 
+La tabla siguiente describe el catálogo visible actual. Los candidatos de ampliación ya aceptados documentalmente aparecen después, separados del canon activo para no confundir plan con contenido ya implementado.
+
 | Proyecto | Tipo | Nivel(es) | Dominio |
 |---|---|---|---|
 | `devcontainer-setup` | Focalizado | L0 | Entorno |
@@ -88,70 +100,85 @@ Ejemplos:
 | `custom-iterator` | Focalizado | L16 | Rust lenguaje |
 | `parser-combinators` | Focalizado | L16 | Rust lenguaje |
 | `ffi-demo` | Focalizado | L18 | FFI C/Rust |
-| `spl_stat` | Focalizado | L19 | POSIX archivos |
-| `spl_ls` | Focalizado | L19 | POSIX archivos |
-| `spl_du` | Focalizado | L19 | POSIX archivos |
-| `file-monitor` | Focalizado | L19 | POSIX archivos |
-| `spl_pstree` | Focalizado | L20 | Procesos |
-| `impl_abort` | Focalizado | L20 | Procesos |
-| `impl_alarm` | Focalizado | L20 | Procesos |
-| `scheduler-sim` | Focalizado | L21 | Scheduling |
-| `vma-explorer` | Focalizado | L22 | Memoria virtual |
-| `cow-demo` | Focalizado | L22 | Memoria virtual |
-| `spl_cp` | Focalizado | L22 | Memoria virtual |
-| `mini-linker` | Focalizado | L23 | ELF y linking |
-| `custom-malloc` | Integrador | L24 | Allocators |
-| `thread-pool` | Focalizado | L25 | Concurrencia |
-| `prod-cons` | Focalizado | L25 | Concurrencia |
-| `rwlock-impl` | Focalizado | L25 | Concurrencia |
-| `impl_arc` | Focalizado | L26 | Concurrencia avanzada |
-| `lock-free-queue` | Focalizado | L27 | Concurrencia avanzada |
-| `rcu-demo` | Focalizado | L27 | Concurrencia avanzada |
-| `named-pipe-sem` | Focalizado | L28 | IPC |
-| `ipc-explorer` | Focalizado | L28 | IPC |
-| `miniqueue` | Integrador | L28 | IPC |
-| `mish` | Integrador | L20, L28, L29 | Shell |
-| `mini-debugger` | Integrador | L20, L22 | Procesos + memoria |
-| `regex-engine` | Focalizado | L30 | Autómatas |
-| `expr-parser` | Focalizado | L31 | Parsers |
-| `Semtex` | Integrador | L31, L32, L33, L34 | Compiladores |
-| `Logico` | Integrador | L31, L32, L33, L34, L47 | Intérpretes + JIT |
-| `KVolt` | Integrador | L35, L39, L46 | Persistencia |
-| `MiniSQL` | Integrador | L36 | Persistencia |
-| `mem-cache` | Integrador | L37 | Persistencia en memoria |
-| `mini-broker` | Integrador | L38 | Event logs y mensajería |
-| `perf-benchmarks` | Focalizado | L39 | Performance |
-| `flamegraph-lab` | Focalizado | L39 | Performance |
-| `cache-locality-exp` | Focalizado | L39 | Performance |
-| `false-sharing-exp` | Focalizado | L39 | Performance |
-| `HTTP server` | Integrador | L40 | Redes |
-| `shell remoto TCP` | Focalizado | L40 | Redes |
-| `minisync` | Integrador | L40 | Redes |
-| `mini-dns-resolver` | Focalizado | L40 | Redes |
-| `mini-tcpdump` | Focalizado | L40 | Redes |
-| `websocket-server` | Focalizado | L41 | Redes |
-| `http2-server` | Focalizado | L41 | Redes |
-| `tinyssh` | Integrador | L42 | Seguridad |
-| `impl_script` | Focalizado | L42 | Seguridad |
-| `async-runtime` | Integrador | L43 | I/O asíncrono |
-| `io_uring-echo` | Focalizado | L43 | I/O asíncrono |
-| `minidocker` | Integrador | L44 | Contenedores |
-| `orquestador` | Integrador | L45 | Sistemas distribuidos |
-| `TCP/IP stack` | Integrador | L41, L45 | Redes + distribuido |
-| `raft-lite` | Integrador | L46 | Consenso distribuido |
-| `JIT-Brain` | Integrador | L47 | Compiladores avanzados |
-| `char-driver` | Focalizado | L48 | Kernel |
-| `ebpf-tracer` | Focalizado | L49 | Kernel + eBPF |
-| `RAM-FileSystem` | Focalizado | L49 | Kernel |
-| `KVM mini-hypervisor` | Integrador | L49 | Kernel |
+| `spl_stat` | Focalizado | L20 | POSIX archivos |
+| `spl_ls` | Focalizado | L20 | POSIX archivos |
+| `spl_du` | Focalizado | L20 | POSIX archivos |
+| `file-monitor` | Focalizado | L20 | POSIX archivos |
+| `spl_pstree` | Focalizado | L21 | Procesos |
+| `impl_abort` | Focalizado | L21 | Procesos |
+| `impl_alarm` | Focalizado | L21 | Procesos |
+| `scheduler-sim` | Focalizado | L23 | Scheduling |
+| `vma-explorer` | Focalizado | L24 | Memoria virtual |
+| `cow-demo` | Focalizado | L24 | Memoria virtual |
+| `spl_cp` | Focalizado | L24 | Memoria virtual |
+| `mini-linker` | Focalizado | L25 | ELF y linking |
+| `custom-malloc` | Integrador | L26 | Allocators |
+| `thread-pool` | Focalizado | L27 | Concurrencia |
+| `prod-cons` | Focalizado | L27 | Concurrencia |
+| `rwlock-impl` | Focalizado | L27 | Concurrencia |
+| `impl_arc` | Focalizado | L28 | Concurrencia avanzada |
+| `lock-free-queue` | Focalizado | L30 | Concurrencia avanzada |
+| `rcu-demo` | Focalizado | L30 | Concurrencia avanzada |
+| `named-pipe-sem` | Focalizado | L31 | IPC |
+| `ipc-explorer` | Focalizado | L31 | IPC |
+| `miniqueue` | Integrador | L31 | IPC |
+| `mish` | Integrador | L21, L31, L32 | Shell |
+| `mini-debugger` | Integrador | L21, L24 | Procesos + memoria |
+| `regex-engine` | Focalizado | L33 | Autómatas |
+| `expr-parser` | Focalizado | L34 | Parsers |
+| `Semtex` | Integrador | L34, L35, L36, L37 | Compiladores |
+| `Logico` | Integrador | L34, L35, L36, L37, L54 | Intérpretes + JIT |
+| `KVolt` | Integrador | L41, L45, L53 | Persistencia |
+| `MiniSQL` | Integrador | L42 | Persistencia |
+| `mem-cache` | Integrador | L43 | Persistencia en memoria |
+| `mini-broker` | Integrador | L44 | Event logs y mensajería |
+| `perf-benchmarks` | Focalizado | L45 | Performance |
+| `flamegraph-lab` | Focalizado | L45 | Performance |
+| `cache-locality-exp` | Focalizado | L45 | Performance |
+| `false-sharing-exp` | Focalizado | L45 | Performance |
+| `HTTP server` | Integrador | L47 | Redes |
+| `shell remoto TCP` | Focalizado | L47 | Redes |
+| `minisync` | Integrador | L47 | Redes |
+| `mini-dns-resolver` | Focalizado | L47 | Redes |
+| `mini-tcpdump` | Focalizado | L47 | Redes |
+| `websocket-server` | Focalizado | L48 | Redes |
+| `http2-server` | Focalizado | L48 | Redes |
+| `tinyssh` | Integrador | L49 | Seguridad |
+| `impl_script` | Focalizado | L49 | Seguridad |
+| `async-runtime` | Integrador | L50 | I/O asíncrono |
+| `io_uring-echo` | Focalizado | L50 | I/O asíncrono |
+| `minidocker` | Integrador | L51 | Contenedores |
+| `orquestador` | Integrador | L52 | Sistemas distribuidos |
+| `TCP/IP stack` | Integrador | L48, L52 | Redes + distribuido |
+| `raft-lite` | Integrador | L53 | Consenso distribuido |
+| `JIT-Brain` | Integrador | L54 | Compiladores avanzados |
+| `char-driver` | Focalizado | L56 | Kernel |
+| `ebpf-tracer` | Focalizado | L57 | Kernel + eBPF |
+| `RAM-FileSystem` | Focalizado | L57 | Kernel |
+| `KVM mini-hypervisor` | Integrador | L57 | Kernel |
+
+### 3.1 Proyectos candidatos en consolidación documental
+
+| Proyecto candidato | Rol previsto | Acople curricular | Estado documental |
+|---|---|---|---|
+| `format-lab` | Laboratorio focalizado | Capa explícita de formatos y serialización | Aprobado como candidato canónico |
+| `gc-lab` | Integrador corto | GC fundamental y reapertura de `custom-malloc`/`Logico` | Aprobado como candidato canónico |
+| `bytecode-vm` | Integrador | Runtimes, VMs y ejecución por bytecode | Aprobado como candidato canónico |
+| `mini-runtime` | Integrador | Object layout, heap y organización interna de runtime | Aprobado como candidato canónico |
+| `coroutine-executor` | Integrador corto | Puente entre runtimes generales y async runtime | Aprobado como candidato canónico |
+| proyecto de task queues tipadas | Integrador multi-fase | Concurrencia práctica, persistencia, prioridades y dispatch asíncrono | Aprobado como candidato experimental; slug definitivo pendiente |
+
+Estos candidatos entran primero en documentación. Su incorporación futura a `metadata/` y a `content/projects/**` vendrá recién cuando les llegue turno real de diseño y authoring.
 
 ---
 
 ## 4. Los proyectos integradores
 
+Las descripciones de arco de esta sección fijan la historia multi-fase que Forja quiere contar, aunque una carpeta concreta todavía siga dummy o con placeholders. El objetivo acá es dejar explícito qué reabre cada proyecto y cómo se conecta con el resto del plan.
+
 ### `mish` — Mini Shell
 
-Niveles: L20, L28, L29.
+Niveles: L21, L31, L32.
 
 Arco:
 
@@ -163,9 +190,11 @@ Arco:
 
 Equivalentes industriales: `bash`, `zsh`, `dash`.
 
+Nota de arco: `mish` pasa a ser el integrador de referencia para justificar `L32`. Su última fase no es una mejora cosmética; es el punto donde el plan explica por qué un parser artesanal deja de escalar y obliga a abrir el bloque de compiladores.
+
 ### `mini-debugger` — Debugger con ptrace
 
-Niveles: L20, L22.
+Niveles: L21, L24.
 
 Arco:
 
@@ -178,7 +207,7 @@ Equivalentes industriales: `gdb`, `lldb`, `rr`.
 
 ### `miniqueue` — Message Queue
 
-Nivel principal: L28.
+Nivel principal: L31.
 
 Arco:
 
@@ -191,7 +220,7 @@ Equivalentes industriales: RabbitMQ, NATS, ZeroMQ.
 
 ### `custom-malloc` — Allocator
 
-Niveles: L24.
+Niveles: L26.
 
 Arco:
 
@@ -201,9 +230,11 @@ Arco:
 
 Equivalentes industriales: jemalloc, mimalloc, ptmalloc2.
 
+Nota de arco: `custom-malloc` deja de ser solo el cierre de allocators. Queda documentado además como sustrato natural para `gc-lab` y como dependencia pedagógica posible para reaperturas de `Logico`.
+
 ### `KVolt` — Base de datos key-value
 
-Niveles: L35, L39, L46.
+Niveles: L41, L45, L53.
 
 Arco:
 
@@ -211,14 +242,16 @@ Arco:
 - WAL y crash recovery
 - B-Tree o LSM-Tree
 - compactación, índices y concurrencia
-- optimización y medición bajo carga en L39
-- replicación opcional sobre consenso en L46
+- optimización y medición bajo carga en L45
+- replicación opcional sobre consenso en L53
 
 Equivalentes industriales: LevelDB, RocksDB, LMDB.
 
+Nota de arco: `KVolt` es el ejemplo más claro de proyecto multi-fase que cambia de pregunta sin cambiar de sistema. Empieza como motor local, se reabre para medición y vuelve a abrirse para replicación; esa continuidad debe seguir explícita en toda la documentación del plan.
+
 ### `MiniSQL` — Motor SQL
 
-Nivel principal: L36.
+Nivel principal: L42.
 
 Arco:
 
@@ -231,7 +264,7 @@ Equivalentes industriales: SQLite, DuckDB.
 
 ### `mem-cache` — Motor de caché en memoria
 
-Niveles: L37.
+Niveles: L43.
 
 Arco:
 
@@ -246,7 +279,7 @@ Nota de diseño: en Forja arranca como motor primero, no como servidor primero. 
 
 ### `mini-broker` — Broker durable sobre event log
 
-Niveles: L38.
+Niveles: L44.
 
 Arco:
 
@@ -257,9 +290,11 @@ Arco:
 
 Equivalentes industriales: Kafka, RabbitMQ, Redpanda.
 
+Nota de arco: `mini-broker` es uno de los candidatos naturales para reabrirse junto con el futuro proyecto de task queues tipadas, prioridades y dispatch asíncrono. La documentación debe tratarlos como piezas compatibles, no como ideas aisladas.
+
 ### `Semtex` — Parser de marcado
 
-Niveles: L31, L32, L33, L34.
+Niveles: L34, L35, L36, L37.
 
 Arco:
 
@@ -272,7 +307,7 @@ Equivalentes industriales: pandoc, pulldown-cmark, tree-sitter.
 
 ### `Logico` — Intérprete Lisp
 
-Niveles: L31, L32, L33, L34, L47.
+Niveles: L34, L35, L36, L37, L54.
 
 Arco:
 
@@ -284,9 +319,11 @@ Arco:
 
 Equivalentes industriales: Guile, Chicken Scheme, Janet.
 
+Nota de arco: `Logico` deja de leerse solo como intérprete + tipos + JIT. También pasa a ser consumidor directo de las capas nuevas de GC, object layout, runtime y eventualmente bytecode/VM.
+
 ### `HTTP server` — Servidor HTTP
 
-Niveles: L40.
+Niveles: L47.
 
 Arco:
 
@@ -298,9 +335,11 @@ Arco:
 
 Equivalentes industriales: nginx, Apache, hyper.
 
+Nota de arco: `HTTP server` queda como candidato natural a reapertura cuando Forja haga explícita la capa de observabilidad distribuida y el puente de runtimes previos a `L50`.
+
 ### `minisync` — Sincronización de directorios
 
-Niveles: L40.
+Niveles: L47.
 
 Arco:
 
@@ -315,7 +354,7 @@ Nota: este proyecto existía en el plan anterior y se preserva explícitamente e
 
 ### `tinyssh` — Implementación SSH
 
-Niveles: L42.
+Niveles: L49.
 
 Arco:
 
@@ -328,7 +367,7 @@ Equivalentes industriales: OpenSSH, libssh.
 
 ### `async-runtime` — Runtime asíncrono
 
-Nivel principal: L43.
+Nivel principal: L50.
 
 Arco:
 
@@ -340,9 +379,11 @@ Arco:
 
 Equivalentes industriales: Tokio, async-std, smol, libuv.
 
+Nota de arco: `async-runtime` sigue siendo el proyecto de llegada del bloque async, pero ya no debe cargar en soledad toda la teoría de runtimes. A partir de la ampliación documental pasa a consumirse mejor si antes existen capas explícitas de runtime general, object layout y ejecutores cooperativos.
+
 ### `minidocker` — Runtime de contenedores
 
-Nivel principal: L44.
+Nivel principal: L51.
 
 Arco:
 
@@ -355,7 +396,7 @@ Equivalentes industriales: runc, youki, crun.
 
 ### `orquestador` — Orquestador de contenedores
 
-Nivel principal: L45.
+Nivel principal: L52.
 
 Arco:
 
@@ -370,7 +411,7 @@ Nota de diseño: en esta versión del plan `orquestador` queda separado del cons
 
 ### `raft-lite` — Replicación y consenso
 
-Nivel principal: L46.
+Nivel principal: L53.
 
 Arco:
 
@@ -383,7 +424,7 @@ Equivalentes industriales: etcd, Consul, ZooKeeper.
 
 ### `TCP/IP stack` — Pila TCP/IP en user space
 
-Niveles: L41, L45.
+Niveles: L48, L52.
 
 Arco:
 
@@ -396,7 +437,7 @@ Equivalentes industriales: smoltcp, lwIP.
 
 ### `JIT-Brain` — Compilador JIT
 
-Nivel principal: L47.
+Nivel principal: L54.
 
 Arco:
 
@@ -409,7 +450,7 @@ Equivalentes industriales: LLVM, Cranelift, libgccjit.
 
 ### `char-driver`, `RAM-FileSystem`, `KVM mini-hypervisor`
 
-Niveles: L48 y L49.
+Niveles: L56 y L57.
 
 Arco:
 
@@ -492,4 +533,4 @@ Se preservan explícitamente los proyectos y arcos centrales del plan anterior:
 - `KVM mini-hypervisor`
 - `ebpf-tracer`
 
-Al contrastar el borrador v2 contra `forja-contenido.md` anterior no quedó ninguna omisión pendiente: `minisync` ya quedó preservado. Sobre esa base, esta revisión agrega tres piezas nuevas al arco curricular: `mem-cache`, `mini-broker` y `raft-lite`.
+Al contrastar el borrador v2 contra `forja-contenido.md` anterior no quedó ninguna omisión pendiente: `minisync` ya quedó preservado. Sobre esa base, la siguiente ola documental agrega como candidatos explícitos `format-lab`, `gc-lab`, `bytecode-vm`, `mini-runtime`, `coroutine-executor` y un proyecto de task queues tipadas todavía sin slug definitivo.

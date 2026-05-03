@@ -1,0 +1,8 @@
+id: L55
+title: "Frontera user/kernel"
+slug: "l55-frontera-user-kernel"
+domain: advanced
+order: 56
+theory_dir: content/theory/L55-frontera-user-kernel
+projects: []
+prerequisites: [L54]

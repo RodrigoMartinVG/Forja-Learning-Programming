@@ -1,0 +1,8 @@
+id: L53
+title: "Replicacion y consenso"
+slug: "l53-replicacion-consenso"
+domain: advanced
+order: 54
+theory_dir: content/theory/L53-replicacion-consenso
+projects: [raft-lite, kvolt]
+prerequisites: [L52]

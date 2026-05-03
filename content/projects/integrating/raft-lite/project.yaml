@@ -2,9 +2,9 @@ id: raft-lite
 codename: raft-lite
 title: "raft-lite"
 type: integrating
-anchor_level: L46
-display_levels: [L46]
-required_levels: [L46]
+anchor_level: L53
+display_levels: [L53]
+required_levels: [L53]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/integrating/raft-lite
@@ -12,5 +12,5 @@ stages:
   - id: raft-lite-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L46]
-    unlock_level: L46
+    required_levels: [L53]
+    unlock_level: L53

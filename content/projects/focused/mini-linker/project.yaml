@@ -2,9 +2,9 @@ id: mini-linker
 codename: mini-linker
 title: "mini-linker"
 type: focused
-anchor_level: L23
-display_levels: [L23]
-required_levels: [L23]
+anchor_level: L25
+display_levels: [L25]
+required_levels: [L25]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/mini-linker
@@ -12,5 +12,5 @@ stages:
   - id: mini-linker-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L23]
-    unlock_level: L23
+    required_levels: [L25]
+    unlock_level: L25

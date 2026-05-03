@@ -434,49 +434,9 @@ def format_bullets(items: list[str], empty_message: str) -> str:
     return "\n".join(f"- {item}" for item in items)
 
 
-def level_outline(level: dict[str, object]) -> str:
-    prerequisites = ", ".join(level["prerequisites"]) if level["prerequisites"] else "ninguno"
-    projects = ", ".join(level["projects"]) if level["projects"] else "ninguno"
-
-    return "\n".join(
-        [
-            f"# Outline: {level['id']} - {level['title']}",
-            "",
-            "## Metadatos",
-            f"- Prerequisitos: {prerequisites}.",
-            f"- Proyectos asociados: {projects}.",
-            "",
-            "## Objetivo",
-            "",
-            f"Definir la unidad teorica canonica de {level['id']} antes de escribir su contenido definitivo.",
-            "",
-            "## Capitulos",
-            "",
-            "### Capitulo 00 - Introduccion",
-            "**Archivo:** `chapters/00-introduccion.md`",
-            "**Objetivo:** presentar el mapa del nivel cuando se escriba el contenido.",
-            "**Secciones:**",
-            "- `## Pendiente`",
-            "",
-            "**Notas:** nivel resembrado desde cero; contenido aun no escrito.",
-            "",
-            "## Ejercicios",
-            "",
-            "Pendientes.",
-            "",
-            "## Decisiones de diseno",
-            "",
-            "- Este nivel existe como unidad canonica independiente.",
-            "- El cuerpo definitivo se escribira mas adelante en `chapters/`.",
-        ]
-    )
-
-
 def create_level(level: dict[str, object], force: bool) -> None:
     level_dir = THEORY_ROOT / level_dir_name(level)
     level_dir.mkdir(parents=True, exist_ok=True)
-    touch_file(level_dir / "src" / ".gitkeep")
-    touch_file(level_dir / "chapters" / ".gitkeep")
 
     context = {
         "level_id": level["id"],
@@ -486,8 +446,6 @@ def create_level(level: dict[str, object], force: bool) -> None:
         "level_prerequisites": format_bullets(level["prerequisites"], "Sin prerequisitos declarados."),
     }
     write_file(level_dir / "README.md", render_template(TEMPLATES_ROOT / "level" / "README.md.tpl", context), force)
-    write_file(level_dir / "exercises.md", render_template(TEMPLATES_ROOT / "level" / "exercises.md.tpl", context), force)
-    write_file(level_dir / "outline.md", level_outline(level), force)
     write_file(level_dir / "meta.yaml", level_meta(level), force)
 
 
@@ -708,10 +666,8 @@ def validate() -> int:
 
     for level in LEVELS:
         level_dir = THEORY_ROOT / level_dir_name(level)
-        for relative in ["README.md", "exercises.md", "outline.md", "meta.yaml", "chapters/.gitkeep", "src/.gitkeep"]:
-            path = level_dir / relative
-            if not path.exists():
-                failures.append(f"missing {path.relative_to(ROOT).as_posix()}")
+        if not level_dir.exists():
+            failures.append(f"missing {level_dir.relative_to(ROOT).as_posix()}")
 
     for project in project_catalog():
         project_dir = PROJECT_ROOTS[project["track"]] / project["id"]
@@ -734,7 +690,7 @@ def validate() -> int:
             print(failure, file=sys.stderr)
         return 1
 
-    print("Base 2 scaffold validation passed.")
+    print("Forja scaffold validation passed.")
     return 0
 
 
@@ -774,7 +730,7 @@ def parser() -> argparse.ArgumentParser:
     phase.add_argument("--phase", required=True)
     phase.add_argument("--force", action="store_true")
 
-    subparsers.add_parser("validate", help="Validate the Base 2 scaffold")
+    subparsers.add_parser("validate", help="Validate the Forja scaffold")
 
     return command
 

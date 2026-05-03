@@ -1,8 +1,0 @@
-id: L43
-title: "I/O asincrono y runtimes"
-slug: "l43-async-io-runtimes"
-domain: advanced
-order: 44
-theory_dir: content/theory/L43-async-io-runtimes
-projects: [async-runtime, io_uring-echo]
-prerequisites: [L42]

@@ -2,9 +2,9 @@ id: minidocker
 codename: minidocker
 title: "minidocker"
 type: integrating
-anchor_level: L44
-display_levels: [L44]
-required_levels: [L44]
+anchor_level: L51
+display_levels: [L51]
+required_levels: [L51]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/integrating/minidocker
@@ -12,5 +12,5 @@ stages:
   - id: minidocker-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L44]
-    unlock_level: L44
+    required_levels: [L51]
+    unlock_level: L51

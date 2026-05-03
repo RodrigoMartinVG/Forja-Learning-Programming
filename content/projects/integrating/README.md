@@ -1,5 +1,11 @@
 # Proyectos Integradores
 
+## Estado editorial actual
+
+- Por ahora ningun proyecto integrador tiene README de arco real.
+- Los README de esta rama se tratan como placeholders estructurales y no como documentacion exhaustiva de fases.
+- Hasta que se abra authoria real de cada integrador, `project.yaml` sigue siendo la fuente de verdad sobre niveles, lenguajes y reaperturas.
+
 Slugs canonicos de proyectos integradores:
 
 | Nombre visible | Slug de directorio |

@@ -1,8 +1,0 @@
-id: L19
-title: "POSIX: archivos, metadatos y el filesystem"
-slug: "l19-posix-filesystem"
-domain: systems
-order: 20
-theory_dir: content/theory/L19-posix-filesystem
-projects: [spl_stat, spl_ls, spl_du, file-monitor]
-prerequisites: [L18]

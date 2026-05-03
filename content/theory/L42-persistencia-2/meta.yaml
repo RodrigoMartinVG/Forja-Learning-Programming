@@ -1,0 +1,8 @@
+id: L42
+title: "Persistencia II: LSM-Trees, MVCC y SQL"
+slug: "l42-persistencia-2"
+domain: advanced
+order: 43
+theory_dir: content/theory/L42-persistencia-2
+projects: [minisql]
+prerequisites: [L41]

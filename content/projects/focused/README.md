@@ -1,5 +1,11 @@
 # Proyectos Focalizados
 
+## Estado editorial actual
+
+- `devcontainer-setup` es, por ahora, el unico proyecto focalizado con README de authoria real.
+- El resto de los README de esta rama son placeholders estructurales derivados de `project.yaml`.
+- Ningun otro proyecto focalizado debe fingir fases o criterios de terminado hasta que se abra authoria real de forma explicita.
+
 Slugs canonicos de proyectos focalizados:
 
 | Nombre visible | Slug de directorio |

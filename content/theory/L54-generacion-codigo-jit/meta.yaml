@@ -1,0 +1,8 @@
+id: L54
+title: "Generacion de codigo y JIT"
+slug: "l54-generacion-codigo-jit"
+domain: compilers
+order: 55
+theory_dir: content/theory/L54-generacion-codigo-jit
+projects: [jit-brain, logico]
+prerequisites: [L53]

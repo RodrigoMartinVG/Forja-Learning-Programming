@@ -74,7 +74,7 @@ El proyecto está terminado cuando:
 
 ## Lo que este proyecto no pide
 
-- No se pide entender cgroups o namespaces en profundidad. Eso es L20.
+- No se pide entender cgroups o namespaces en profundidad. Eso es L21.
 - No se pide escribir un Dockerfile desde cero. Se pide extender el que existe.
 - No se pide configurar un registry de Docker ni CI. Solo trabajo local.
 

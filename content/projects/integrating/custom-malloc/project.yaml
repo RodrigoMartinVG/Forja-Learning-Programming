@@ -2,9 +2,9 @@ id: custom-malloc
 codename: custom-malloc
 title: "custom-malloc"
 type: integrating
-anchor_level: L24
-display_levels: [L24]
-required_levels: [L24]
+anchor_level: L26
+display_levels: [L26]
+required_levels: [L26]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/integrating/custom-malloc
@@ -12,5 +12,5 @@ stages:
   - id: custom-malloc-main
     label: "Fase base"
     kind: project-stage
-    required_levels: [L24]
-    unlock_level: L24
+    required_levels: [L26]
+    unlock_level: L26

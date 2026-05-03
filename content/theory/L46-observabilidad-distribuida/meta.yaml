@@ -1,0 +1,8 @@
+id: L46
+title: "Observabilidad distribuida"
+slug: "l46-observabilidad-distribuida"
+domain: advanced
+order: 47
+theory_dir: content/theory/L46-observabilidad-distribuida
+projects: []
+prerequisites: [L45]

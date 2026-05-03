@@ -1,8 +1,0 @@
-id: L45
-title: "Orquestacion de contenedores"
-slug: "l45-orquestacion-contenedores"
-domain: advanced
-order: 46
-theory_dir: content/theory/L45-orquestacion-contenedores
-projects: [orquestador, tcp-ip-stack]
-prerequisites: [L44]

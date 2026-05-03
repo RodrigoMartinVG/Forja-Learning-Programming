@@ -2,9 +2,9 @@ id: http2-server
 codename: http2-server
 title: "http2-server"
 type: focused
-anchor_level: L41
-display_levels: [L41]
-required_levels: [L41]
+anchor_level: L48
+display_levels: [L48]
+required_levels: [L48]
 expansion_levels: []
 languages: [c, rust]
 dir: content/projects/focused/http2-server
@@ -12,5 +12,5 @@ stages:
   - id: http2-server-main
     label: "Fase unica"
     kind: project-stage
-    required_levels: [L41]
-    unlock_level: L41
+    required_levels: [L48]
+    unlock_level: L48

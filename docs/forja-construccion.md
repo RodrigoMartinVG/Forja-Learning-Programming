@@ -183,7 +183,7 @@ Las subfases internas de cada proyecto no cuentan acá: pertenecen a la implemen
 
 El alcance concreto de `Base 2` debería incluir:
 
-- crear `metadata/levels.yaml` con el catálogo canónico `L0-L49`
+- crear `metadata/levels.yaml` con el catálogo canónico `L0-L57`
 - crear `meta.yaml` en cada carpeta de nivel
 - crear `project.yaml` en cada carpeta de proyecto
 - dejar cargados, al menos, estos campos en cada `project.yaml`: `anchor_level`, `display_levels`, `required_levels`, `expansion_levels`, `stages`
