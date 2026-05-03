@@ -54,8 +54,10 @@ Que la persona pueda describir un programa en ejecución como una máquina de es
 **Secciones:**
 - `## CPU como ejecutor`
 - `## Registros: estado cercano y pequeño`
+- `## MOV: mover estado sin leer memoria`
 - `## Memoria: espacio direccionable`
 - `## Direcciones no son valores misteriosos`
+- `## Cuando la dirección vive en un registro`
 - `## El program counter como ancla del flujo`
 
 **Notas:** este capítulo debería anclar temprano con trazas o diagramas del repo. Puede nombrar stack pointer o registros especiales solo como intuición, sin abrir todavía el detalle que llegará después.
@@ -92,6 +94,7 @@ Que la persona pueda describir un programa en ejecución como una máquina de es
 - `exercises/04-source-codigo-y-proceso.md`: clasificar ejemplos concretos como source, código cargado, dato o programa en ejecución.
 - `exercises/05-comparar-estados.md`: comparar dos estados os layouts...
 quisiera ples para decidir si cambió el código cargado, el estado de ejecución o solo los datos.
+- `exercises/06-distinguir-mov-load-store.md`: distinguir cuándo una instrucción mueve valores entre registros, cuándo lee memoria y cuándo la escribe.
 
 ## Decisiones de diseño
 

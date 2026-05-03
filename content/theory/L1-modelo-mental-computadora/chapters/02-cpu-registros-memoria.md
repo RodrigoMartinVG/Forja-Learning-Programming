@@ -23,7 +23,7 @@ Y este estado inicial:
 | `mem[41]` | `5` |
 | `mem[42]` | `0` |
 
-> Simulador: este capítulo se deja leer muy bien con `suma base` cargado. Después conviene pasar a `indireccion registro` para ver la misma idea cuando la dirección a usar ya no está escrita fija en la instrucción, sino guardada en un registro.
+> Simulador: este capítulo se deja leer muy bien con `suma base` cargado. Para la sección de `MOV`, conviene pasar por `MOV y copias`. Después, `indirección por registro` muestra la misma idea cuando la dirección a usar ya no está escrita fija en la instrucción, sino guardada en un registro.
 
 ## CPU como ejecutor
 

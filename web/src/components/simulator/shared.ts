@@ -58,6 +58,19 @@ const PRESETS: Preset[] = [
 		].join('\n'),
 	},
 	{
+		id: 'mov-y-copias',
+		label: 'MOV y copias',
+		note: 'Aísla MOV para mostrar carga de inmediatos y copia entre registros sin tocar memoria.',
+		program: [
+			'150: MOV r0, 5',
+			'151: MOV r1, r0',
+			'152: MOV r0, 9',
+			'153: MOV r2, r0',
+			'154: HALT',
+		].join('\n'),
+		data: '',
+	},
+	{
 		id: 'siguiente-primo',
 		label: 'siguiente primo',
 		note: 'Busca el menor número primo estrictamente mayor que la entrada usando varios registros y loops anidados.',
