@@ -165,6 +165,148 @@ function getSnapshotMeta(snapshot: SimulatorMachine): string {
 	return `pc ${snapshot.pc} · ${snapshot.phase}`
 }
 
+function parseInstructionSignature(instructionText: string | null): { opcode: string; operands: string[]; symbolic: string } {
+	if (!instructionText || instructionText === '--') {
+		return { opcode: '--', operands: [], symbolic: '--' }
+	}
+
+	const normalized = instructionText.trim()
+	const [opcodeRaw, ...rest] = normalized.split(/\s+/)
+	const opcode = opcodeRaw ? opcodeRaw.toUpperCase() : '--'
+	const operandsText = rest.join(' ').trim()
+	const operands = operandsText
+		? operandsText.split(',').map((value) => value.trim()).filter(Boolean)
+		: []
+
+	return {
+		opcode,
+		operands,
+		symbolic: operands.length > 0 ? `${opcode}(${operands.join(', ')})` : opcode,
+	}
+}
+
+function buildDecodeSymbol(signature: { opcode: string; operands: string[] }): string {
+	if (signature.opcode === '--') {
+		return '--'
+	}
+
+	if (signature.operands.length === 0) {
+		return `op=${signature.opcode}`
+	}
+
+	const parts = signature.operands.map((operand, index) => `a${index}=${operand}`)
+	return `op=${signature.opcode} | ${parts.join(' | ')}`
+}
+
+function buildConcretePcUpdate(machine: SimulatorMachine, signature: { opcode: string; operands: string[] }): string {
+	if (signature.opcode === '--') return '--'
+	const [a0, a1] = signature.operands
+	const base = machine.currentInstructionAddress ?? machine.pc
+	switch (signature.opcode) {
+		case 'JMP':
+			return `pc <- ${a0 ?? '?'}`
+		case 'JNZ': {
+			const regKey = a0?.toLowerCase() as 'r0' | 'r1' | undefined
+			const regVal = regKey ? machine.registers[regKey] : undefined
+			if (regVal !== undefined) {
+				return regVal !== 0 ? `pc <- ${a1}` : `pc <- ${base + 1}`
+			}
+			return `pc <- ${a1} (cond)`
+		}
+		case 'HALT':
+			return 'halt'
+		default:
+			return `pc <- ${base + 1}`
+	}
+}
+
+function buildExecuteSymbol(signature: { opcode: string; operands: string[] }): string {
+	if (signature.opcode === '--') {
+		return '--'
+	}
+	return signature.operands.length > 0
+		? `exec.${signature.opcode}(${signature.operands.join(', ')})`
+		: `exec.${signature.opcode}()`
+}
+
+function buildFetchLines(machine: SimulatorMachine | null, instructionText: string | null): string[] {
+	if (!machine) {
+		return ['mem[pc]', '-> --', 'ir <- --']
+	}
+
+	const fetched = instructionText && instructionText !== '--'
+		? instructionText
+		: (machine.ir || '--')
+
+	return [`mem[${machine.pc}]`, `-> ${fetched}`, `ir <- ${fetched}`]
+}
+
+function buildDecodeLines(signature: { opcode: string; operands: string[] }): string[] {
+	if (signature.opcode === '--') {
+		return ['op = --']
+	}
+
+	const lines = [`op = ${signature.opcode}`]
+	signature.operands.forEach((operand, index) => {
+		lines.push(`a${index} = ${operand}`)
+	})
+
+	return lines.slice(0, 3)
+}
+
+function buildExecuteEffectLines(signature: { opcode: string; operands: string[] }): string[] {
+	const [a0, a1] = signature.operands
+
+	switch (signature.opcode) {
+		case 'MOV':
+			return a0 && a1 ? [`${a0} <- ${a1}`] : []
+		case 'LOAD':
+			return a0 && a1 ? [`${a0} <- mem${a1.replace(/^\[(.*)\]$/, '[$1]')}`] : []
+		case 'STORE':
+			return a0 && a1 ? [`mem${a1.replace(/^\[(.*)\]$/, '[$1]')} <- ${a0}`] : []
+		case 'ADD':
+			return a0 && a1 ? [`${a0} <- ${a0} + ${a1}`] : []
+		case 'SUB':
+			return a0 && a1 ? [`${a0} <- ${a0} - ${a1}`] : []
+		case 'JMP':
+			return a0 ? [`branch -> ${a0}`] : []
+		case 'JNZ':
+			return a0 && a1 ? [`if ${a0} != 0 -> ${a1}`] : []
+		case 'HALT':
+			return ['stop clock']
+		default:
+			return []
+	}
+}
+
+function buildExecuteLines(
+	signature: { opcode: string; operands: string[] },
+	pcUpdate: string | null = null,
+): string[] {
+	if (signature.opcode === '--') {
+		return ['--']
+	}
+
+	return [buildExecuteSymbol(signature), ...buildExecuteEffectLines(signature), ...(pcUpdate ? [pcUpdate] : [])].slice(0, 3)
+}
+
+function normalizePhaseLines(lines: string[] | null, rows = 3): Array<{ text: string; pending: boolean; empty: boolean }> {
+	if (!lines) {
+		return Array.from({ length: rows }, (_, index) => ({
+			text: index === 0 ? '—' : '',
+			pending: index === 0,
+			empty: index !== 0,
+		}))
+	}
+
+	const trimmed = lines.slice(0, rows)
+	while (trimmed.length < rows) {
+		trimmed.push('')
+	}
+
+	return trimmed.map((text) => ({ text, pending: false, empty: text === '' }))
+}
+
 export default function LevelSimulator({
 	levelId,
 	presets,
@@ -186,10 +328,13 @@ export default function LevelSimulator({
 	const [timeline, setTimeline] = useState<SimulatorMachine[]>(initialTimelineState.timeline)
 	const [timelineIndex, setTimelineIndex] = useState(initialTimelineState.timelineIndex)
 	const [isExplanationExpanded, setIsExplanationExpanded] = useState(false)
+	const [isHistoryExpanded, setIsHistoryExpanded] = useState(false)
+	const selectedPreset = availablePresets.find((preset) => preset.id === presetId) ?? availablePresets[0] ?? null
 
 	const workerRef = useRef<Worker | null>(null)
 	const timelineRef = useRef<SimulatorMachine[]>(initialTimelineState.timeline)
 	const timelineIndexRef = useRef(initialTimelineState.timelineIndex)
+	const timelineScrollRef = useRef<HTMLDivElement | null>(null)
 
 	const editorDirty = programText !== lastLoaded.program || dataText !== lastLoaded.data
 	const machine = timelineIndex >= 0 ? timeline[timelineIndex] ?? null : null
@@ -197,12 +342,18 @@ export default function LevelSimulator({
 	const timelineHasPast = timelineIndex > 0
 	const timelineHasFuture = timelineIndex >= 0 && timelineIndex < timeline.length - 1
 	const activeTrace = machine?.lastTrace ?? null
+	const latestEvent = machine?.history[0] ?? null
 	const explanationSummary = activeTrace?.summary
 		?? machine?.statusMessage
 		?? 'Cargá un programa válido para inicializar la máquina.'
 	const activeInstructionText = activeTrace && activeTrace.instructionText !== '--'
 		? activeTrace.instructionText
 		: null
+	const parsedInstruction = parseInstructionSignature(machine?.ir ?? activeInstructionText)
+	const phaseSymbolFetch = buildFetchLines(machine, machine?.ir ?? activeInstructionText)
+	const phaseSymbolDecode = buildDecodeLines(parsedInstruction)
+	const phaseSymbolPcUpdate = machine ? buildConcretePcUpdate(machine, parsedInstruction) : '--'
+	const phaseSymbolExecute = buildExecuteLines(parsedInstruction, phaseSymbolPcUpdate)
 
 	const commitTimeline = (nextTimeline: SimulatorMachine[], nextIndex: number) => {
 		timelineRef.current = nextTimeline
@@ -251,6 +402,20 @@ export default function LevelSimulator({
 		setIsExplanationExpanded(false)
 	}, [timelineIndex, machine?.pc, machine?.phase, machine?.statusMessage])
 
+	useEffect(() => {
+		if (!isHistoryExpanded) {
+			return
+		}
+
+		const container = timelineScrollRef.current
+		if (!container) {
+			return
+		}
+
+		const activeItem = container.querySelector('.sim-timeline__item--active') as HTMLElement | null
+		activeItem?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+	}, [timelineIndex, isHistoryExpanded])
+
 	const handleStepModeSelect = (nextMode: StepMode) => {
 		if (nextMode === stepMode) {
 			return
@@ -280,6 +445,7 @@ export default function LevelSimulator({
 		}
 
 		replaceTimeline(result.machine)
+		setIsHistoryExpanded(false)
 		setLastLoaded({ program: programText, data: dataText })
 	}
 
@@ -330,6 +496,7 @@ export default function LevelSimulator({
 		const result = parseSimulatorInput(lastLoaded.program, lastLoaded.data)
 		setIssues(result.issues)
 		replaceTimeline(result.machine)
+		setIsHistoryExpanded(false)
 	}
 
 	const handlePlay = () => {
@@ -380,6 +547,15 @@ export default function LevelSimulator({
 		stopContinuousExecution()
 	}
 
+	const phaseOrder: Record<string, number> = { idle: 0, fetch: 1, decode: 2, execute: 3 }
+	const currentPhaseOrder = machine ? (phaseOrder[machine.phase] ?? 0) : 0
+
+	const phaseCards = [
+		{ key: 'fetch',    label: 'fetch',   lines: phaseSymbolFetch },
+		{ key: 'decode',   label: 'decode',  lines: currentPhaseOrder >= 2 ? phaseSymbolDecode : null },
+		{ key: 'execute',  label: 'execute', lines: currentPhaseOrder >= 3 ? phaseSymbolExecute : null },
+	] as const
+
 	return (
 		<div className="sim-shell">
 			<div className="section-lbl">simulador v1</div>
@@ -403,304 +579,333 @@ export default function LevelSimulator({
 			</section>
 
 			<div className="sim-workspace">
-				<div className="sim-lane sim-lane--machine">
-					<div className="sim-lane__label">panel de ejecución y lectura</div>
+				<div className="sim-panel-pair">
 
-					<div className="sim-dashboard">
-						<section className="sim-card sim-card--cpu">
-							<div className="sim-card__head">
-								<h3 className="sim-card__title">Estado de cpu</h3>
-								<span className={getStatusChipClass(machine, isRunning)}>
-									{isRunning ? 'corriendo' : machine ? STATUS_LABELS[machine.status] : 'sin carga válida'}
-								</span>
+					{/* ── MEMORIA ────────────────────────────────────── */}
+					<section className="sim-panel sim-panel--memory">
+						<div className="sim-panel__head">
+							<h3 className="sim-panel__title">Memoria</h3>
+							<p className="sim-panel__desc">Código y datos unificados. Resaltado: pc e instrucción activa.</p>
+						</div>
+
+						{machine ? (
+							<div className="sim-memory-wrap sim-memory-wrap--compact">
+								<table className="sim-memory sim-memory--compact">
+									<thead>
+										<tr>
+											<th>dir</th>
+											<th>rol</th>
+											<th>contenido</th>
+										</tr>
+									</thead>
+									<tbody>
+										{memoryRows.map((row) => (
+											<tr
+												key={`${row.role}-${row.address}`}
+												className={[
+													machine.pc === row.address ? 'sim-memory-row--pc' : '',
+													machine.currentInstructionAddress === row.address ? 'sim-memory-row--current' : '',
+												].filter(Boolean).join(' ')}
+											>
+												<td>{row.address}</td>
+												<td>
+													<span className={`sim-role sim-role--${row.role}`}>{row.role}</span>
+												</td>
+												<td>{row.value}</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
 							</div>
+						) : (
+							<p className="sim-note sim-note--boxed">Todavía no hay una carga válida para mostrar.</p>
+						)}
 
-							<div className="sim-status-grid sim-status-grid--compact">
-								<div className="sim-kv sim-kv--compact">
-									<span className="sim-kv__key">pc</span>
-									<span className="sim-kv__value">{machine ? String(machine.pc) : '--'}</span>
-								</div>
-								<div className="sim-kv sim-kv--compact">
-									<span className="sim-kv__key">fase</span>
-									<span className="sim-kv__value">{machine ? PHASE_LABELS[machine.phase] : '--'}</span>
-								</div>
-								<div className="sim-kv sim-kv--compact">
-									<span className="sim-kv__key">r0</span>
-									<span className="sim-kv__value">{machine ? String(machine.registers.r0) : '--'}</span>
-								</div>
-								<div className="sim-kv sim-kv--compact">
-									<span className="sim-kv__key">r1</span>
-									<span className="sim-kv__value">{machine ? String(machine.registers.r1) : '--'}</span>
-								</div>
-							</div>
+						{issues.length > 0 && machine && (
+							<p className="sim-note sim-note--boxed">
+								La carga falló, pero la última memoria válida sigue visible. Así podés comparar el editor con la máquina ya cargada.
+							</p>
+						)}
+					</section>
 
-							<div className="sim-cpu-inline">
-								<div className="sim-ir sim-ir--compact">
-									<span className="sim-kv__key">ir</span>
-									<code className="sim-ir__value">{machine?.ir ?? '--'}</code>
-								</div>
-								{machine && (
-									<div className="sim-kv sim-kv--compact sim-kv--quiet">
-										<span className="sim-kv__key">estado</span>
-										<span className="sim-kv__value">{timelineIndex + 1}/{timeline.length}</span>
-									</div>
+					{/* ── CPU ────────────────────────────────────────── */}
+					<section className="sim-panel sim-panel--cpu">
+
+						{/* Barra de control tipo debugger */}
+						<div className="sim-dbg-bar">
+							<div className="sim-dbg-controls">
+								<button
+									className="sim-dbg-btn"
+									onClick={handleStepBack}
+									disabled={!timelineHasPast || isRunning}
+									aria-label="Estado anterior"
+									title="Estado anterior"
+								>←</button>
+								<button
+									className="sim-dbg-btn"
+									onClick={handleTimelineForward}
+									disabled={!timelineHasFuture || isRunning}
+									aria-label="Estado siguiente"
+									title="Estado siguiente"
+								>→</button>
+								<span className="sim-dbg-sep" />
+								<button
+									className="sim-dbg-btn"
+									onClick={handleStep}
+									disabled={!machine || machine.status !== 'ready' || isRunning}
+									aria-label="Avanzar un paso"
+									title="Avanzar un paso"
+								>▶|</button>
+								{isRunning ? (
+									<button
+										className="sim-dbg-btn"
+										onClick={handlePause}
+										aria-label="Pausar"
+										title="Pausar"
+									>⏸</button>
+								) : (
+									<button
+										className="sim-dbg-btn"
+										onClick={handlePlay}
+										disabled={!machine || machine.status !== 'ready'}
+										aria-label="Iniciar ejecución continua"
+										title="Play"
+									>▶</button>
 								)}
+								<button
+									className="sim-dbg-btn"
+									onClick={handleReset}
+									disabled={!machine}
+									aria-label="Reiniciar"
+									title="Reiniciar"
+								>↺</button>
+								<span className="sim-dbg-sep" />
+								<div className="sim-dbg-toggle">
+									<button
+										className={`sim-dbg-toggle__btn ${stepMode === 'instruction' ? 'sim-dbg-toggle__btn--active' : ''}`}
+										onClick={() => handleStepModeSelect('instruction')}
+									>paso</button>
+									<button
+										className={`sim-dbg-toggle__btn ${stepMode === 'micro' ? 'sim-dbg-toggle__btn--active' : ''}`}
+										onClick={() => handleStepModeSelect('micro')}
+									>micro</button>
+								</div>
 							</div>
-						</section>
+							{machine && (machine.status !== 'ready' || isRunning) && (
+								<span className={getStatusChipClass(machine, isRunning)}>
+									{isRunning ? 'corriendo' : STATUS_LABELS[machine.status]}
+								</span>
+							)}
+						</div>
 
-						<section className="sim-card sim-card--control">
-							<div className="sim-card__head sim-card__head--control">
-								<h3 className="sim-card__title">Control del cpu</h3>
-								<div className="sim-control-head">
-									<div className="sim-control-head__row">
-										{machine && <span className="sim-chip">estado {timelineIndex + 1}/{timeline.length}</span>}
-										<div className="sim-mode-row">
-											<button
-												className={`sim-mode-pill ${stepMode === 'instruction' ? 'sim-mode-pill--active' : ''}`}
-												onClick={() => handleStepModeSelect('instruction')}
-											>
-												pasos
-											</button>
-											<button
-												className={`sim-mode-pill ${stepMode === 'micro' ? 'sim-mode-pill--active' : ''}`}
-												onClick={() => handleStepModeSelect('micro')}
-											>
-												micropasos
-											</button>
-										</div>
+						{/* Bloque 1: Registros + Ejecución actual */}
+						<div className="sim-cpu-state">
+							<div className="sim-cpu-block">
+								<span className="sim-cpu-block__label">registros</span>
+								<div className="sim-cpu-rows">
+									<div className="sim-cpu-row">
+										<span className="sim-cpu-row__label">r0</span>
+										<span className="sim-cpu-row__value">{machine ? String(machine.registers.r0) : '--'}</span>
 									</div>
-									<div className="sim-control-head__row">
-										<button className="ghost-btn sim-btn" onClick={handleStepBack} disabled={!timelineHasPast || isRunning}>anterior</button>
-										<button className="ghost-btn sim-btn" onClick={handleStep} disabled={!machine || machine.status !== 'ready' || isRunning}>step</button>
-										<button className="ghost-btn sim-btn" onClick={handlePlay} disabled={!machine || machine.status !== 'ready' || isRunning}>play</button>
-										<button className="ghost-btn sim-btn" onClick={handlePause} disabled={!isRunning}>pause</button>
-										<button className="ghost-btn sim-btn" onClick={handleReset} disabled={!machine}>reset</button>
+									<div className="sim-cpu-row">
+										<span className="sim-cpu-row__label">r1</span>
+										<span className="sim-cpu-row__value">{machine ? String(machine.registers.r1) : '--'}</span>
 									</div>
 								</div>
 							</div>
-
-							<div className="sim-explainer">
-								<div className="sim-explainer__summary">
-									<div className="sim-explainer__copy">
-										<span className="sim-kv__key">{activeTrace ? getTraceLabel(activeTrace) : 'estado actual'}</span>
-										<p className="sim-explainer__text">{explanationSummary}</p>
+							<div className="sim-cpu-block sim-cpu-block--exec">
+								<span className="sim-cpu-block__label">ejecución actual</span>
+								<div className="sim-cpu-rows">
+									<div className="sim-cpu-row">
+										<span className="sim-cpu-row__label">pc</span>
+										<span className="sim-cpu-row__value">{machine ? String(machine.pc) : '--'}</span>
 									</div>
-									{activeTrace && (
-										<button
-											className="ghost-btn sim-btn sim-btn--small"
-											onClick={() => setIsExplanationExpanded((current) => !current)}
-										>
-											{isExplanationExpanded ? 'ocultar detalle' : 'ver detalle'}
-										</button>
-									)}
+									<div className="sim-cpu-row sim-cpu-row--instruction">
+										<span className="sim-cpu-row__label">ir</span>
+										<code className="sim-cpu-row__instruction">{machine?.ir ?? '--'}</code>
+									</div>
 								</div>
+							</div>
+						</div>
 
-								{isExplanationExpanded && activeTrace && (
-									<div className="sim-explainer__details">
-										<div className="sim-explainer__details-head">
-											<h4 className="sim-explainer__title">{activeTrace.title}</h4>
-											{activeInstructionText && (
-												<code className="sim-trace__instruction">{activeInstructionText}</code>
-											)}
-										</div>
-
-										{activeTrace.phases.length > 0 ? (
-											<div className="sim-trace__phases">
-												{activeTrace.phases.map((phase, index) => (
-													<div key={`${phase.phase}-${index}`} className="sim-trace-phase">
-														<div className="sim-trace-phase__head">
-															<span className="sim-trace-phase__title">{phase.title}</span>
-															<span className="sim-trace-phase__phase">{phase.phase}</span>
-														</div>
-														<p className="sim-trace-phase__summary">{phase.summary}</p>
-														<div className="sim-trace-phase__bullets">
-															{phase.bullets.map((bullet) => (
-																<div key={`${bullet.label}-${bullet.detail}`} className="sim-trace-phase__bullet">
-																	<span className="sim-trace-phase__bullet-label">{bullet.label}</span>
-																	<span className="sim-trace-phase__bullet-detail">{bullet.detail}</span>
-																</div>
-															))}
-														</div>
-													</div>
-												))}
-											</div>
-										) : (
-											<p className="sim-note">No hay más detalle didáctico para este estado.</p>
+						{/* Bloque 2: Fase + explicación mínima */}
+						<div className="sim-fase">
+							{machine ? (
+								<>
+									<div className="sim-fase__head">
+										<span className="sim-fase__label">
+											Fase: <strong className="sim-fase__phase">{PHASE_LABELS[machine.phase]}</strong>
+										</span>
+										{activeTrace && (
+											<button
+												className="sim-fase__toggle ghost-btn sim-btn sim-btn--small"
+												onClick={() => setIsExplanationExpanded((current) => !current)}
+											>
+												{isExplanationExpanded ? '▲' : '?'}
+											</button>
 										)}
 									</div>
-								)}
-
-								{machine && timelineHasFuture && (
-									<p className="sim-note sim-note--compact">
-										Si seguís ejecutando desde este estado, la línea de tiempo continúa desde acá.
-									</p>
-								)}
-							</div>
-						</section>
-
-						<section className="sim-card sim-card--memory">
-							<div className="sim-card__head">
-								<div>
-									<h3 className="sim-card__title">Memoria cargada</h3>
-									<p className="sim-card__desc">La tabla marca qué dirección está bajo el pc y cuál contiene la instrucción activa.</p>
-								</div>
-							</div>
-
-							{machine ? (
-								<div className="sim-memory-wrap sim-memory-wrap--compact">
-									<table className="sim-memory sim-memory--compact">
-										<thead>
-											<tr>
-												<th>dir</th>
-												<th>rol</th>
-												<th>contenido</th>
-											</tr>
-										</thead>
-										<tbody>
-											{memoryRows.map((row) => (
-												<tr
-													key={`${row.role}-${row.address}`}
-													className={[
-														machine.pc === row.address ? 'sim-memory-row--pc' : '',
-														machine.currentInstructionAddress === row.address ? 'sim-memory-row--current' : '',
-													].filter(Boolean).join(' ')}
-												>
-													<td>{row.address}</td>
-													<td>
-														<span className={`sim-role sim-role--${row.role}`}>{row.role}</span>
-													</td>
-													<td>{row.value}</td>
-												</tr>
-											))}
-										</tbody>
-									</table>
-								</div>
-							) : (
-								<p className="sim-note sim-note--boxed">Todavía no hay una carga válida para mostrar.</p>
-							)}
-
-							{issues.length > 0 && machine && (
-								<p className="sim-note sim-note--boxed">
-									La carga falló, pero la última memoria válida sigue visible. Así podés comparar el editor con la máquina ya cargada.
-								</p>
-							)}
-						</section>
-
-						<section className="sim-card sim-card--work">
-							<div className="sim-card__head">
-								<div>
-									<h3 className="sim-card__title">Trabajo del cpu</h3>
-									<p className="sim-card__desc">La línea de tiempo muestra estados previos; abajo ves cambios visibles e historial reciente.</p>
-								</div>
-							</div>
-
-							{machine ? (
-								<div className="sim-workbody">
-									<div className="sim-timeline-nav">
-										<button className="ghost-btn sim-btn sim-btn--icon" onClick={handleStepBack} disabled={!timelineHasPast || isRunning} aria-label="Ir al estado anterior">←</button>
-										<span className="sim-timeline-nav__status">estado {timelineIndex + 1} / {timeline.length}</span>
-										<button className="ghost-btn sim-btn sim-btn--icon" onClick={handleTimelineForward} disabled={!timelineHasFuture || isRunning} aria-label="Ir al estado siguiente">→</button>
-									</div>
-
-									<div className="sim-timeline">
-										{timeline.map((snapshot, index) => (
-											<Fragment key={`${index}-${snapshot.pc}-${snapshot.phase}-${snapshot.status}`}>
-												{index > 0 && <span className="sim-timeline__arrow">→</span>}
-												<button
-													className={`sim-timeline__item ${index === timelineIndex ? 'sim-timeline__item--active' : ''}`}
-													onClick={() => handleTimelineSelect(index)}
-													disabled={isRunning}
-												>
-													<span className="sim-timeline__item-eyebrow">{getSnapshotEyebrow(snapshot, index)}</span>
-													<span className="sim-timeline__item-title">{getSnapshotTitle(snapshot, index)}</span>
-													<span className="sim-timeline__item-meta">{getSnapshotMeta(snapshot)}</span>
-												</button>
-											</Fragment>
-										))}
-									</div>
-
-									<div className="sim-workscroll">
-										{activeTrace && (
-											<div className="sim-worksection">
-												<span className="sim-kv__key">trabajo visible</span>
-												<div className="sim-workpanel">
-													<div className="sim-workpanel__head">
-														<div>
-															<h4 className="sim-workpanel__title">{activeTrace.title}</h4>
-														</div>
-														{activeInstructionText && (
-															<code className="sim-trace__instruction">{activeInstructionText}</code>
-														)}
-													</div>
-													<div className="sim-trace__changes">
-														{activeTrace.changes.map((change) => (
-															<span key={change} className="sim-trace__change">{change}</span>
+									<div className="sim-phase-rail">
+										{phaseCards.map((phase, index) => (
+											<Fragment key={phase.key}>
+												<div className={`sim-phase-rail__item ${machine.phase === phase.key ? 'sim-phase-rail__item--active' : ''}`}>
+													<span className="sim-phase-rail__title">{phase.label}</span>
+													<div className="sim-phase-rail__body">
+														{normalizePhaseLines(phase.lines).map((line, lineIndex) => (
+															<span
+																key={`${phase.key}-${lineIndex}`}
+																className={[
+																	'sim-phase-rail__line',
+																	line.pending ? 'sim-phase-rail__line--pending' : '',
+																	line.empty ? 'sim-phase-rail__line--empty' : '',
+																].filter(Boolean).join(' ')}
+															>
+																{line.text || '\u00A0'}
+															</span>
 														))}
 													</div>
 												</div>
-											</div>
-										)}
+												{index < phaseCards.length - 1 && <span className="sim-phase-rail__arrow">→</span>}
+											</Fragment>
+										))}
+									</div>
+									<p className="sim-fase__text">{explanationSummary}</p>
 
-										<div className="sim-worksection">
-											<span className="sim-kv__key">registro reciente</span>
-											<div className="sim-history">
-												{machine.history.map((entry, index) => (
-													<div key={`${entry.title}-${index}`} className="sim-history__item">
-														<span className="sim-history__title">{entry.title}</span>
-														<span className="sim-history__detail">{entry.detail}</span>
-													</div>
-												))}
+									{isExplanationExpanded && activeTrace && (
+										<div className="sim-fase__detail">
+											<div className="sim-fase__detail-head">
+												<h4 className="sim-explainer__title">{activeTrace.title}</h4>
+												{activeInstructionText && (
+													<code className="sim-trace__instruction">{activeInstructionText}</code>
+												)}
 											</div>
+											{activeTrace.phases.length > 0 ? (
+												<div className="sim-trace__phases">
+													{activeTrace.phases.map((phase, index) => (
+														<div key={`${phase.phase}-${index}`} className="sim-trace-phase">
+															<div className="sim-trace-phase__head">
+																<span className="sim-trace-phase__title">{phase.title}</span>
+																<span className="sim-trace-phase__phase">{phase.phase}</span>
+															</div>
+															<p className="sim-trace-phase__summary">{phase.summary}</p>
+															<div className="sim-trace-phase__bullets">
+																{phase.bullets.map((bullet) => (
+																	<div key={`${bullet.label}-${bullet.detail}`} className="sim-trace-phase__bullet">
+																		<span className="sim-trace-phase__bullet-label">{bullet.label}</span>
+																		<span className="sim-trace-phase__bullet-detail">{bullet.detail}</span>
+																	</div>
+																))}
+															</div>
+														</div>
+													))}
+												</div>
+											) : (
+												<p className="sim-note">No hay más detalle didáctico para este estado.</p>
+											)}
+										</div>
+									)}
+								</>
+							) : (
+								<p className="sim-fase__text sim-fase__text--placeholder">Cargá un programa válido para inicializar la máquina.</p>
+							)}
+						</div>
+
+						{/* Bloque 3: Historial de estados */}
+						{machine && (
+							<div className="sim-history-section">
+								<button
+									className="ghost-btn sim-btn sim-btn--small"
+									onClick={() => setIsHistoryExpanded((current) => !current)}
+								>
+									{isHistoryExpanded
+										? 'ocultar historial'
+										: `ver historial (${timelineIndex + 1}/${timeline.length})`}
+								</button>
+								{isHistoryExpanded && (
+									<div className="sim-history-strip" ref={timelineScrollRef}>
+										<div className="sim-timeline">
+											{timeline.map((snapshot, index) => (
+												<Fragment key={`${index}-${snapshot.pc}-${snapshot.phase}-${snapshot.status}`}>
+													{index > 0 && <span className="sim-timeline__arrow">→</span>}
+													<button
+														className={`sim-timeline__item ${index === timelineIndex ? 'sim-timeline__item--active' : ''}`}
+														onClick={() => handleTimelineSelect(index)}
+														disabled={isRunning}
+													>
+														<span className="sim-timeline__item-eyebrow">{getSnapshotEyebrow(snapshot, index)}</span>
+														<span className="sim-timeline__item-title">{getSnapshotTitle(snapshot, index)}</span>
+														<span className="sim-timeline__item-meta">{getSnapshotMeta(snapshot)}</span>
+													</button>
+												</Fragment>
+											))}
 										</div>
 									</div>
-								</div>
-							) : (
-								<p className="sim-note sim-note--boxed">Sin una carga válida no hay nada para ejecutar.</p>
-							)}
-						</section>
-					</div>
+								)}
+							</div>
+						)}
+					</section>
 				</div>
 
-				<div className="sim-lane">
-					<div className="sim-lane__label">carga y edición de programas</div>
+				{/* ── EDITOR / CARGA ─────────────────────────────────── */}
+				<section className="sim-card sim-card--prepare">
+					<div className="sim-card__head">
+						<div>
+							<h3 className="sim-card__title">Preparar y cargar</h3>
+							<p className="sim-card__desc">Elegir preset, editar programa y decidir cuándo actualizar la máquina.</p>
+						</div>
+						<span className={`sim-chip ${editorDirty ? 'sim-chip--dirty' : 'sim-chip--loaded'}`}>
+							{editorDirty ? 'editor modificado' : 'sin cambios desde la última carga'}
+						</span>
+					</div>
 
-					<section className="sim-card sim-card--prepare">
-						<div className="sim-card__head">
-							<div>
-								<h3 className="sim-card__title">Preparar y cargar</h3>
-								<p className="sim-card__desc">Elegir preset, editar programa y decidir cuándo actualizar la máquina.</p>
+					<div className="sim-prepare-layout">
+						<aside className="sim-prepare-controls">
+							<div className="sim-prepare-controls__top">
+								<div className="sim-presets">
+									{availablePresets.map((preset) => (
+										<button
+											key={preset.id}
+											className={`sim-preset ${preset.id === presetId ? 'sim-preset--active' : ''}`}
+											onClick={() => handlePresetSelect(preset)}
+										>
+											<span className="sim-preset__title">{preset.label}</span>
+										</button>
+									))}
+								</div>
+								{selectedPreset && <p className="sim-presets__note">{selectedPreset.note}</p>}
 							</div>
-							<span className={`sim-chip ${editorDirty ? 'sim-chip--dirty' : 'sim-chip--loaded'}`}>
-								{editorDirty ? 'editor modificado' : 'sin cambios desde la última carga'}
-							</span>
-						</div>
 
-						<div className="sim-presets">
-							{availablePresets.map((preset) => (
-								<button
-									key={preset.id}
-									className={`sim-preset ${preset.id === presetId ? 'sim-preset--active' : ''}`}
-									onClick={() => handlePresetSelect(preset)}
-								>
-									<span className="sim-preset__title">{preset.label}</span>
-									<span className="sim-preset__note">{preset.note}</span>
-								</button>
-							))}
-						</div>
+							<div className="sim-prepare-controls__middle">
+								{issues.length > 0 && (
+									<div className="sim-errors">
+										{issues.map((issue) => (
+											<div key={`${issue.scope}-${issue.line}-${issue.message}`} className="sim-error">
+												<span className="sim-error__meta">{issue.scope} · línea {issue.line}</span>
+												<span className="sim-error__message">{issue.message}</span>
+											</div>
+										))}
+									</div>
+								)}
 
-						<div className="sim-editors">
-							<label className="sim-field">
-								<span className="sim-field__label">Programa editable</span>
-								<textarea
-									className="sim-textarea"
-									value={programText}
-									onChange={(event) => setProgramText(event.target.value)}
-									spellCheck={false}
-								/>
-							</label>
+								<div className="sim-toolbar sim-toolbar--prepare sim-toolbar--prepare-anchor">
+									<div className="sim-toolbar__group">
+										<button className="ghost-btn sim-btn sim-btn--accent" onClick={handleLoad}>cargar en memoria</button>
+										<button className="ghost-btn sim-btn" onClick={handleRestoreLastLoad}>restaurar última carga</button>
+									</div>
+								</div>
+							</div>
 
+							<p className="sim-note sim-note--compact sim-prepare-controls__note">
+								Editar el texto no cambia la máquina cargada. La UI separa a propósito <strong>programa</strong>,
+								<strong>datos</strong>, <strong>máquina ya preparada</strong> y <strong>línea de tiempo</strong>.
+								 Un editor unificado podría existir más adelante como modo avanzado de memoria cruda.
+							</p>
+						</aside>
+
+						<div className="sim-prepare-editors">
 							<label className="sim-field">
 								<span className="sim-field__label">Datos iniciales</span>
+								<span className="sim-field__hint">Valores iniciales en memoria, separados del código para no mezclar semánticas.</span>
 								<textarea
 									className="sim-textarea sim-textarea--compact"
 									value={dataText}
@@ -708,32 +913,20 @@ export default function LevelSimulator({
 									spellCheck={false}
 								/>
 							</label>
+
+							<label className="sim-field">
+								<span className="sim-field__label">Programa editable</span>
+								<span className="sim-field__hint">Instrucciones con direcciones explícitas.</span>
+								<textarea
+									className="sim-textarea"
+									value={programText}
+									onChange={(event) => setProgramText(event.target.value)}
+									spellCheck={false}
+								/>
+							</label>
 						</div>
-
-						<div className="sim-toolbar sim-toolbar--prepare">
-							<div className="sim-toolbar__group">
-								<button className="ghost-btn sim-btn sim-btn--accent" onClick={handleLoad}>cargar en memoria</button>
-								<button className="ghost-btn sim-btn" onClick={handleRestoreLastLoad}>restaurar última carga</button>
-							</div>
-						</div>
-
-						{issues.length > 0 && (
-							<div className="sim-errors">
-								{issues.map((issue) => (
-									<div key={`${issue.scope}-${issue.line}-${issue.message}`} className="sim-error">
-										<span className="sim-error__meta">{issue.scope} · línea {issue.line}</span>
-										<span className="sim-error__message">{issue.message}</span>
-									</div>
-								))}
-							</div>
-						)}
-
-						<p className="sim-note">
-							Editar el texto no cambia la máquina cargada. La UI separa a propósito el <strong>editor</strong>
-							de la <strong>máquina ya preparada</strong> y de la <strong>línea de tiempo</strong> que estás recorriendo.
-						</p>
-					</section>
-				</div>
+					</div>
+				</section>
 			</div>
 		</div>
 	)
