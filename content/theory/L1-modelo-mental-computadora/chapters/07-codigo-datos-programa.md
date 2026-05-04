@@ -75,6 +75,14 @@ La palabra clave de ese párrafo es *en principio*. Lo que el ISA mínimo no pro
 
 Esta lista no es una crítica al ISA del nivel: es una hoja de ruta. Cada cosa que falta es un nivel posterior, y cada nivel posterior se entiende mejor cuando uno reconoce qué problema viene a resolver. La pregunta guía al pasar a `L2` y `L3` no es *¿cuáles son las próximas instrucciones?*, sino *¿qué conveniencias agregan los niveles siguientes sobre lo que ya alcanzaba?*.
 
+## Una pregunta del primer capítulo, ahora respondible
+
+El [capítulo 01](01-maquina-de-estado.md) dejó picando una pregunta para volver a leer al final del nivel: *¿qué es una transición recursiva sobre un estado observable sino algún algoritmo ejecutándose?* Con las siete piezas del modelo ya armadas —memoria, CPU, registros, `pc`, programa almacenado, ciclo `fetch-decode-execute`, separación entre código, datos, source y proceso—, la pregunta deja de ser retórica.
+
+La respuesta es, en este punto, casi una definición operativa: un algoritmo ejecutándose *es* exactamente eso —una transición aplicada una y otra vez sobre un estado que se puede inspeccionar paso a paso. No hay un ingrediente extra que distinga "estar computando" de "ir cambiando de estado según una regla". Hay un programa cargado, un `pc` que avanza, una instrucción que se aplica, un estado que cambia, y otra vez. La recursión a la que la pregunta apunta no es una propiedad mística de la ejecución: es la repetición del mismo ciclo sobre un estado que cada paso vuelve a quedar disponible para el paso siguiente. Y "observable" no es un adjetivo decorativo; es la condición que las trazas del nivel vienen explotando desde el primer ejemplo —el estado se puede escribir como una lista de pares "nombre = valor", y por eso la transición se puede comprobar.
+
+Reconocerlo cierra una ambigüedad que la palabra "ejecutar" arrastra en el uso corriente. Mientras "ejecutar" parecía nombrar un fenómeno opaco —la computadora "haciendo cosas"—, lo que efectivamente ocurre es completamente decible: una secuencia de transiciones, cada una autorizada por una instrucción, cada una visible en términos del estado que cambia. La forma corta del nivel: un programa en ejecución es un estado que se observa cambiando bajo la regla de un repertorio fijo de transiciones. Nada más, y nada menos.
+
 ## Lo que `L2`, `L3` y `L7` van a volver más concreto
 
 El modelo de cuatro capas que cierra este capítulo es deliberadamente abstracto. No dice cómo exactamente un source `.c` se traduce a instrucciones, no dice cómo exactamente las instrucciones se cargan en memoria, no dice cómo exactamente el sistema operativo arma un proceso. Esas concreciones aparecen en niveles siguientes y no entran en `L1`.

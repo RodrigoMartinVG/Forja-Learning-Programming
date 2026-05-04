@@ -22,6 +22,8 @@ La tercera idea es **transición**. Una transición es el paso concreto entre un
 
 Con estas tres ideas, una ejecución entera deja de ser un fenómeno opaco y se vuelve algo bien definido: una secuencia de estados $s_0, s_1, s_2, \dots$ donde cada $s_{i+1}$ se obtiene de $s_i$ aplicando alguna instrucción. La computadora ejecutando un programa es exactamente eso, sin nada agregado y sin nada faltando.
 
+Visto así, queda picando una pregunta que conviene dejar anotada desde acá, aunque el nivel todavía no tenga las piezas para responderla con seriedad: *¿qué es una transición recursiva sobre un estado observable sino algún algoritmo ejecutándose?* La pregunta no se contesta ahora —faltan la memoria, la CPU, el ciclo `fetch-decode-execute`, la separación entre código y datos—, pero merece quedar a la vista para que el [último capítulo](07-codigo-datos-programa.md) la encuentre esperándolo y pueda devolverle una respuesta con todo el modelo ya armado.
+
 ## Programa almacenado
 
 Una observación que parece menor y resulta central: el programa también vive en el estado. No flota en otro lado, no entra desde afuera en cada paso. El programa es una secuencia de instrucciones cargadas en posiciones de memoria, y esas posiciones forman parte del estado igual que cualquier otra.
