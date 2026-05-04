@@ -6,6 +6,7 @@ import type { LevelMeta, ProjectMeta } from 'virtual:forja-content'
 import { getProgress } from '../lib/progress'
 import { getLevelProjects, getProjectLevels } from '../lib/curriculum'
 import LevelSimulator from './LevelSimulator'
+import L2RepresentationLab from './L2RepresentationLab'
 
 const MdRenderer = lazy(() => import('./MdRenderer'))
 
@@ -200,7 +201,7 @@ function IntroView({
 
 // ─── Level view ───────────────────────────────────────────────────────────────
 
-type Tab = 'teoria' | 'ejercicios' | 'simulador' | 'proyectos'
+type Tab = 'teoria' | 'ejercicios' | 'laboratorio' | 'simulador' | 'proyectos'
 
 function LevelView({
   level,
@@ -228,6 +229,7 @@ function LevelView({
   const hasChapters        = chapters.length > 0
   const hasReadme          = !!content?.readme && !isSeededPlaceholder(content.readme)
   const hasContent         = hasChapters || hasReadme
+  const hasLaboratory      = !!content?.laboratory && !isSeededPlaceholder(content.laboratory)
   const hasSimulator       = !!content?.simulator && !isSeededPlaceholder(content.simulator)
   const hasExerciseEntries = exerciseEntries.length > 0
   const hasLegacyExercises = !!content?.exercises && !isSeededPlaceholder(content.exercises)
@@ -273,6 +275,9 @@ function LevelView({
           {hasExercises && (
             <TabBtn id="ejercicios" active={tab} label="ejercicios"     onClick={t => { setTab(t); setSelectedProject(null) }} />
           )}
+          {hasLaboratory && (
+            <TabBtn id="laboratorio" active={tab} label="laboratorio"   onClick={t => { setTab(t); setSelectedProject(null) }} />
+          )}
           {hasSimulator && (
             <TabBtn id="simulador" active={tab} label="simulador"     onClick={t => { setTab(t); setSelectedProject(null) }} />
           )}
@@ -315,7 +320,7 @@ function LevelView({
 
         {/* Scrollable content */}
         <div ref={bodyRef} className="content-body">
-          <div className={`content-body__inner ${tab === 'simulador' ? 'content-body__inner--wide' : ''}`.trim()}>
+          <div className={`content-body__inner ${tab === 'simulador' || tab === 'laboratorio' ? 'content-body__inner--wide' : ''}`.trim()}>
 
             {/* Hero */}
             <div className="content-hero">
@@ -412,6 +417,19 @@ function LevelView({
                 )
               ) : (
                 <Pending label="pendiente" message="Los ejercicios de este nivel aún no fueron producidos." />
+              )
+            )}
+
+            {/* ── Laboratorio tab ── */}
+            {tab === 'laboratorio' && (
+              hasLaboratory ? (
+                level.id === 'L2' ? (
+                  <L2RepresentationLab />
+                ) : (
+                  <Pending label="pendiente" message="El laboratorio interactivo de este nivel aún no fue producido." />
+                )
+              ) : (
+                <Pending label="pendiente" message="El laboratorio interactivo de este nivel aún no fue producido." />
               )
             )}
 

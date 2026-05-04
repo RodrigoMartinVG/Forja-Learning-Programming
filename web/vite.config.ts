@@ -204,13 +204,14 @@ function readSimulatorPresetsDir(base: string, dirname: string): SimulatorPreset
 function readLevelContent(theoryDir: string): {
   readme: string
   exercises: string
+  laboratory: string
   simulator: string
   simulatorPresets: SimulatorPresetEntry[]
   exerciseEntries: MarkdownEntry[]
   chapters: MarkdownEntry[]
 } {
   if (!theoryDir) {
-    return { readme: '', exercises: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] }
+    return { readme: '', exercises: '', laboratory: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] }
   }
 
   const base = join(repoRoot, theoryDir)
@@ -225,6 +226,7 @@ function readLevelContent(theoryDir: string): {
   return {
     readme: readFile('README.md'),
     exercises: readFile('exercises.md'),
+    laboratory: readFile('laboratorio.md'),
     simulator: readFile('simulador.md'),
     simulatorPresets,
     exerciseEntries,

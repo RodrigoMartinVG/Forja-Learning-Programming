@@ -58,6 +58,7 @@ declare module 'virtual:forja-content-body' {
   export const levelContent: Record<string, {
     readme: string
     exercises: string
+    laboratory: string
     simulator: string
     simulatorPresets: { slug: string; title: string; note: string; program: string; data: string }[]
     exerciseEntries: { slug: string; title: string; body: string }[]

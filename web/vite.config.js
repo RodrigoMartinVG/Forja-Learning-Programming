@@ -164,7 +164,7 @@ function readSimulatorPresetsDir(base, dirname) {
 }
 function readLevelContent(theoryDir) {
     if (!theoryDir) {
-        return { readme: '', exercises: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] };
+        return { readme: '', exercises: '', laboratory: '', simulator: '', simulatorPresets: [], exerciseEntries: [], chapters: [] };
     }
     var base = join(repoRoot, theoryDir);
     var readFile = function (name) {
@@ -177,6 +177,7 @@ function readLevelContent(theoryDir) {
     return {
         readme: readFile('README.md'),
         exercises: readFile('exercises.md'),
+        laboratory: readFile('laboratorio.md'),
         simulator: readFile('simulador.md'),
         simulatorPresets: simulatorPresets,
         exerciseEntries: exerciseEntries,
