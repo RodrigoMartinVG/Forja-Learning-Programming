@@ -10,7 +10,7 @@ A diferencia de los ejercicios anteriores —donde la convención venía dada—
 
 Un programa C inicializa una variable y vuelca sus 4 bytes en memoria. El dump muestra:
 
-```
+```text
 00000100: ffff ffff                                ....
 ```
 

@@ -22,7 +22,7 @@
 
 Makefile esperado (igual o equivalente al de `src/split/Makefile`):
 
-```
+```makefile
 CC := cc
 CFLAGS := -Wall -Wextra -std=c11
 
@@ -43,7 +43,7 @@ clean:
 
 Ejecuciones:
 
-```
+```text
 $ make clean
 rm -f app main.o greet.o
 $ make

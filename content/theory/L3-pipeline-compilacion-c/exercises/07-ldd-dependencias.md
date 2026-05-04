@@ -13,7 +13,7 @@
 
 ## Resultado esperado
 
-```
+```text
 $ gcc hello.c -o hello
 $ ldd hello
         linux-vdso.so.1 (0x00007ffd...)
@@ -31,7 +31,7 @@ Descripción esperada por línea:
 
 Verificación de existencia:
 
-```
+```text
 $ ls -l /lib/x86_64-linux-gnu/libc.so.6
 lrwxrwxrwx 1 root root 12 ... /lib/x86_64-linux-gnu/libc.so.6 -> libc-2.31.so
 ```

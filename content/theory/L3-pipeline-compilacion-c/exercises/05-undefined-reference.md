@@ -36,7 +36,7 @@ Paso 2: `bad.o` se produce sin error. El compilador acepta la declaración sin d
 
 Paso 3: `nm bad.o` muestra `suma` como `U`:
 
-```
+```text
                  U printf
                  U suma
 0000000000000000 T main
@@ -44,7 +44,7 @@ Paso 3: `nm bad.o` muestra `suma` como `U`:
 
 Paso 4: el linker falla:
 
-```
+```text
 $ gcc bad.o -o bad
 /usr/bin/ld: bad.o: in function `main':
 bad.c:(.text+0x14): undefined reference to `suma'
@@ -53,7 +53,7 @@ collect2: error: ld returned 1 exit status
 
 Paso 6: con `suma.c` agregado, la compilación va hasta el final y el ejecutable corre:
 
-```
+```text
 $ gcc bad.c suma.c -o bad
 $ ./bad
 5

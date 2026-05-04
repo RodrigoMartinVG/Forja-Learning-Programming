@@ -10,14 +10,14 @@ Este ejercicio entrena la lectura de esos bits de cabecera sobre un dump real, s
 
 El siguiente dump corresponde al archivo `mixto.txt`, generado con:
 
-```
+```text
 echo -n "Café €1" > mixto.txt
 xxd mixto.txt
 ```
 
 Salida:
 
-```
+```text
 00000000: 4361 66c3 a920 e282 ac31                 Caf...€1
 ```
 

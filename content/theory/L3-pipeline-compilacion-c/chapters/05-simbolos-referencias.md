@@ -35,7 +35,7 @@ La regla: **mayúsculas son globales (exportadas), minúsculas son locales (no e
 
 Para el `hello.o` del capítulo anterior, `nm` reporta:
 
-```
+```text
 $ nm hello.o
 0000000000000000 T main
                  U puts
@@ -45,7 +45,7 @@ Una `T` (`main`, definida) y una `U` (`puts`, referenciada). La `U` no es un err
 
 Para el split, después de `gcc -c main.c -o main.o` y `gcc -c greet.c -o greet.o`:
 
-```
+```text
 $ nm main.o
 0000000000000000 T main
                  U greet
@@ -74,7 +74,7 @@ Esta separación es la que permite que `printf`, `puts`, `malloc`, `free` y toda
 
 Cuando el linker no encuentra una definición para una referencia `U`, falla con un mensaje del tipo:
 
-```
+```text
 $ gcc main.o -o app
 /usr/bin/ld: main.o: in function `main':
 main.c:(.text+0x12): undefined reference to `greet'
@@ -89,7 +89,7 @@ El mensaje tiene tres líneas que dicen cosas distintas:
 
 Lo que el mensaje **no** dice es de qué `.c` se queja: dice de qué `.o`. La distinción es importante porque la causa habitual de este error no es del archivo donde está la referencia, sino del archivo donde **debería estar la definición** y no llegó. En el caso del split: si se invoca `gcc main.o -o app` sin pasar también `greet.o`, el linker ve `main.o` con `greet` como `U` y no tiene a dónde ir a buscarla. La solución es agregar `greet.o`:
 
-```
+```text
 $ gcc main.o greet.o -o app
 $ ./app
 hola desde greet.c

@@ -6,7 +6,7 @@ Una **biblioteca estática** es un archivo —con extensión `.a` en Linux— qu
 
 Una biblioteca estática se construye con `ar`, no con gcc:
 
-```
+```text
 $ ar rcs libgreet.a greet.o
 $ ar t libgreet.a
 greet.o
@@ -16,7 +16,7 @@ greet.o
 
 Para enlazar contra `libgreet.a` y producir un ejecutable que ya no dependa del archivo:
 
-```
+```text
 $ gcc main.o -L. -lgreet -o app_static
 $ ldd app_static
         linux-vdso.so.1 (...)
@@ -36,7 +36,7 @@ El ejecutable resultante depende del archivo `.so` en runtime. Si la biblioteca 
 
 Para construir una biblioteca dinámica:
 
-```
+```text
 $ gcc -c -fPIC greet.c -o greet.o
 $ gcc -shared greet.o -o libgreet.so
 $ file libgreet.so
@@ -50,7 +50,7 @@ Dos flags importantes:
 
 Para enlazar contra `libgreet.so`:
 
-```
+```text
 $ gcc main.o -L. -lgreet -o app_dynamic
 $ ldd app_dynamic
         linux-vdso.so.1 (...)
@@ -63,7 +63,7 @@ Acá aparece una primera observación: `ldd` reporta `libgreet.so => not found`.
 
 Para correrlo:
 
-```
+```text
 $ ./app_dynamic
 ./app_dynamic: error while loading shared libraries: libgreet.so: cannot open shared object file
 $ LD_LIBRARY_PATH=. ./app_dynamic
@@ -76,7 +76,7 @@ La primera invocación falla; la segunda funciona porque `LD_LIBRARY_PATH=.` agr
 
 Comparar los dos ejecutables muestra la diferencia más visible:
 
-```
+```text
 $ ls -l app_static app_dynamic
 -rwxr-xr-x 1 user user 16224 ... app_static
 -rwxr-xr-x 1 user user 16104 ... app_dynamic
@@ -86,7 +86,7 @@ Para un ejemplo tan trivial la diferencia es chica. Si en lugar de `greet` la bi
 
 Una comparación más dramática se obtiene con `-static` total:
 
-```
+```text
 $ gcc -static main.c greet.c -o app_fully_static
 $ ls -l app_fully_static
 -rwxr-xr-x 1 user user 762144 ... app_fully_static
@@ -118,7 +118,7 @@ Para diagnosticar problemas de bibliotecas, las herramientas:
 
 Una rutina típica de diagnóstico cuando un ejecutable no arranca:
 
-```
+```bash
 $ ./app
 ./app: error while loading shared libraries: libfoo.so.1: cannot open shared object file
 $ ldd app

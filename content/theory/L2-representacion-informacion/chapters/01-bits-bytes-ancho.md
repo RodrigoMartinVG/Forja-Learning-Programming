@@ -14,7 +14,7 @@ Ese acuerdo tiene una consecuencia operativa importante: la **memoria está dire
 
 Un byte representa $2^8 = 256$ patrones distintos. Esos patrones son lo siguientes:
 
-```
+```text
 00000000
 00000001
 00000010

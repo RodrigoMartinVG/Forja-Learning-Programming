@@ -14,7 +14,7 @@ Sobre [`src/hello/hello.c`](../src/hello/hello.c):
 
 ## Resultado esperado
 
-```
+```text
 $ gcc -c hello.c -o hello.o
 $ nm hello.o
 0000000000000000 T main

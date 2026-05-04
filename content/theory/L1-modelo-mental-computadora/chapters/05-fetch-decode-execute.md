@@ -50,21 +50,7 @@ Después del execute, el `pc` también se actualiza. Para las primeras tres clas
 
 Cuando todo esto termina, el paso se considera completo: hay un nuevo estado, una nueva fila se puede agregar a la traza, y la CPU está lista para empezar el siguiente fetch con el nuevo valor del `pc`.
 
-Un dibujo del ciclo, repetido para tres pasos consecutivos, ayuda a fijar la imagen:
-
-```
-     paso 1                paso 2                paso 3
-  +---------+           +---------+           +---------+
-  | fetch   |           | fetch   |           | fetch   |
-  | decode  |           | decode  |           | decode  |
-  | execute |           | execute |           | execute |
-  +----+----+           +----+----+           +----+----+
-       |                     |                     |
-       v                     v                     v
-     pc=0 -> pc=1          pc=1 -> pc=2          pc=2 -> pc=3
-```
-
-Cada paso macro —cada fila de la traza estandar— corresponde a un ciclo completo. Lo que la traza muestra como una sola transicion (una fila a la siguiente) es internamente la sucesion de los tres subpasos. La columna `pc` es la única que delata el ritmo del ciclo desde afuera: cada vez que el `pc` cambia, hubo un ciclo entero entre medio.
+Cada paso macro —cada fila de la traza estándar— corresponde a un ciclo fetch/decode/execute completo. Lo que la traza muestra como una sola transición (una fila a la siguiente) es internamente la sucesión de los tres subpasos. La columna `pc` es la única que delata el ritmo del ciclo desde afuera: cada vez que el `pc` cambia, hubo un ciclo entero entre medio.
 
 ## Un ciclo paso a paso sobre la traza de juguete
 

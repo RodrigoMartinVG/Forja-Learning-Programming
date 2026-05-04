@@ -31,7 +31,7 @@ Predicciones:
 
 Verificaciones:
 
-```
+```text
 $ make             # asegurar que todo está al día
 make: 'app' is up to date.
 

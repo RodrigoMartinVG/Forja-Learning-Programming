@@ -36,7 +36,7 @@ Este ejercicio aplica esa reconstrucción sobre un valor producido por un progra
 
 La salida esperada en una máquina little-endian:
 
-```
+```text
 ef be ad de
 ```
 

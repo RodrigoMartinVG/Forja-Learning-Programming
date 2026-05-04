@@ -15,7 +15,7 @@ Sobre [`src/hello/hello.c`](../src/hello/hello.c):
 
 ## Resultado esperado
 
-```
+```text
 $ gcc -S -O0 hello.c -o hello-O0.s
 $ gcc -S -O2 hello.c -o hello-O2.s
 $ wc -l hello-O0.s hello-O2.s
@@ -37,7 +37,7 @@ Diferencias típicas observables comparando los dos `.s`:
 
 ## Verificación
 
-```
+```text
 $ diff hello-O0.s hello-O2.s | head -50
 ```
 

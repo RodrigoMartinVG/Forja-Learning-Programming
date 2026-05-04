@@ -4,7 +4,7 @@
 
 El pipeline produce cinco artefactos en disco si se le pide a gcc que se detenga en cada etapa. Para `hello.c`, los cinco son:
 
-```
+```text
 hello.c        # código fuente
 hello.i        # preprocesado
 hello.s        # assembly
@@ -14,7 +14,7 @@ hello          # ejecutable
 
 Cada uno se obtiene con una flag específica de gcc:
 
-```
+```bash
 $ gcc -E hello.c -o hello.i      # solo preprocesar
 $ gcc -S hello.i -o hello.s      # preprocesar (ya hecho) + compilar
 $ gcc -c hello.s -o hello.o      # ensamblar
@@ -36,7 +36,7 @@ gcc es lo suficientemente flexible como para aceptar cualquiera de los cinco art
 
 Cada artefacto tiene un formato y una herramienta canónica para mirarlo. La primera y más simple es `file`, que lee un archivo y dice qué tipo cree que es:
 
-```
+```text
 $ gcc -E hello.c -o hello.i
 $ gcc -S hello.c -o hello.s
 $ gcc -c hello.c -o hello.o
@@ -83,7 +83,7 @@ La pregunta dirige el artefacto. Buscar bibliotecas dinámicas en un `.o` no tie
 
 Para fijar la rutina, cinco comandos sobre los cinco artefactos del programa `hello`:
 
-```
+```text
 $ wc -l hello.c hello.i hello.s
    8 hello.c
  743 hello.i

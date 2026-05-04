@@ -74,7 +74,7 @@ Estas verificaciones no responden la pregunta *"¿la herramienta está disponibl
 
 Con el script entendido como una lista larga de chequeos individuales, su salida deja de parecer un muro de texto y se vuelve legible. Una corrida completa con todo en orden produce algo así:
 
-```
+```text
 gcc                    [ok] gcc (Debian 12.2.0-14) 12.2.0
 clang                  [ok] Debian clang version 14.0.6
 gdb                    [ok] GNU gdb (Debian 13.1-3) 13.1
@@ -104,13 +104,13 @@ Mirar la salida con esta clave —cada línea es un chequeo individual con su or
 
 Para entender el otro extremo, conviene ver cómo se comporta el script cuando una herramienta no está disponible. La forma más fácil de provocarlo, para el ejercicio mental, es imaginar que `valgrind` no está instalado:
 
-```
+```text
 valgrind               [fail] bash: line 1: valgrind: command not found
 ```
 
 La etiqueta sigue siendo la misma. El estado pasa de `[ok]` a `[fail]`. El texto que sigue es la primera línea de la salida del comando que falló, que en este caso es el mensaje del shell informando que el comando no se encontró. El script no detiene la ejecución por un solo `[fail]`: gracias a `set -euo pipefail` combinado con la captura del estado dentro de `run_check`, el fallo queda contenido en ese chequeo y el script continúa con los siguientes. Recién al final, si el contador de fallos quedó en algo distinto de cero, imprime la línea de resumen y termina con código 1:
 
-```
+```text
 Setup verification failed: 3 check(s) missing.
 ```
 

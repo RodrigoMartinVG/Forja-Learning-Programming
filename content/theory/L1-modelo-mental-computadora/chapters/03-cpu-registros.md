@@ -18,27 +18,7 @@ La diferencia entre acceder a un registro y acceder a memoria, en este modelo, e
 
 Una consecuencia operativa que se ve en cualquier traza: los registros aparecen como columnas en la tabla, identificados por nombre (`r0`, `r1`, ...). Las posiciones de memoria también aparecen como columnas, pero identificadas por dirección (`mem[40]`, `mem[50]`, ...). La notación distinta refleja la naturaleza distinta de cada pieza, no es solamente cosmética.
 
-La imagen mental del nivel queda así:
-
-```
-      +-------------------------------------------+
-      |                    CPU                    |
-      |                                           |
-      |   pc  |  r0  |  r1  |  r2  |   ...        |   <- registros
-      |                                           |      (acceso
-      +---------------------+---------------------+       inmediato)
-                            |
-                            |  acceso por dirección
-                            v
-      +-------------------------------------------+
-      |                  memoria                  |
-      |                                           |
-      |   0: ...   1: ...   2: ...   ...   40: 7  |
-      |                                           |
-      +-------------------------------------------+
-```
-
-El `pc` y los registros viven adentro de la CPU; las posiciones de memoria viven afuera, direccionadas por número. La flecha entre las dos cajas representa cualquier acceso a memoria que la CPU haga durante un paso: fetch para traer la próxima instrucción, `LOAD` para leer un dato, `STORE` para escribir uno. Todas esas operaciones cruzan esa flecha; las que sólo manipulan registros se quedan dentro de la caja de arriba.
+La imagen mental del nivel queda así: la CPU contiene un puñado de registros nombrados (`pc`, `r0`, `r1`, `r2`, ...) que la CPU accede de manera inmediata, sin atravesar ningún camino. La memoria es una región externa a la CPU, organizada como una secuencia de posiciones direccionadas por número (`0`, `1`, ..., `40`, ...), cada una con un valor. Para leer o escribir cualquier posición de memoria, la CPU tiene que cruzar el camino entre las dos: el fetch para traer la próxima instrucción, el `LOAD` para leer un dato, el `STORE` para escribir uno. Las instrucciones que sólo manipulan registros no cruzan ese camino: se quedan dentro de la CPU.
 
 ## Operar en registro vs operar en memoria
 

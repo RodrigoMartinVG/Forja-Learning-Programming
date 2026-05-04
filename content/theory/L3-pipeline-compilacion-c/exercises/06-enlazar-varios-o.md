@@ -16,7 +16,7 @@ Sobre [`src/split/`](../src/split/):
 
 ## Resultado esperado
 
-```
+```text
 $ cd src/split
 $ gcc -c main.c -o main.o
 $ gcc -c greet.c -o greet.o

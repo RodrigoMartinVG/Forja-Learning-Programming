@@ -86,7 +86,7 @@ Los lenguajes modernos suelen usar longitud explícita por dos razones: permite 
 
 Un ejemplo concreto. El archivo `saludo.txt` se crea con un comando de shell:
 
-```
+```text
 $ echo "Hello, World!" > saludo.txt
 $ xxd saludo.txt
 00000000: 4865 6c6c 6f2c 2057 6f72 6c64 210a       Hello, World!.

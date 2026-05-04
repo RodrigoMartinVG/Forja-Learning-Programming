@@ -47,7 +47,7 @@ Cada una de estas convenciones es independiente de las otras en el sentido de qu
 
 Un dump típico se ve así:
 
-```
+```text
 00000000: 4865 6c6c 6f2c 2057 6f72 6c64 210a       Hello, World!.
 ```
 

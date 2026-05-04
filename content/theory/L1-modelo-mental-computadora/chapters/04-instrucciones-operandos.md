@@ -24,7 +24,7 @@ Aprender a identificar los operandos de cada instrucción y clasificarlos por ti
 
 La primera clase es la más simple: instrucciones que copian un valor de un lugar a otro **sin tocar memoria**. En el ISA de juguete, esa clase está representada por `MOV`.
 
-```
+```text
 MOV r1, r0
 ```
 
@@ -38,13 +38,13 @@ Una observación que evita una confusión recurrente: `MOV` no significa "mover"
 
 La segunda clase es la que conecta registros con memoria. Como los dos lados son piezas del estado de naturaleza distinta —según fijó el [capítulo 03](03-cpu-registros.md)—, las instrucciones que las conectan son explícitamente dos, no una. La convención de sintaxis del ISA del nivel pone primero el registro y después la posición de memoria, en ambas instrucciones: el registro va al frente, lo que cambia entre `LOAD` y `STORE` es la dirección de la transferencia.
 
-```
+```text
 LOAD r0, [40]
 ```
 
 `LOAD` lee de memoria y escribe en registro. La instrucción consulta el contenido de la posición de memoria nombrada (40 en el ejemplo) y lo copia en el registro destino (`r0`). La memoria no cambia: `LOAD` es una lectura no destructiva. Lo que cambia es el registro destino, que pasa a contener el valor que estaba en la posición de memoria leída.
 
-```
+```text
 STORE r0, [40]
 ```
 
@@ -58,7 +58,7 @@ Hasta acá, la posición de memoria fue siempre un número escrito explícitamen
 
 El ISA del nivel también admite una segunda forma, donde la dirección no es un número literal sino el **contenido de un registro**:
 
-```
+```text
 LOAD r0, [r1]
 STORE r0, [r1]
 ```
@@ -88,23 +88,12 @@ Traza:
 
 Las dos instrucciones `LOAD r0, [r1]` —en las direcciones 1 y 3— son textualmente la misma instrucción, pero el paso 2 cargó un 7 en `r0` mientras que el paso 4 cargó un 9. La diferencia vive en el valor de `r1` en el momento de cada ejecución: 40 en el primer caso, 41 en el segundo. Para una instrucción de direccionamiento directo —`LOAD r0, [40]`—, la posición leída es siempre la misma, sin importar qué pase con los registros; para una de direccionamiento indirecto, la posición leída depende del estado.
 
-La diferencia entre las dos formas se puede dibujar como dos cadenas de lectura distintas:
+La diferencia entre las dos formas se puede leer como dos cadenas de lectura distintas, una con un eslabón y otra con dos:
 
-```
-  directo    LOAD r0, [40]
-             la dirección está en la instrucción
-
-               40 ----> mem[40] = 7 ----> r0
-
-
-  indirecto  LOAD r0, [r1]
-             la dirección hay que leerla de un registro primero
-
-               r1 = 40 ----> mem[40] = 7 ----> r0
-                  \___________/
-                   primera lectura
-                   (registro)
-```
+| forma | instrucción | cadena de lectura para obtener el dato |
+|---|---|---|
+| directo | `LOAD r0, [40]` | la dirección 40 viene en la instrucción → leer `mem[40]` → escribir en `r0` |
+| indirecto | `LOAD r0, [r1]` | leer `r1` para obtener la dirección → leer `mem` en esa dirección → escribir en `r0` |
 
 En el caso directo hay una sola lectura de memoria: la CPU ya tiene la dirección (40) en la instrucción misma y va directo a `mem[40]`. En el caso indirecto hay **dos** lecturas encadenadas: primero leer `r1` para obtener la dirección, después leer `mem` en esa dirección. La cadena de dos eslabones es la imagen mental que conviene fijar; aparece otra vez, casi idéntica, cuando los punteros lleguen en `L9`.
 
@@ -116,7 +105,7 @@ Una observación práctica que conviene anotar: el direccionamiento indirecto **
 
 La tercera clase modifica el contenido de un registro aplicándole una operación aritmética con otro operando. En el ISA del nivel, las representantes son `ADD` y `SUB`.
 
-```
+```text
 ADD r0, 1
 ```
 
@@ -136,13 +125,13 @@ En las dos primeras formas, la memoria no se toca. En la tercera, hay un acceso 
 
 La cuarta clase es la única que toca el `pc` de manera explícita. Las otras tres clases dejan el `pc` avanzar por defecto a la siguiente posición; las instrucciones de control de flujo lo escriben con un valor distinto.
 
-```
+```text
 JMP 7
 ```
 
 `JMP` (jump, salto incondicional) escribe el `pc` con la dirección indicada como operando. Después de ejecutarse, el `pc` vale 7 sin importar qué valía antes. Como consecuencia, la siguiente instrucción que la CPU va a ejecutar es la que esté en la posición 7, no la que sigue secuencialmente al `JMP`. La memoria no se toca, los registros no cambian; el único efecto es la escritura del `pc`.
 
-```
+```text
 JNZ r0, 7
 ```
 

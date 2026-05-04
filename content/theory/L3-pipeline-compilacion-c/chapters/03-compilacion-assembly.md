@@ -8,7 +8,7 @@ A diferencia del preprocesado, esta etapa **sí entiende C**: chequea sintaxis, 
 
 La flag `-S` le dice a gcc que se detenga después de esta etapa y deje el `.s` en disco:
 
-```
+```text
 $ gcc -S hello.c -o hello.s
 $ wc -l hello.s
 37 hello.s
@@ -16,8 +16,11 @@ $ wc -l hello.s
 
 Treinta y siete líneas para un programa de ocho. El `.s` es texto, así que se puede mirar con `cat`:
 
-```
+```bash
 $ cat hello.s
+```
+
+```asm
         .file   "hello.c"
         .text
         .section        .rodata
@@ -96,7 +99,7 @@ Las flags de optimización son `-O0` (sin optimización), `-O1`, `-O2` y `-O3` (
 
 Una comparación sobre `hello.c`:
 
-```
+```text
 $ gcc -S -O0 hello.c -o hello-O0.s
 $ gcc -S -O2 hello.c -o hello-O2.s
 $ wc -l hello-O0.s hello-O2.s

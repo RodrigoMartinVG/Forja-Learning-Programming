@@ -6,10 +6,9 @@ Hasta acá las convenciones del nivel cubrieron enteros y texto. Falta una clase
 
 Un valor IEEE 754 de **precisión simple** ocupa 32 bits divididos en tres campos:
 
-```
-posición:  31 | 30 ... 23 | 22 ... 0
-campo:      S |   E (8)   |   M (23)
-```
+| posición | 31 | 30 … 23 | 22 … 0 |
+|---|---|---|---|
+| campo | S | E (8 bits) | M (23 bits) |
 
 - **Signo `S`** (1 bit): 0 indica positivo, 1 indica negativo. La convención es la misma idea que magnitud y signo para enteros, pero acá el bit de signo solo afecta al signo del valor; no se entrelaza con la magnitud como en complemento a dos.
 - **Exponente `E`** (8 bits): un entero sin signo de 0 a 255 que codifica el exponente de la potencia de 2. La codificación incluye un sesgo, descrito más abajo.
@@ -37,7 +36,7 @@ Un ejemplo trabajado: el valor exacto `1.0f`. La fórmula tiene que dar 1, así 
 
 Concatenando los bits:
 
-```
+```text
 S: 0
 E: 0111 1111
 M: 000 0000 0000 0000 0000 0000
@@ -62,7 +61,7 @@ int main(void) {
 
 En una máquina little-endian la salida es:
 
-```
+```text
 00 00 80 3f
 ```
 
@@ -119,7 +118,7 @@ Los **subnormales** ocupan el rango entre 0 y el menor número normal (que en si
 
 La pregunta se la hace cualquiera que abre un REPL de JavaScript o Python:
 
-```
+```text
 >>> 0.1 + 0.2
 0.30000000000000004
 ```

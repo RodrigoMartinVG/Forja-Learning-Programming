@@ -33,7 +33,7 @@ Producir el dump y la transcripción de un archivo de texto corto.
 
 El dump esperado:
 
-```
+```text
 00000000: 4865 6c6c 6f2c 2057 6f72 6c64 21          Hello, World!
 ```
 

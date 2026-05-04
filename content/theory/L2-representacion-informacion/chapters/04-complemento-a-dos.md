@@ -6,10 +6,9 @@ La convención sin signo cubre solo valores no negativos. Para representar enter
 
 Para un byte de 8 bits, los pesos en complemento a dos son:
 
-```
-posición:    7    6   5   4   3   2  1  0
-peso:     -128  +64 +32 +16  +8  +4 +2 +1
-```
+| posición | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| peso | −128 | +64 | +32 | +16 | +8 | +4 | +2 | +1 |
 
 El bit 7 ahora pesa **−128** en vez de +128. Los demás siguen siendo $+2^i$ como antes. El valor total se calcula igual que en sin signo: sumar los pesos de los bits encendidos. La única diferencia es que el peso de la posición más alta es negativo.
 
@@ -19,21 +18,19 @@ Dos consecuencias inmediatas. Primera, los patrones que tienen el bit 7 apagado 
 
 El método operativo es directo: identificar el bit más significativo, sumarlo con peso negativo si está encendido, y agregar los pesos positivos del resto. Un ejemplo, sobre el byte `10000001`:
 
-```
-posición:    7    6   5   4   3   2  1  0
-bit:         1    0   0   0   0   0  0  1
-peso:     -128                         +1
-```
+| posición | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| bit | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| peso aportado | −128 | · | · | · | · | · | · | +1 |
 
 Bit 7 encendido aporta −128. Bit 0 encendido aporta +1. Suma: $-128 + 1 = -127$. El byte `10000001` vale −127 en complemento a dos, mientras que en sin signo vale 129. El mismo patrón, dos lecturas distintas.
 
 Otro ejemplo, sobre el byte `11111111`:
 
-```
-posición:    7    6   5   4   3   2  1  0
-bit:         1    1   1   1   1   1  1  1
-peso:     -128  +64 +32 +16  +8  +4 +2 +1
-```
+| posición | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| bit | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| peso aportado | −128 | +64 | +32 | +16 | +8 | +4 | +2 | +1 |
 
 Todos encendidos. Suma: $-128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = -1$. El byte `0xFF` vale −1 en complemento a dos, 255 en sin signo, y —como anticipaba el capítulo 00— ninguna de las dos lecturas es "más verdadera" que la otra.
 

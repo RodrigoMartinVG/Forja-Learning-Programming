@@ -14,7 +14,7 @@ Sobre [`src/hello/hello.c`](../src/hello/hello.c):
 
 ## Resultado esperado
 
-```
+```text
 $ gcc -E hello.c -o hello.i
 $ wc -l hello.c hello.i
    8 hello.c
@@ -26,7 +26,7 @@ $ wc -l hello.c hello.i
 
 Para encontrar declaraciones de `<stdio.h>`, basta `grep`:
 
-```
+```text
 $ grep -n "puts\|printf\|FILE" hello.i | head
 ```
 
@@ -38,14 +38,14 @@ Tres ejemplos típicos que aparecen:
 
 Para confirmar que `GREETING` desapareció:
 
-```
+```text
 $ grep GREETING hello.i
 $
 ```
 
 (Sin salida.) En cambio, la cadena literal aparece donde estaba la macro:
 
-```
+```text
 $ grep "hola, pipeline" hello.i
     puts("hola, pipeline");
 ```

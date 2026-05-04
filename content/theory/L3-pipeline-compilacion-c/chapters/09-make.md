@@ -8,7 +8,7 @@ Hasta acá el pipeline se manejó a mano: un comando para preprocesar, otro para
 
 La unidad básica es la **regla**. Una regla tiene tres partes:
 
-```
+```makefile
 target: prerrequisitos
     receta
 ```
@@ -21,7 +21,7 @@ Un detalle sintáctico crucial: la receta **debe empezar con un tab**, no con es
 
 Un Makefile mínimo para [`src/split/`](../src/split/) es exactamente el que está en el repositorio:
 
-```
+```makefile
 CC := cc
 CFLAGS := -Wall -Wextra -std=c11
 
@@ -49,16 +49,7 @@ Cuando se invoca `make` sin argumentos, ejecuta la primera regla del archivo (`a
 
 ## El grafo de dependencias del pipeline de C
 
-`make` construye internamente un grafo dirigido a partir de las reglas:
-
-```
-                  app
-                /     \
-            main.o   greet.o
-           /  |  \    /  |  \
-        main.c |  greet.h  greet.c
-              greet.h         (compartido entre los dos .o)
-```
+`make` construye internamente un grafo dirigido a partir de las reglas. En el caso del split, el grafo tiene a `app` como raíz, dos nodos intermedios `main.o` y `greet.o` que dependen de `app`, y como hojas los archivos fuente: `main.o` depende de `main.c` y de `greet.h`; `greet.o` depende de `greet.c` y también de `greet.h`. El header `greet.h` aparece como prerrequisito compartido entre ambos `.o`.
 
 Cuando se le pide producir `app`, `make` recorre el grafo desde `app` hacia las hojas, verificando si cada target está al día respecto a sus prerrequisitos. La verificación se basa en **timestamps de modificación**: un target está al día si existe y su timestamp es más reciente que el de todos sus prerrequisitos.
 
@@ -68,7 +59,7 @@ Si un prerrequisito tiene un timestamp más reciente que el target, `make` ejecu
 
 El comportamiento concreto se ve mejor con una secuencia de invocaciones desde estado limpio:
 
-```
+```text
 $ cd src/split
 $ make clean       # asegurarse del estado limpio
 $ make
@@ -79,14 +70,14 @@ cc main.o greet.o -o app
 
 La primera invocación produce los dos `.o` y el ejecutable. Una segunda invocación inmediatamente después no hace nada:
 
-```
+```text
 $ make
 make: 'app' is up to date.
 ```
 
 `make` verificó timestamps, todo estaba al día, no ejecutó ninguna receta. Si ahora se toca solo `greet.c`:
 
-```
+```text
 $ touch greet.c
 $ make
 cc -Wall -Wextra -std=c11 -c greet.c -o greet.o
@@ -97,7 +88,7 @@ Solo se regeneraron `greet.o` y `app`. `main.o` no se tocó, porque su prerrequi
 
 Si en lugar de `greet.c` se toca el header compartido `greet.h`:
 
-```
+```text
 $ touch greet.h
 $ make
 cc -Wall -Wextra -std=c11 -c main.c -o main.o
@@ -113,7 +104,7 @@ Ahora `make` regenera los **dos** `.o`, porque ambos tienen `greet.h` como prerr
 
 **Variables**. Como en el Makefile del split: `CC := cc`, `CFLAGS := -Wall -Wextra -std=c11`. Cuando la receta dice `$(CC) $(CFLAGS) -c main.c`, `make` expande las variables y ejecuta `cc -Wall -Wextra -std=c11 -c main.c`. Hay variables predefinidas: `$@` es el target de la regla actual, `$<` es el primer prerrequisito, `$^` es la lista completa de prerrequisitos. Una receta que use estas variables se vuelve más portable:
 
-```
+```makefile
 main.o: main.c greet.h
 	$(CC) $(CFLAGS) -c $< -o $@
 ```

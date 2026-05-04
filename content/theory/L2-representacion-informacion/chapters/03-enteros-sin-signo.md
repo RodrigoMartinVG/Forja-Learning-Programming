@@ -8,11 +8,10 @@ En decimal, el número `307` se lee como $3 \cdot 10^2 + 0 \cdot 10^1 + 7 \cdot 
 
 Así, el byte `00010110`, leído de izquierda a derecha, tiene los bits encendidos en las posiciones 4, 2 y 1 (numeradas desde la derecha):
 
-```
-posición:  7  6  5  4  3  2  1  0
-bit:       0  0  0  1  0  1  1  0
-peso:    128 64 32 16  8  4  2  1
-```
+| posición | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| bit | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 |
+| peso | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
 
 Los bits encendidos son los de pesos 16, 4 y 2. La suma es $16 + 4 + 2 = 22$. El byte `00010110` representa, bajo la convención sin signo, el valor 22.
 
@@ -35,11 +34,10 @@ Los patrones se memorizan rápido: 1, 2, 4, 8, 16, 32, 64, 128 cubren un byte; d
 
 El método directo es: identificar las posiciones encendidas, anotar el peso de cada una, sumar. La cuenta no exige nada más. Un ejemplo trabajado, sobre el byte `10110100`:
 
-```
-posición:  7  6  5  4  3  2  1  0
-bit:       1  0  1  1  0  1  0  0
-peso:    128  -  32 16  -  4  -  -
-```
+| posición | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| bit | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0 |
+| peso aportado | 128 | · | 32 | 16 | · | 4 | · | · |
 
 Las posiciones encendidas son 7, 5, 4 y 2. La suma es $128 + 32 + 16 + 4 = 180$. El byte `10110100` vale 180 sin signo.
 

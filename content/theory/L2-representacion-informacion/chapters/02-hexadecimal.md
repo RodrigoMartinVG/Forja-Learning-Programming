@@ -52,7 +52,7 @@ En código, los literales hexadecimales se escriben con el prefijo `0x` —en C,
 
 En un dump hexadecimal el prefijo se omite por compacidad: cada byte aparece como dos dígitos hex sin adorno, y el contexto fija la convención. Un dump típico producido por `xxd` se ve así:
 
-```
+```text
 00000000: 4865 6c6c 6f2c 2057 6f72 6c64 210a       Hello, World!.
 ```
 
@@ -70,7 +70,7 @@ Las dos herramientas Unix más usadas para producir dumps hex son `xxd` y `hexdu
 
 El uso básico es directo:
 
-```
+```text
 $ echo -n "Hello, World!" > saludo.txt
 $ xxd saludo.txt
 00000000: 4865 6c6c 6f2c 2057 6f72 6c64 21          Hello, World!
@@ -78,7 +78,7 @@ $ xxd saludo.txt
 
 `hexdump` produce una salida similar pero con convenciones distintas:
 
-```
+```text
 $ hexdump -C saludo.txt
 00000000  48 65 6c 6c 6f 2c 20 57  6f 72 6c 64 21           |Hello, World!|
 ```

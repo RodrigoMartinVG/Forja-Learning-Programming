@@ -21,7 +21,7 @@ int main(void) {
 
 Ocho líneas. Después del preprocesado, ese mismo programa pasa a ser:
 
-```
+```text
 $ gcc -E hello.c -o hello.i
 $ wc -l hello.i
 743 hello.i
@@ -31,7 +31,7 @@ Casi 100 veces más largo. La razón es que `<stdio.h>` no es un archivo chico: 
 
 Mirando las primeras y últimas líneas de `hello.i`:
 
-```
+```text
 $ head -5 hello.i
 # 0 "hello.c"
 # 0 "<built-in>"
@@ -114,14 +114,12 @@ Sin header guards, un `.c` que incluye dos headers que a su vez incluyen un terc
 
 Un dato importante sobre el `.i`: es **C válido**. Si se renombra a `.c` y se le pasa al compilador, compila igual:
 
-```
+```text
 $ gcc -E hello.c -o hello.i
 $ gcc hello.i -o hello_from_i
 $ ./hello_from_i
 hola, pipeline
 ```
-
-El compilador no nota la diferencia: lo que recibe es C sin `#include`, sin `#define`, sin `#ifdef`, ya con todos los reemplazos hechos y todos los headers pegados. Las marcas de origen que insertó el preprocesador (`# 32 "stdio.h" 3 4`) las usa el compilador para los mensajes de error pero no afectan al programa generado.
 
 Esto da una herramienta práctica de diagnóstico: cuando un error reporta una línea que en el `.c` parece imposible —por ejemplo, "redefinition of struct foo" en una línea donde el `.c` no tiene ningún struct—, mirar el `.i` muestra qué fue lo que el compilador realmente vio. La mayoría de los errores extraños del compilador son consecuencias del preprocesado, no del código que el programador escribió.
 

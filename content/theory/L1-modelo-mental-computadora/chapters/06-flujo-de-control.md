@@ -114,31 +114,16 @@ La traza:
 
 Siete pasos. El cuerpo del loop son las direcciones 1 y 2 (la pareja `SUB` + `JNZ`). El `pc` recorre esa pareja tres veces antes de que la condición de `JNZ` falle y el flujo continúe a la dirección 3. La traza muestra el loop exactamente como lo que es: el `pc` oscilando entre 1 y 2, con `r0` decreciendo, hasta que `r0` llega a cero y el salto deja de tomarse.
 
-Dibujado como grafo de flujo, el programa tiene una flecha de retroceso que es exactamente lo que produce el loop:
+Leído como grafo de flujo, el programa tiene una flecha de retroceso que es exactamente lo que produce el loop. Cada bloque del grafo es una instrucción y cada flecha es una transición posible del `pc`:
 
-```
-     +-----------------------+
-     | 0: MOV r0, 3          |
-     +-----------+-----------+
-                 |
-                 v
-     +-----------------------+  <-----+
-     | 1: SUB r0, 1          |        |
-     +-----------+-----------+        |
-                 |                    |
-                 v                    |
-     +-----------------------+        |
-     | 2: JNZ r0, 1          |--- r0 != 0 ---+
-     +-----------+-----------+                (retrocede)
-                 |
-                 | r0 == 0
-                 v
-     +-----------------------+
-     | 3: (fin)              |
-     +-----------------------+
-```
+| desde | a | condición |
+|---|---|---|
+| `0: MOV r0, 3` | `1: SUB r0, 1` | siempre (avance por defecto) |
+| `1: SUB r0, 1` | `2: JNZ r0, 1` | siempre (avance por defecto) |
+| `2: JNZ r0, 1` | `1: SUB r0, 1` | si `r0 != 0` (flecha de retroceso) |
+| `2: JNZ r0, 1` | `3: (fin)` | si `r0 == 0` (avance por defecto) |
 
-Las tres flechas que salen del bloque 2 —una hacia abajo (caso `r0 == 0`), una hacia arriba (caso `r0 != 0`)— son las dos posibilidades de la instrucción `JNZ`. La flecha hacia arriba es lo que cierra el loop. Sin esa flecha, el programa fluiría linealmente de 0 a 3 y terminaría; con esa flecha, el flujo se queda dando vueltas mientras la condición se cumpla. Toda la mecánica del loop está en esa flecha de retroceso, y esa flecha de retroceso es solamente una escritura del `pc` con un valor menor que el actual.
+Las dos flechas que salen del bloque 2 son las dos posibilidades de la instrucción `JNZ`. La flecha hacia atrás (`2 → 1`) es lo que cierra el loop. Sin esa flecha, el programa fluiría linealmente de 0 a 3 y terminaría; con esa flecha, el flujo se queda dando vueltas mientras la condición se cumpla. Toda la mecánica del loop está en esa flecha de retroceso, y esa flecha de retroceso es solamente una escritura del `pc` con un valor menor que el actual.
 
 Una propiedad importante de esta lectura: el loop no es nada que esté "en el programa" como entidad; el programa contiene tres instrucciones distintas, y el loop es lo que pasa cuando esas tres se ejecutan en cierto orden bajo cierta condición. El `pc` es la única columna de la traza que delata la presencia del loop, oscilando entre dos direcciones que el observador reconoce como un par. Si una persona mira la traza y no reconoce el patrón de oscilación del `pc`, no ve el loop; si lo reconoce, ve el loop. El loop existe en la lectura de la traza, no en el programa.
 

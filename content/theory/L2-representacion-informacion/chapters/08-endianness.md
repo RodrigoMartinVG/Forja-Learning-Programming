@@ -39,7 +39,7 @@ Cuando un programa imprime un entero con `printf("%d", x)` o un equivalente, lo 
 
 El dump hex —`xxd`, `hexdump`, una vista de memoria en un debugger— sí expone los bytes individuales en el orden físico en que están en memoria. Por eso, mirando un dump de una arquitectura little-endian, un entero de 32 bits aparece "al revés" comparado con su escritura en hex:
 
-```
+```text
 00000100: 7856 3412                                xV4.
 ```
 
@@ -81,7 +81,7 @@ int main(void) {
 
 La salida típica:
 
-```
+```text
 0x7ffd5b3a8c4c: 78 56 34 12
 ```
 
@@ -93,7 +93,7 @@ El bug típico de endianness aparece cuando un programa escribe bytes en un arch
 
 Un ejemplo. Un programa en una máquina little-endian guarda el entero `0x00000001` en un archivo:
 
-```
+```text
 00000000: 0100 0000                                ....
 ```
 

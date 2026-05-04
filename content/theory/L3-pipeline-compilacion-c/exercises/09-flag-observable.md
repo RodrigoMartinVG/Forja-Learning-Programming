@@ -19,7 +19,7 @@ Elegir una de las tres flags siguientes: `-g`, `-O2`, `-Wall`. Para la flag eleg
 
 Para `-g`:
 
-```
+```text
 $ gcc -c hello.c -o hello-no-g.o
 $ gcc -c -g hello.c -o hello-g.o
 $ ls -l hello-no-g.o hello-g.o
@@ -38,7 +38,7 @@ $
 
 Para `-O2`:
 
-```
+```text
 $ gcc -S hello.c -o hello-O0.s
 $ gcc -S -O2 hello.c -o hello-O2.s
 $ wc -l hello-O0.s hello-O2.s
@@ -58,7 +58,7 @@ int main(void) {
 }
 ```
 
-```
+```text
 $ gcc -c bad.c -o bad.o
 $
 $ gcc -Wall -c bad.c -o bad.o

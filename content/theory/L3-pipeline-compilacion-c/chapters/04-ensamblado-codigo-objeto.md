@@ -6,7 +6,7 @@ La tercera etapa del pipeline es el **ensamblado**. Su trabajo es traducir el `.
 
 La flag `-c` le dice a gcc que se detenga después del ensamblado:
 
-```
+```text
 $ gcc -c hello.c -o hello.o
 $ file hello.o
 hello.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
@@ -33,7 +33,7 @@ Igual que el `.s`, el `.o` está organizado en secciones. La diferencia es que e
 
 Para listar las secciones de un `.o`, `objdump -h`:
 
-```
+```text
 $ objdump -h hello.o
 hello.o:     file format elf64-x86-64
 
@@ -59,7 +59,7 @@ Lo más relevante para este nivel:
 
 Las secciones se pueden volcar también, byte por byte, con `objdump -s` o `xxd`. Para `.rodata`:
 
-```
+```text
 $ objdump -s -j .rodata hello.o
 Contents of section .rodata:
  0000 686f6c61 2c207069 70656c69 6e6500    hola, pipeline.
@@ -67,7 +67,7 @@ Contents of section .rodata:
 
 Quince bytes, exactamente la cadena `hola, pipeline` seguida del byte cero. Las convenciones de `L2` —ASCII, hex, dump tabular— son lo único que hace falta para leerlo. La sección `.text`, en cambio, contiene las instrucciones x86-64 codificadas, que con `objdump -d` se pueden ver como assembly otra vez, esta vez salido del `.o`:
 
-```
+```text
 $ objdump -d hello.o
 hello.o:     file format elf64-x86-64
 
@@ -91,7 +91,7 @@ A la izquierda, el offset dentro de `.text`. En el medio, los bytes de la instru
 
 La sección `.symtab` —la tabla de símbolos— es la pieza más importante del `.o` para entender el linking. Es la **lista de qué define el archivo y qué necesita** para ensamblarse con otros. La herramienta clásica para leerla es `nm`:
 
-```
+```text
 $ nm hello.o
 0000000000000000 T main
                  U puts
@@ -130,7 +130,7 @@ Las dos razones por las cuales un `.o` no se puede ejecutar directamente:
 
 Por estas dos razones, intentar correr un `.o` directamente falla:
 
-```
+```text
 $ chmod +x hello.o
 $ ./hello.o
 bash: ./hello.o: cannot execute binary file: Exec format error
@@ -142,7 +142,7 @@ El sistema operativo lee el header ELF del `.o`, ve que el tipo es `relocatable`
 
 Para cerrar el capítulo, una rutina mínima de inspección sobre cualquier `.o`:
 
-```
+```bash
 $ file hello.o                # confirmar que es ELF relocatable
 $ nm hello.o                  # ver la tabla de símbolos
 $ objdump -h hello.o          # ver las secciones

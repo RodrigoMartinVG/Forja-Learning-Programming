@@ -22,17 +22,14 @@ Las tres salidas comparten el mismo proceso central —combinar secciones, resol
 
 El primer paso del linker es **combinar las secciones equivalentes** de todos los `.o` en una sección única por tipo. Si tres `.o` tienen `.text`, el ejecutable resultante tiene una sola `.text` que contiene la concatenación de las tres. Lo mismo con `.data`, `.rodata`, `.bss`. Las direcciones internas se ajustan para que todo encaje en un único espacio de direcciones.
 
-Para [`src/split/`](../src/split/) con dos `.o`:
+Para [`src/split/`](../src/split/) con dos `.o`, las secciones relevantes que el linker recibe son aproximadamente las siguientes (los tamaños exactos dependen del compilador y son los reportados por `objdump -h`):
 
-```
-main.o:
-  .text  (contiene main, 0x18 bytes)
-  .rodata (vacía)
-
-greet.o:
-  .text  (contiene greet, 0x10 bytes)
-  .rodata (contiene "hola desde greet.c", 0x13 bytes)
-```
+| Archivo | Sección | Contenido | Tamaño aprox. |
+|---|---|---|---|
+| `main.o` | `.text` | código de `main` | 0x18 bytes |
+| `main.o` | `.rodata` | (vacía) | 0 |
+| `greet.o` | `.text` | código de `greet` | 0x10 bytes |
+| `greet.o` | `.rodata` | cadena `"hola desde greet.c"` | 0x13 bytes |
 
 El linker produce un ejecutable cuya `.text` tiene aproximadamente `0x18 + 0x10 = 0x28` bytes (más el código de arranque que gcc agrega), con `main` en una zona y `greet` en otra. La `.rodata` del ejecutable contiene la cadena de greet. Las direcciones que en los `.o` valían cero pasan a ser direcciones reales dentro del ejecutable.
 
@@ -53,7 +50,7 @@ El detalle de cada tipo de relocation es contenido de `L4`. En este nivel basta 
 
 Para el split:
 
-```
+```bash
 $ gcc -c main.c -o main.o
 $ gcc -c greet.c -o greet.o
 $ gcc main.o greet.o -o app
@@ -68,7 +65,7 @@ El tercer paso es **asignar direcciones definitivas** a cada símbolo y a cada r
 
 El comando `nm` aplicado al ejecutable muestra las direcciones finales:
 
-```
+```text
 $ nm app | grep -E 'main|greet'
 0000000000001140 T main
 0000000000001168 T greet
@@ -93,7 +90,7 @@ El primer y el segundo error son los más comunes y son exactamente los dos extr
 
 Para confirmar que el linking se hizo bien, las herramientas son las mismas del `.o` con dos agregadas: `ldd` (para dependencias dinámicas, que se trata en el capítulo siguiente) y la capacidad de **ejecutar** el archivo:
 
-```
+```text
 $ file app
 app: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, ...
 $ ./app

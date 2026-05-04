@@ -4,7 +4,7 @@
 
 En un terminal Linux con gcc instalado, compilar un programa C de un solo archivo se hace con un solo comando:
 
-```
+```text
 $ gcc hello.c -o hello
 $ ./hello
 hola, pipeline
@@ -25,16 +25,7 @@ El pipeline de C tiene cuatro etapas sucesivas:
 3. **Ensamblado**: traduce el assembly a **código objeto**, que es el assembly convertido a bytes binarios pero todavía con direcciones provisionales y referencias a símbolos sin resolver.
 4. **Linking**: combina varios códigos objeto y bibliotecas, resuelve las referencias entre ellos, asigna direcciones definitivas, y emite un **ejecutable** (o una biblioteca).
 
-Entre etapa y etapa hay un artefacto material —un archivo en disco con un formato específico—. El pipeline completo, con sus cinco artefactos:
-
-```
-hello.c   ──preprocesado──▶   hello.i   ──compilación──▶   hello.s
-                                                              │
-                                                          ensamblado
-                                                              ▼
-hello                ◀──────  linking  ───────                hello.o
-(ejecutable)
-```
+Entre etapa y etapa hay un artefacto material —un archivo en disco con un formato específico—. El pipeline completo recorre cinco artefactos en orden: del fuente `hello.c`, el preprocesado produce `hello.i`; la compilación produce `hello.s`; el ensamblado produce `hello.o`; el linking produce el ejecutable `hello`.
 
 - **`.c`**: código fuente. Lo escribe el programador.
 - **`.i`**: código C preprocesado. Sigue siendo C válido, pero sin directivas: los `#include` ya pegaron sus headers, las macros ya están expandidas. Es texto plano, legible.

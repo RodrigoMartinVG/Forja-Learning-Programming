@@ -20,7 +20,7 @@ La flag de optimización es el factor más visible que distingue dos compilacion
 
 Una comparación sobre `hello.c` (de `src/hello/`):
 
-```
+```text
 $ gcc -S -O0 hello.c -o hello-O0.s
 $ gcc -S -O2 hello.c -o hello-O2.s
 $ wc -l hello-O0.s hello-O2.s
@@ -49,7 +49,7 @@ La flag `-g` le dice a gcc que agregue **información de debug** al `.o` y al ej
 
 Sin `-g`:
 
-```
+```text
 $ gcc -c hello.c -o hello-no-debug.o
 $ ls -l hello-no-debug.o
 -rw-r--r-- 1 user user 1664 ... hello-no-debug.o
@@ -57,7 +57,7 @@ $ ls -l hello-no-debug.o
 
 Con `-g`:
 
-```
+```text
 $ gcc -c -g hello.c -o hello-debug.o
 $ ls -l hello-debug.o
 -rw-r--r-- 1 user user 4504 ... hello-debug.o
@@ -65,7 +65,7 @@ $ ls -l hello-debug.o
 
 El `.o` con `-g` es aproximadamente tres veces más grande para un programa trivial. La información extra vive en secciones específicas (`.debug_info`, `.debug_line`, `.debug_str`, etc.) y se puede listar:
 
-```
+```text
 $ objdump -h hello-debug.o | grep debug
   4 .debug_info   ...
   5 .debug_abbrev ...
@@ -93,14 +93,14 @@ int main(void) {
 
 Sin `-Wall`:
 
-```
+```text
 $ gcc -c bad.c -o bad.o
 $
 ```
 
 Compilación silenciosa. Con `-Wall`:
 
-```
+```text
 $ gcc -Wall -c bad.c -o bad.o
 bad.c: In function 'main':
 bad.c:3:12: warning: 'x' is used uninitialized [-Wuninitialized]
@@ -129,7 +129,7 @@ Las flags `-I`, `-L`, `-l` controlan dónde el compilador y el linker buscan arc
 
 Un ejemplo combinado: si el programa usa funciones matemáticas (`sin`, `cos`, `sqrt`), `<math.h>` declara las firmas pero las definiciones viven en `libm`, no en `libc`. La compilación requiere `-lm`:
 
-```
+```text
 $ cat trig.c
 #include <math.h>
 int main(void) { return (int)sin(1.0); }
@@ -143,7 +143,7 @@ Sin `-lm`, el linker no busca en `libm` y no encuentra `sin`. La solución no es
 
 Otro ejemplo con `-I` y `-L`:
 
-```
+```text
 $ gcc -I/opt/foo/include -L/opt/foo/lib programa.c -lfoo -o programa
 ```
 

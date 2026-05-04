@@ -14,7 +14,7 @@ Para cada uno, ejecutar `file` y registrar la salida.
 
 Los comandos a ejecutar (desde `src/hello/`):
 
-```
+```text
 $ gcc -E hello.c -o hello.i
 $ gcc -S hello.c -o hello.s
 $ gcc -c hello.c -o hello.o
@@ -23,7 +23,7 @@ $ gcc hello.c -o hello
 
 Después, `ls -l` debe mostrar los cinco archivos:
 
-```
+```text
 hello
 hello.c
 hello.i
@@ -35,7 +35,7 @@ Y `file` aplicado a cada uno debe identificar el tipo: el `.c` y el `.i` como C 
 
 ## Verificación
 
-```
+```text
 $ file hello.c hello.i hello.s hello.o hello
 ```
 
@@ -43,7 +43,7 @@ La salida debe distinguir los cinco tipos. En particular, las dos diferencias cr
 
 Adicionalmente:
 
-```
+```text
 $ ./hello
 hola, pipeline
 ```

@@ -19,7 +19,7 @@ Este ejercicio requiere construir una biblioteca dinámica propia, igual que en 
 
 Paso 1–2:
 
-```
+```text
 $ cd src/split
 $ gcc -c -fPIC greet.c -o greet.o
 $ gcc -shared greet.o -o libgreet.so
@@ -28,7 +28,7 @@ $ gcc main.c -L. -lgreet -o app_dyn
 
 Paso 3:
 
-```
+```text
 $ ldd app_dyn
         ...
         libgreet.so => not found
@@ -38,21 +38,21 @@ $ ldd app_dyn
 
 Paso 4:
 
-```
+```text
 $ ./app_dyn
 ./app_dyn: error while loading shared libraries: libgreet.so: cannot open shared object file: No such file or directory
 ```
 
 Paso 5:
 
-```
+```text
 $ LD_LIBRARY_PATH=. ./app_dyn
 hola desde greet.c
 ```
 
 Paso 6:
 
-```
+```text
 $ mv libgreet.so libgreet.so.bak
 $ LD_LIBRARY_PATH=. ./app_dyn
 ./app_dyn: error while loading shared libraries: libgreet.so: cannot open shared object file: No such file or directory
