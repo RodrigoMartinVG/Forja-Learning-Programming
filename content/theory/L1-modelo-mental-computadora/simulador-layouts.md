@@ -23,16 +23,16 @@ Hipótesis de rediseño:
 
 ## Reubicación semántica recomendada
 
-Antes de hablar de layout, conviene fijar qué significa cada cosa y dónde debería vivir.
+Antes de hablar de layout, hace falta fijar qué significa cada cosa y dónde debería vivir.
 
-- `estado` de máquina (`lista`, `corriendo`, `halted`, `error`) no debería mostrarse como palabra estable en la UI de `L1`; si la máquina está sana, no hace falta insistir con eso
+- `estado` de máquina (`lista`, `corriendo`, `halted`, `error`) no debería mostrarse como palabra estable en la UI de `L1`; si la máquina está sana, no hace falta insistir en eso
 - `modo de paso` (`pasos` vs `micropasos`) no es estado interno de la CPU: debe vivir junto a los controles y representarse como toggle pequeño
 - `fase` (`fetch`, `decode`, `execute`) sí pertenece a la ejecución, pero no necesariamente al bloque de inventario de estado; puede vivir mejor junto a la explicación de lo que está ocurriendo
 - `pc` e `ir` están más cerca del bloque de ejecución actual que del bloque de registros
 - `r0` y `r1` sí pertenecen al bloque de registros
 - la traza didáctica debería vivir dentro del panel CPU como banner o bloque expandible, no como panel aparte
 - el historial de estados debería ser el único artefacto temporal persistente visible
-- `registros recientes` conviene eliminarlo
+- `registros recientes` debería eliminarse
 - `ciclo completo` no debería mostrarse como si fuera una fase; si existe, debe aparecer solo como modo de stepping
 
 ## Contenido mínimo de cada panel
@@ -221,7 +221,7 @@ Representación sugerida:
 - un icono pequeño `?` o similar para abrir detalle ampliado en popup/tooltip
 - sin competir visualmente con memoria ni con historial
 
-El detalle ampliado no debería empujar el layout hacia abajo. Conviene que viva en una capa flotante o popup breve.
+El detalle ampliado no debería empujar el layout hacia abajo. Debería vivir en una capa flotante o popup breve.
 
 ### Bloque 4 — Historial de estados
 
@@ -251,7 +251,7 @@ Eso separa correctamente:
 
 ## Contrato de interacción recomendado
 
-Para seguir de manera coherente, conviene tratar la opción recomendada como contrato de implementación y no como wireframe suelto.
+Para seguir de manera coherente, hay que tratar la opción recomendada como contrato de implementación y no como wireframe suelto.
 
 ### 1. Regla de snapshot activo
 
@@ -372,7 +372,7 @@ Con eso ya no queda solo una preferencia visual: queda definido el comportamient
 
 ## Variante A.1 — Opción A refinada
 
-Si quisiera escribirlo en una versión todavía más cercana a lo que conviene implementar, quedaría así:
+Si esto se escribe en una versión todavía más cercana a la implementación, quedaría así:
 
 ```text
 +------------------------------------------------+ +------------------------------------------------+

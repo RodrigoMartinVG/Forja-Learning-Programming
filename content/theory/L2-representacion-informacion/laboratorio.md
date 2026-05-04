@@ -1,8 +1,8 @@
 # Laboratorio interactivo de representacion para L2
 
-> Documento de diseno interno para una futura solapa propia del nivel.
+> Documento de diseno interno de la solapa `laboratorio` de `L2`.
 >
-> Este artefacto no reemplaza capitulos ni ejercicios. Define una pieza interactiva grande, pensada para volver visible lo que `L2` explica sobre bits, bytes, texto simple, ancho finito, overflow, hexadecimal, endianness y aproximacion finita.
+> Este archivo fija el contrato de la pieza interactiva: que problema curricular resuelve, que debe mostrar y que debe dejar afuera. No reemplaza capitulos ni ejercicios.
 
 ## Objetivo
 
@@ -12,7 +12,7 @@ La primera version tiene que servir para reforzar lo que ya explican los capitul
 
 ## Por que va en una solapa propia
 
-Esta pieza no conviene vivir como capitulo de teoria ni como ejercicio aislado.
+Esta pieza no debe vivir como capitulo de teoria ni como ejercicio aislado.
 
 - como capitulo seria demasiado grande y con demasiado estado propio
 - como ejercicio quedaria subrepresentada, porque no es una practica acotada sino una herramienta de exploracion
@@ -85,7 +85,7 @@ Estado visible en `L2`:
 - selector little endian / big endian para vistas multi-byte
 - modo float de juguete o escena especifica para aproximacion finita
 
-Estado que no conviene exponer todavia en la primera cara del laboratorio:
+Estado que no debe exponerse todavia en la primera cara del laboratorio:
 
 - IEEE 754 completo con todos sus casos especiales
 - formatos binarios reales como ELF o protocolos de red completos
@@ -115,14 +115,14 @@ Las operaciones deben dejar rastro textual corto. Ejemplos utiles:
 - `resultado fuera de rango; se conservaron los 8 bits bajos`
 - `u32 en little endian ocupa mem[20..23]`
 
-Tambien conviene admitir estas dos operaciones porque vuelven mucho mas concreta la memoria real del nivel:
+Tambien hay que admitir estas dos operaciones porque vuelven mucho mas concreta la memoria real del nivel:
 
 - **sobrescritura parcial**: cambiar solo 1 o 2 bytes dentro de una ventana mas grande
 - **extension**: pasar de 8 a 16 o 32 bits con zero extension o sign extension
 
 ## Escenas y presets curriculares
 
-Los presets no deben ser meros ejemplos sueltos. Conviene pensarlos como escenas del nivel:
+Los presets no deben ser meros ejemplos sueltos. Hay que pensarlos como escenas del nivel:
 
 - **mismo byte, dos lecturas**: `11111111` como unsigned y signed
 - **overflow unsigned**: `255 + 1` en 8 bits
@@ -137,7 +137,7 @@ Los presets no deben ser meros ejemplos sueltos. Conviene pensarlos como escenas
 - **extender sin signo / extender con signo**: mostrar por que `0xFF` no se prolonga igual si se lo lee como unsigned o signed
 - **float de juguete**: representar un decimal que no entra exacto y mostrar aproximacion
 
-En esa escena de UTF-8 conviene dejar una mención breve, sin intentar dar assembly todavía, a que la misma intuición estructural reaparece más adelante en encodings de instrucciones y opcodes de longitud variable: ciertos bytes iniciales orientan cómo debe continuar la decodificación.
+En esa escena de UTF-8 hace falta dejar una mención breve, sin intentar dar assembly todavía, a que la misma intuición estructural reaparece más adelante en encodings de instrucciones y opcodes de longitud variable: ciertos bytes iniciales orientan cómo debe continuar la decodificación.
 
 Mas adelante podrian vivir en archivos versionados junto al nivel y ser leidos por la web como escenas del laboratorio.
 
@@ -154,7 +154,7 @@ La pieza interactiva tiene que reforzar el orden del nivel, no competir con el.
 - `06`: ver como un valor multi-byte ocupa direcciones consecutivas y cambia su orden segun endianness
 - `07`: usar una escena acotada de float de juguete para fijar aproximacion finita
 
-La regla es simple: el laboratorio nunca debe mostrar como sabido algo que el nivel todavia no explico.
+Regla operativa: el laboratorio nunca debe mostrar como sabido algo que el nivel todavia no explico.
 
 ## Layout recomendado
 
@@ -165,11 +165,11 @@ Una primera cara razonable podria separar cuatro zonas:
 - **interpretaciones**: unsigned, signed, hex y, cuando corresponda, float
 - **historial corto**: que cambio en la ultima operacion y si hubo perdida, reinterpretacion o overflow
 
-No conviene caer en un dashboard lleno de cifras. La interfaz tiene que guiar la lectura de una sola transformacion por vez.
+No hay que caer en un dashboard lleno de cifras. La interfaz tiene que guiar la lectura de una sola transformacion por vez.
 
-## Que no conviene mezclar todavia
+## Que no mezclar todavia
 
-Vale la pena mostrar una version del laboratorio ya en `L2`, pero no conviene convertirla en un simulador completo de maquina.
+Vale la pena mostrar una version del laboratorio ya en `L2`, pero no hay que convertirla en un simulador completo de maquina.
 
 Lo que si pertenece a `L2`:
 
@@ -180,7 +180,7 @@ Lo que si pertenece a `L2`:
 - overflow, truncado y extension
 - reinterpretacion frente a conversion
 
-Lo que conviene dejar para `L7` y assembly:
+Lo que queda para `L7` y assembly:
 
 - registros visibles como `r0`, `r1`, `rax`, etc.
 - instrucciones `LOAD`, `STORE`, `MOV` como eje de la interfaz
@@ -188,7 +188,7 @@ Lo que conviene dejar para `L7` y assembly:
 - stack, calling convention y addressing modes mas realistas
 - alineacion y acceso no alineado como problema tecnico principal
 
-La regla practica es esta: en `L2` la memoria debe verse como bytes y lecturas tipadas. En `L7`, esa misma memoria puede reaparecer como destino de instrucciones reales. No hace falta esperar hasta assembly para mostrarla, pero tampoco conviene adelantar toda la maquina ahora.
+Regla practica: en `L2` la memoria debe verse como bytes y lecturas tipadas. En `L7`, esa misma memoria puede reaparecer como destino de instrucciones reales. Hay que mostrarla desde ahora, pero no convertir todavia la pieza en un simulador de maquina.
 
 ## Errores y mensajes
 

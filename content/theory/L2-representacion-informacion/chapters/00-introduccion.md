@@ -1,120 +1,73 @@
-# Introducción
+# Por qué este nivel existe
 
-L1 dejó una máquina mínima visible: CPU, registros, memoria, direcciones, instrucciones y programa en ejecución. Eso alcanzó para dejar de hablar como si el código corriera por arte de magia.
+## El byte sin convención no representa nada
 
-L2 agrega otra capa de realidad: los datos que esa máquina guarda no viven como cantidades abstractas sin forma. Viven como patrones finitos de bits y bytes.
+`L1` cerró con un modelo mínimo de máquina: piezas, estado, transiciones, una traza tabular donde cada paso de ejecución es legible. En esa traza, las posiciones de memoria aparecieron siempre con un valor adentro —un número entero, escrito en decimal—, y nada más. Una posición de memoria valía 7, otra valía 40, otra valía `STORE r0, [40]`. La pregunta de *qué clase de cosa* era ese 7 quedó implícita: a veces era un dato numérico, a veces una dirección, a veces un código de instrucción. La trinidad rol/interpretación del [capítulo 02 de `L1`](../../L1-modelo-mental-computadora/chapters/02-memoria.md) ya había avisado que la materia y la lectura son cosas distintas, pero el nivel no entró en cómo esa materia está realmente escrita.
 
-Antes de compilación, de assembly real o de un lenguaje concreto, hace falta una idea más simple y más fuerte: un valor dentro de la máquina no es solo “el número que quiero pensar”, sino una representación material con ancho, rango y límites.
+Ahora hay que entrar. En una computadora real, las posiciones de memoria no contienen "el número 7" ni "la instrucción `LOAD r0, [40]`": contienen patrones de bits, agrupados en bytes, y nada más. Para que esos patrones signifiquen algo —un entero, un caracter, una dirección, una instrucción, una fracción decimal— hace falta una **convención de lectura**. Sin convención, un byte es ruido: ocho dígitos binarios, dos dígitos hexadecimales, ningún valor.
 
-> Laboratorio: durante L2 conviene leer la teoría con la solapa `laboratorio` abierta. No reemplaza la lectura, pero sí vuelve visibles el buffer canónico, los bytes, la ventana tipada, el overflow y el orden de bytes mientras el nivel les pone nombre.
+Un caso concreto, anticipo del nivel completo. El byte `0xFF` —`11111111` en binario— puede leerse de las siguientes formas, todas legítimas, todas distintas:
 
-## Qué agrega L2 al modelo de L1
+- como entero sin signo: vale **255**;
+- como entero con signo en complemento a dos: vale **-1**;
+- como caracter en Latin-1: vale **`ÿ`**;
+- como byte aislado de un archivo UTF-8: es **inválido**, no representa nada por sí solo;
+- como un nibble alto de un float: aporta **bits al exponente**, sin un valor independiente;
+- como byte dentro de una instrucción x86-64: puede ser **parte del opcode** de una instrucción multi-byte, sin valor numérico autónomo.
 
-En L1 alcanzaba con decir cosas como `mem[40] = 7`, distinguir dirección de valor y seguir cómo cambiaba el estado.
+Seis lecturas, seis resultados. La materia es una sola: ocho bits encendidos. La pregunta *"¿qué dice este byte?"* no tiene respuesta hasta que se diga *"¿bajo qué convención lo leo?"*.
 
-En L2 aparece una pregunta nueva: ¿qué significa exactamente que ahí “haya un 7”? ¿Qué patrón está guardado? ¿Cuántos bits ocupa? ¿Qué otros valores podrían leerse sobre ese mismo patrón si la interpretación cambiara?
+## Lo que el nivel cambia
 
-Eso agrega varias piezas al modelo:
+`L1` instaló una pregunta: *¿qué hace una computadora cuando ejecuta un programa?*. La respuesta fue un modelo de piezas y transiciones. `L2` instala una pregunta distinta y complementaria: *¿qué clase de cosa son los valores que viven en esas piezas?*. La respuesta del nivel no es una sola: son **varias convenciones de lectura** que se aplican al mismo material físico para producir significados distintos.
 
-- los datos tienen una forma finita dentro de la máquina
-- el ancho disponible importa
-- el mismo patrón no trae significado pegado de antemano
-- una dirección de memoria nombra una unidad concreta de almacenamiento
-- un valor lógico puede ocupar varios bytes consecutivos, no una sola “celda mágica” indivisible
+La pregunta operativa que la persona que termina `L2` debería poder responder, mirando un dump de bytes, es: *"dado este patrón y esta convención, ¿qué valor representa, y qué pasaría si la convención cambiara?"*. Esa pregunta —patrón más convención produce valor— es la herramienta central del nivel, y va a aparecer una y otra vez en los ejercicios.
 
-Esta última intuición conviene fijarla temprano: en el modelo base de L2, la memoria es **direccionable por bytes**. Una dirección avanza de a una unidad porque nombra un byte. Si después querés leer un `u16`, un `u32` o un `u64`, lo que cambia no es la memoria en sí, sino la ventana con la que agrupás varios bytes consecutivos como un solo valor lógico.
+Cambia el verbo de la lectura. En `L1` se leía una traza para reconstruir qué pasó. En `L2` se lee un dump para reconstruir qué se está representando. Ambas lecturas son comprobables: si la convención está fijada, el valor es único; si dos personas aplican la misma convención al mismo patrón, llegan al mismo valor.
 
-## Qué significa representar
+## Las convenciones que el nivel va a fijar
 
-Representar no es copiar una idea matemática pura dentro de la máquina sin costo ni límites. Representar es usar un patrón finito para que cierto tipo de lectura sea posible.
+El recorrido del nivel se organiza por convenciones, no por temas. Cada capítulo introduce una convención y muestra cómo se aplica, qué rango cubre, qué errores produce cuando se confunde con otra:
 
-Por eso, una misma secuencia de bits puede verse de maneras distintas:
+- **Bit y byte como unidades materiales** (capítulo 01): sin esta base, las demás convenciones flotan.
+- **Hexadecimal** (capítulo 02): no es una convención de valor, sino una **escritura compacta** del mismo patrón. Se introduce temprano porque todo lo que sigue se apoya en lectura hex.
+- **Entero sin signo** (capítulo 03): la convención más simple. Cada bit pesa una potencia de 2 no negativa.
+- **Complemento a dos** (capítulo 04): la convención estándar para enteros con signo. El bit más significativo pesa **negativo**.
+- **Overflow y truncado** (capítulo 05): consecuencias inevitables del ancho fijo, comunes a las dos convenciones de entero.
+- **ASCII** (capítulo 06): la primera convención de texto. Una tabla de 7 bits que mapea bytes a caracteres del inglés.
+- **UTF-8** (capítulo 07): la convención de texto que cubre todo Unicode usando 1 a 4 bytes por caracter.
+- **Endianness** (capítulo 08): convención de **orden** de bytes en valores que ocupan más de un byte.
+- **Floating point IEEE 754** (capítulo 09): convención para fracciones, con tres campos —signo, exponente, mantisa— y un puñado de casos especiales.
 
-- como entero sin signo
-- como entero con signo en complemento a dos
-- como texto simple byte a byte
-- como bytes escritos en hexadecimal
-- como parte de un valor más grande repartido en varias direcciones
+Cada una de estas convenciones es independiente de las otras en el sentido de que se podría reemplazar sin afectar al resto. Hay computadoras big-endian, hubo codificaciones de texto distintas a UTF-8, hay representaciones decimales de coma flotante que no son IEEE 754. Lo que las convenciones de este nivel tienen en común no es ser únicas posibles, sino ser las **convenciones efectivas** del cómputo moderno: las que se va a encontrar quien abra cualquier dump de cualquier sistema en uso.
 
-La máquina no guarda “sentido” en abstracto. Guarda patrones. El sentido aparece cuando alguien decide cómo leerlos.
+## El dump hex como herramienta de trabajo
 
-Ese punto tiene mucho alcance. Si no queda firme ahora, más adelante es fácil mezclar:
+`L1` instaló la **traza tabular** como herramienta de trabajo: una tabla con filas-paso y columnas-pieza. `L2` instala una herramienta complementaria: el **dump hexadecimal**. Un dump hex es una representación tabular de una región de memoria (o de un archivo, que conceptualmente es lo mismo) donde cada byte se muestra como dos dígitos hexadecimales. La herramienta clásica de Linux para producir dumps es `xxd`; otras alternativas son `hexdump` y `od`.
 
-- el valor abstracto que una persona quiere expresar
-- el patrón material que realmente queda almacenado
-- la interpretación tipada que un lenguaje, una ISA o un formato hacen sobre ese patrón
+Un dump típico se ve así:
 
-L2 entra para separar esas tres cosas antes de que el track las vuelva a mezclar en contextos más difíciles.
-
-## Un mismo bloque, varias lecturas
-
-Conviene fijar esa idea con un ejemplo concreto antes de que el nivel avance.
-
-Tomá estos cuatro bytes:
-
-```text
-48 6F 6C 61
+```
+00000000: 4865 6c6c 6f2c 2057 6f72 6c64 210a       Hello, World!.
 ```
 
-Ese bloque material puede mirarse de varias maneras sin haber cambiado un solo byte.
+Tres columnas: la dirección (offset) del primer byte de la línea, los bytes en sí escritos en hex, y la lectura ASCII del rango imprimible. Esa última columna es ya una primera convención aplicada —ASCII—, y los capítulos siguientes van a mostrar cómo cambia el contenido visible si se cambia la convención.
 
-- como texto ASCII simple, se lee `Hola`
-- como cuatro `u8`, se lee `72`, `111`, `108`, `97`
-- como bloque hexadecimal, puede escribirse `0x48 0x6F 0x6C 0x61`
-- como un valor de `32` bits, ya no alcanza con los bytes: también hace falta decidir la lectura tipada y, más adelante, el endianness
+Los dumps de este nivel van a venir mayormente en forma de tabla markdown, como en `L1`, pero también van a aparecer dumps reales producidos con `xxd` sobre archivos del laboratorio del repositorio. La continuidad con la herramienta concreta es deliberada: cuando en `L3` aparezcan archivos `.o` y secciones binarias, la herramienta para mirarlos va a ser exactamente esta.
 
-Eso deja una lección útil para todo `L2`.
+## Lo que el nivel deliberadamente no toca
 
-La memoria no sabe si esos bytes eran un saludo, un entero, parte de un header o un campo de otra estructura. La memoria guarda bytes. La lectura decide qué unidad lógica cree estar viendo arriba de esos bytes.
+Algunos temas que la palabra "representación" suele evocar quedan fuera de `L2`, no por accidente:
 
-Ese ejemplo también prepara bien dos ampliaciones del nivel:
+- **Aritmética binaria detallada de floating point** —cómo se suman dos `float`, qué bits se redondean, qué pasa con la mantisa— queda fuera del track o reaparece en niveles muy avanzados. `L2` se queda en el plano intuitivo: tres campos, un cálculo, casos especiales, comparación frágil.
+- **Codificaciones de texto distintas de ASCII y UTF-8** (UTF-16, UTF-32, EBCDIC, Latin-1, Shift-JIS) se mencionan al pasar pero no se desarrollan. UTF-8 cubre la enorme mayoría del cómputo moderno y entender el resto se vuelve fácil después.
+- **Representación de instrucciones máquina** —qué bits codifican `ADD r0, 1` en x86-64 real— se posterga a `L7`. En `L2` se habla de instrucciones nominales como en `L1`, sin entrar en su encoding.
+- **Alineación, padding, layout de structs** —cuándo el compilador agrega bytes invisibles entre campos— aparece en `L9` y siguientes, cuando el lenguaje C esté instalado.
 
-- más adelante aparecerá texto como otra interpretación válida del mismo dump
-- después aparecerá endianness, donde el problema ya no es solo qué bytes hay, sino cómo se agrupan y en qué orden reconstruyen un valor multi-byte
+Estas postergaciones son la condición para que `L2` pueda hacer lo que promete: dejar firme un puñado de convenciones efectivas, manipulables a mano, que después se van a encontrar en cada artefacto binario del resto del track.
 
-## Qué cubre
+## Lo que queda instalado al terminar el nivel
 
-El arco del nivel se organiza en siete bloques:
+Después de los diez capítulos, la persona que terminó `L2` debería poder mirar un dump hex de bytes y, dada una convención, decir qué valor representa. Si el dump muestra `41 42 43 0A`, decir que como ASCII es la cadena `"ABC\n"`. Si muestra `7F FF FF FF`, decir que como entero sin signo de 32 bits big-endian es `2147483647` y como complemento a dos es el mismo valor —el máximo positivo— y que un bit más en el byte alto produciría overflow al mínimo negativo. Si muestra `3F 80 00 00`, decir que como `float` IEEE 754 vale exactamente `1.0`.
 
-| Bloque | Para qué entra en L2 |
-|---|---|
-| Bits, bytes y ancho finito | fijar la materia mínima de la representación y sus límites |
-| Enteros unsigned y signed | mostrar que el mismo patrón puede leerse con reglas distintas |
-| Overflow y truncado | volver visible qué pasa cuando el resultado no cabe |
-| Hexadecimal | dar una notación práctica para leer bytes sin sufrir binario puro |
-| Texto como bytes | mostrar que los mismos bytes pueden leerse como texto y abrir una primera intuición de codificación variable |
-| Endianness y memoria multi-byte | mostrar cómo un valor grande ocupa varias direcciones y qué orden siguen sus bytes |
-| Floating point como aproximación | fijar que no todos los decimales entran exactos en binario finito |
-
-El trabajo del nivel no es “hacer cuentas raras”. Es volver concretas varias distinciones que el resto del track va a necesitar una y otra vez.
-
-## Qué no cubre y por qué
-
-- No cubre electrónica digital en serio. Puertas, flip-flops, ALU y circuitos quedan fuera porque el foco acá no es fabricar la máquina, sino entender cómo representa datos.
-- No cubre semántica fina de C o Rust. Casts, promociones, UB, traits o detalles de librerías pertenecen a los niveles de lenguaje.
-- No cubre IEEE 754 completo. Hace falta una intuición fuerte de aproximación finita, no una especificación normativa exhaustiva.
-- No cubre formatos binarios reales ni artefactos del compilador. Eso entra mejor cuando L3 abra el pipeline y más adelante cuando aparezcan ELF, serialización y object layout.
-- No cubre assembly real todavía. La materialidad de los datos conviene fijarla antes de volver a encontrarla dentro de instrucciones, immediatos, memoria y hexdumps en L7.
-
-## Cómo trabajarlo
-
-La regla operativa sigue siendo la misma que en todo Forja: repo abierto en la IDE, devcontainer operativo y lectura siempre pegada al workspace real. La web ayuda a recorrer el plan, pero no reemplaza ese entorno.
-
-Recorrido recomendado:
-
-1. leer este capítulo para fijar el mapa del nivel
-2. seguir los capítulos en orden
-3. usar ejemplos chicos de 8 y 16 bits antes de saltar a anchos grandes
-4. mirar siempre qué patrón exacto hay, no solo qué valor “parece” haber
-5. usar el `laboratorio` para comprobar si una diferencia es de bits, de lectura o de rango
-6. volver a este capítulo si más adelante algún tema empieza a sentirse como una lista de definiciones sueltas
-
-La pregunta útil durante todo L2 es esta: “¿qué patrón exacto está almacenado, cuántos bytes ocupa y bajo qué lectura estoy diciendo que esto vale lo que vale?”
-
-## El nivel siguiente
-
-Después de L2 viene `L3`, donde el foco deja de estar en la materia de los datos y pasa al recorrido que transforma source en artefactos ejecutables.
-
-L2 deja listo algo importante para ese salto: cuando aparezcan `.o`, ejecutables, bytes en memoria, hexdumps o secciones de un archivo, ya no deberían sonar como materia misteriosa. L2 explica con qué forma material vive la información; L3 empieza a mostrar cómo esa información se produce y se encadena en el pipeline de compilación.
-
-Más adelante también aparecerán herramientas industriales para mirar bytes en serio, como `xxd`, `od`, `objdump`, vistas crudas de debugger y dumps reales de memoria o archivos. `L2` no necesita enseñarlas todavía como herramientas. Necesita dejar lista la alfabetización que hace falta para que, cuando lleguen, no parezcan ruido críptico sino evidencia material legible.
+Esa capacidad operativa es la base directa de `L3`, donde van a aparecer secciones binarias de archivos `.o` que solo se entienden con hex, ASCII y endianness en la cabeza, y de `L7`, donde la lectura de operandos inmediatos en assembly real depende de complemento a dos. Lo que `L2` deja firme es exactamente lo que esos niveles van a tratar como base: que un patrón de bits no significa nada por sí mismo, y que toda lectura significativa de memoria viene acompañada, explícita o implícitamente, de una convención.

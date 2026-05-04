@@ -1,60 +1,23 @@
-# Introducción
+# Por qué este nivel existe
 
-L0 existe para evitar una confusión cara: pensar que un problema de entorno es un problema de programación. Antes de tocar C, Rust o sistemas, Forja fija el laboratorio que va a sostener todo lo demás.
+## Un mismo síntoma, varios orígenes
 
-# Introducción
+El track empieza acá por una razón muy concreta: cuando un comando falla en un proyecto de sistemas, el error casi nunca está en el lugar donde se manifiesta. Una compilación que se rompe puede ser bug del código, pero también puede ser una herramienta ausente. Un programa que no arranca puede tener un puntero mal usado, o puede ser que el contenedor donde se intenta ejecutar no tenga la biblioteca que el binario espera. Un debugger que no encuentra símbolos puede señalar un problema real, o puede revelar simplemente que la versión instalada no coincide con la que el repo declara usar.
 
-L0 existe para evitar una confusión cara: pensar que un problema de entorno es un problema de programación. Antes de tocar C, Rust o sistemas, Forja fija el laboratorio que va a sostener todo lo demás.
+Sin un laboratorio cuyo estado se entienda, cada uno de esos síntomas se vuelve indistinguible. El alumno termina sospechando del código que recién escribió cuando en realidad el problema vivía dos capas más abajo, en el entorno donde ese código corre. Y al revés: termina toqueteando el entorno cuando el bug estaba donde se veía. Esa confusión no es accidental. Es el costo natural de tratar al laboratorio como caja negra. `L0` existe para abrir esa caja antes de que aparezca el primer bug serio, en un momento donde el contenido del repo todavía es modesto y la complejidad cabe en la cabeza de un principiante.
 
-## Qué es este nivel
+## Lo que el nivel propone
 
-Este nivel define el contrato mínimo del laboratorio:
+El nivel se construye alrededor de una idea simple pero exigente: tratar al laboratorio como un objeto de estudio en sí mismo, no como infraestructura invisible. Eso implica reconocer sus piezas, observarlas con comandos concretos, comprobar que lo declarado coincide con lo disponible, y diagnosticar las inconsistencias cuando aparecen. Las piezas son cinco: los archivos del repo que declaran el entorno, la imagen de Docker construida a partir de ellos, el contenedor que es una instancia viva de esa imagen, el workspace que conecta el contenedor con el host, y la toolchain efectivamente disponible dentro del workspace.
 
-- cómo se abre el repo dentro del entorno esperado
-- cómo se verifica rápido
-- cómo distinguir cambios de código de cambios que obligan a reconstruir el contenedor
-- cómo arrancar un diagnóstico sin improvisar
+Las herramientas que el repo trae para esa tarea son tres y aparecen una y otra vez a lo largo del nivel. La primera es la lectura directa de los archivos de declaración (`devcontainer.json`, `Dockerfile`). La segunda es la familia de comandos `--version` que cada herramienta del entorno expone, junto con `which` para distinguir entre estar instalada y estar disponible en el `PATH`. La tercera es `verify-setup.sh`, un script que el repo provee para condensar todas esas comprobaciones en una sola pasada.
 
-No es un curso de Docker. Es una unidad de entrada para que el resto del plan no quede montado sobre un setup ambiguo.
+## Lo que este nivel deliberadamente no enseña
 
-También fija una regla de uso para todo Forja: niveles, ejercicios y proyectos se trabajan con el repositorio abierto en la IDE y con el contenedor Linux de ese mismo repo operativo. La web sola no alcanza para sacarle jugo al recorrido.
+Conviene declarar de entrada qué cosas no caben en `L0`, porque su ausencia es decisión, no descuido. Este nivel no enseña Docker como dominio: no se discute cómo escribir un `Dockerfile` desde cero, ni cómo orquestar contenedores, ni cómo elegir entre alternativas de imágenes base. Tampoco enseña a usar el debugger ni los sanitizers ni `strace` ni `valgrind`; verifica que estén disponibles y deja para `L5` y `L6` la tarea de aprender a operarlos. Tampoco enseña C ni Rust como lenguajes: la toolchain de ambos aparece como pieza declarada y comprobable, no como contenido propio. Cada una de esas exclusiones tiene su nivel destinatario en [docs/forja-contenido.md](../../../docs/forja-contenido.md), y los capítulos los citan cuando corresponde.
 
-## Qué cubre
+## Cómo se mueve el nivel
 
-| Pieza | Para qué entra en L0 |
-|---|---|
-| `chapters/01-devcontainer.md` | ubicar el contrato del entorno y separar imagen, contenedor y workspace |
-| `chapters/02-workflow.md` | fijar la rutina mínima de apertura y verificación |
-| `chapters/03-diagnostico.md` | convertir fallos comunes en una cadena de evidencia corta |
+Los seis capítulos del nivel forman una cadena con dirección. El primero ([01-devcontainer.md](01-devcontainer.md)) separa el laboratorio en sus cinco piezas constitutivas y deja al lector capaz de señalar dónde puede vivir una inconsistencia. El segundo ([02-toolchain.md](02-toolchain.md)) entra en la pieza más densa, la toolchain, y muestra que declarar, instalar y estar disponible son tres cosas distintas. El tercero ([03-verify-setup.md](03-verify-setup.md)) presenta el script `verify-setup.sh` como formalización ejecutable del contrato del laboratorio, y enseña a leer su salida como lo que es: un mapa de verificaciones individuales. El cuarto ([04-workflow.md](04-workflow.md)) condensa todo lo anterior en una rutina corta y repetible para abrir el laboratorio cualquier día sin pensarlo dos veces. El quinto ([05-diagnostico.md](05-diagnostico.md)) cierra el nivel con un playbook básico para los fallos más frecuentes, donde cada síntoma se asocia a la capa probable y al comando que la confirma.
 
-## Qué toca superficialmente y por qué
-
-- Docker y devcontainers aparecen como herramientas operativas, no como tema profundo. A este nivel importa saber usarlos y auditarlos, no explicar sus capas internas.
-- PATH, variables de entorno y toolchain se miran desde la observación del repo. La teoría detallada de procesos, memoria y aislamiento llega más adelante.
-- Algunas herramientas de C y Rust aparecen por nombre aunque todavía no se usen en serio. Acá importan como parte del inventario del laboratorio.
-
-## Qué no cubre y por qué
-
-- cgroups, namespaces y aislamiento fuerte no entran acá; ese arco llega mucho más adelante cuando el sistema operativo ya es parte del contenido, no solo del laboratorio.
-- CI, registries o imágenes de producción no entran acá; todavía no son el cuello de botella del recorrido.
-- Compilación de programas, warnings, debugging real y POSIX no entran acá; aparecen cuando haya suficiente contexto para que no se vuelvan lista de comandos sueltos.
-
-## Cómo trabajarlo
-
-Recorrido recomendado:
-
-1. leer la introducción general en `content/theory/README.md`
-2. leer este capítulo para fijar el alcance de L0
-3. recorrer `01-devcontainer.md`, `02-workflow.md` y `03-diagnostico.md` en orden
-4. usar `exercises.md` para transformar lectura en verificación
-5. cerrar el nivel con una idea simple: el laboratorio también es parte del contenido
-
-La regla del nivel es simple: cada afirmación importante sobre el entorno debería poder apoyarse en un archivo o en un comando del repo.
-
-## El nivel siguiente
-
-Después de L0 viene `L1`, donde el foco ya no es el entorno sino el modelo mental de una computadora. La gracia de cerrar bien L0 es que a partir de ahí las preguntas pueden moverse hacia CPU, memoria y programas sin seguir discutiendo si el laboratorio está bien armado.
-
-## El nivel siguiente
-
-Después de L0 viene `L1`, donde el foco ya no es el entorno sino el modelo mental de una computadora. La gracia de cerrar bien L0 es que a partir de ahí las preguntas pueden moverse hacia CPU, memoria y programas sin seguir discutiendo si el laboratorio está bien armado.
+El recorrido no exige conocimientos previos más allá de saber abrir una terminal y leer un archivo de texto. Lo que sí pide es paciencia para tratar al laboratorio como un objeto digno de comprender, no como un peaje administrativo antes de "lo importante". En este track, el laboratorio **es** parte de lo importante, y cada nivel posterior va a apoyarse en que las piezas que `L0` separa hayan quedado distinguibles.

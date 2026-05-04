@@ -1,192 +1,81 @@
 # La computadora como máquina de estado
 
-Una frase como "la computadora corre un programa" suena razonable, pero explica muy poco. Si no se dice qué estado tiene la máquina, qué parte de ese estado cambia y por qué cambia, la ejecución termina pareciendo magia.
+## De la receta a la trinidad estado / instrucción / transición
 
-Para L1 hace falta un modelo más chico y más útil:
+La [introducción](00-introduccion.md) usó la imagen de una receta leída por un cocinero para nombrar, sin tecnicismos, las ideas de algoritmo y de máquina universal. Antes de pasar a las definiciones formales que el resto del capítulo va a sostener, conviene mostrar cómo esa imagen se traduce —una sola vez— al vocabulario que `L1` va a usar a partir de acá.
 
-> **Una computadora como una máquina de estado que aplica instrucciones sobre un estado observable.**
+En la cocina, hay tres cosas distinguibles. Primero, **lo que hay en este momento**: qué ingredientes están sobre la mesa, qué cantidades quedan en cada recipiente, qué tiene el horno, qué paso de la receta el cocinero está a punto de leer. Esa foto completa de la situación actual es el **estado** de la cocina. Segundo, **cada paso escrito de la receta**: *"agregar 200 g de harina al bol"*, *"hornear 20 minutos a 180°"*. Cada paso es una **instrucción**: una descripción de qué cambio aplicar, no el cambio mismo. Tercero, **el momento concreto en que el cocinero aplica un paso**: ese acto produce una **transición** del estado anterior al estado siguiente. La harina pasó del paquete al bol; el bol pesa más; el paquete pesa menos; el cocinero apunta al paso siguiente.
 
-Dicho de manera más directa:
+Las tres cosas —estado, instrucción, transición— ya están en cualquier proceso que siga una receta. La computadora hace exactamente lo mismo, con dos diferencias importantes: el estado es muchísimo más pequeño (registros, memoria, un contador de paso, nada más) y el repertorio de instrucciones es muchísimo más estrecho (siete instrucciones básicas en el ISA del nivel, en lugar del repertorio abierto de un cocinero). Esa estrechez es la que hace que el modelo se pueda razonar con precisión: hay un número pequeño de cosas que pueden pasar en cada paso, y todas son inspeccionables.
 
-- **estado** es lo que la máquina tiene en un momento dado: algunos valores guardados, alguna posición de ejecución, alguna información ya cargada
-- **instrucción** es un paso que puede cambiar una parte de ese estado
-- **observable** quiere decir que ese cambio no queda en el aire: se puede describir qué había antes y qué queda después en piezas concretas de la máquina
+A partir de acá, la metáfora de la cocina queda guardada. El resto del capítulo —y del nivel— va a hablar de estado, instrucción y transición como conceptos técnicos, sin volver a invocar al cocinero. La intuición hizo su trabajo: dejó nombradas las tres ideas. Lo que viene es darles forma rigurosa para que las trazas sean comprobables y las preguntas que el track va a hacer después tengan dónde apoyarse.
 
-El resto del capítulo despliega esa idea de menor a mayor. Primero conviene ganar intuición sobre por qué algo almacenado puede leerse como dato o como instrucción. Después conviene entender por qué eso vuelve general a la máquina. Recién entonces vale la pena poner nombres técnicos a las piezas y seguir una traza concreta.
+## Estado, instrucción y transición
 
-> Simulador: si cargás `suma base`, cada snapshot del historial se puede leer como un estado distinto de la máquina. La pregunta útil mientras avanzás no es "qué hace el programa", sino "qué parte del estado cambió entre este punto y el siguiente?".
+La introducción del nivel dejó dicho que `L1` ataca el problema de qué significa exactamente que un programa se esté ejecutando, y que la respuesta va a apoyarse en una distinción entre estado y transición. Este capítulo convierte esa distinción en algo manipulable. Antes de nombrar piezas concretas —registros, memoria, `pc`—, conviene fijar las tres ideas que las van a sostener.
 
-## Dato e instrucción: cambia la lectura, no la materia
+La primera idea es **estado**. El estado de un sistema es, simplemente, toda la información actual del sistema en un momento dado. Para una computadora en ejecución, eso incluye qué valor tiene cada registro, qué hay en cada posición de memoria que importe, y a qué instrucción está apuntando el `pc`. El estado no es una abstracción flotante: es algo que, en cualquier momento, se podría escribir en una hoja como una lista de pares "nombre = valor". Si dos sistemas tienen la misma lista, están en el mismo estado.
 
-La primera intuición importante de este capítulo es esta: decir que en memoria puede haber datos e instrucciones no significa que existan dos materias distintas dentro de la RAM. Significa que el mismo contenido almacenado puede cumplir dos roles distintos según como se lo interprete.
+La segunda idea es **instrucción**. Una instrucción no es una acción; es la *descripción* de una transformación posible. La instrucción `ADD r0, 1` no hace nada por sí sola: dice cómo cambiar el estado *si se aplicara*. Esta distinción parece pedante hasta que alguien intenta explicar qué pasa cuando una instrucción está cargada en memoria pero todavía no se ejecutó —un caso central en el track. Una instrucción es una descripción; cuando se aplica, produce el tercer concepto.
 
-No hace falta bajar todavía a bits para captar esto. Alcanza con entender que la memoria no trae una etiqueta física que diga "código" o "dato". Lo que decide el rol es el contexto de ejecución.
+La tercera idea es **transición**. Una transición es el paso concreto entre un estado y el siguiente, producido por la aplicación de una instrucción. Si el estado es la foto, la transición es el evento que separa dos fotos consecutivas. Una transición tiene autor (la instrucción que la produjo) y efecto (las piezas del estado que cambiaron).
 
-Una analogía sobria es pensar en un documento con líneas como estas:
+Con estas tres ideas, una ejecución entera deja de ser un fenómeno opaco y se vuelve algo bien definido: una secuencia de estados $s_0, s_1, s_2, \dots$ donde cada $s_{i+1}$ se obtiene de $s_i$ aplicando alguna instrucción. La computadora ejecutando un programa es exactamente eso, sin nada agregado y sin nada faltando.
 
-```text
-DEBITAR 1000 DE CAJA
-ACREDITAR 1000 EN CUENTA_X
-IMPRIMIR "TRANSFERENCIA OK"
-```
+## Programa almacenado
 
-Si ese archivo se abre en un editor, funciona como dato: algo que se lee, copia o archiva. Si un sistema que entiende ese formato lo toma como un procedimiento a ejecutar, esas mismas líneas pasan a funcionar como instrucciones: cada una dispara una acción. El archivo no cambió. Cambió la lectura que se hace de él.
+Una observación que parece menor y resulta central: el programa también vive en el estado. No flota en otro lado, no entra desde afuera en cada paso. El programa es una secuencia de instrucciones cargadas en posiciones de memoria, y esas posiciones forman parte del estado igual que cualquier otra.
 
-En este ejemplo ya aparece, de manera todavía informal, la frase recuadrada del arranque:
+La idea —conocida históricamente como **programa almacenado** o *stored-program*— suena obvia hoy y no lo era cuando se formuló. Antes existían máquinas donde el programa era cableado físico: para cambiar el programa había que recablear. La idea de que el programa sea simplemente un patrón de valores en memoria, manipulable como cualquier otro patrón de valores, es lo que permite que una computadora cargue programas distintos sin ser reconstruida físicamente. Para `L1`, la consecuencia operativa es directa: cuando se escriba la traza de un programa, el programa mismo va a aparecer como un bloque de posiciones de memoria con instrucciones adentro, lado a lado con las posiciones que el programa usa para datos.
 
-- hay **estado** porque el sistema que interpreta el documento tiene una situación actual que podría describirse, por ejemplo, como `caja=5000`, `cuenta_x=200` y `salida=""`
-- hay **instrucciones** porque cada línea del documento propone un paso capaz de cambiar una parte de esa situación
-- hay algo **observable** porque se puede decir qué había antes y qué queda después en piezas concretas del sistema
+Esto abre una pregunta que el resto del capítulo va a contestar: si tanto las instrucciones como los datos viven en memoria, ¿qué los distingue?
 
-Si se mira el documento de esa manera, incluso sin hablar todavía de CPU ni de registros, ya aparece una pequeña traza:
+## Rol e interpretación: la materia y la lectura
 
-| Momento | Estado relevante |
-|---|---|
-| antes de empezar | `caja=5000`, `cuenta_x=200`, `salida=""` |
-| después de `DEBITAR 1000 DE CAJA` | `caja=4000`, `cuenta_x=200`, `salida=""` |
-| después de `ACREDITAR 1000 EN CUENTA_X` | `caja=4000`, `cuenta_x=1200`, `salida=""` |
-| después de `IMPRIMIR "TRANSFERENCIA OK"` | `caja=4000`, `cuenta_x=1200`, `salida="TRANSFERENCIA OK"` |
+La respuesta es incómoda al principio: nada los distingue *materialmente*. Una posición de memoria contiene un valor. El mismo valor puede ser interpretado como una instrucción (un código que la CPU reconoce y aplica) o como un dato (un número, un caracter, una dirección a otro lugar). La materia —el patrón de bits, el valor concreto— es la misma; lo que cambia es el **rol** que esa posición juega en la ejecución particular.
 
-La frase del arranque ya estaba operando dentro de este ejemplo: había una situación inicial, había pasos que la modificaban y había cambios que podían describirse con precisión.
+La distinción entre **rol** e **interpretación** es uno de los aportes centrales de `L1`. Un mismo bloque material puede leerse como instrucción si el `pc` apunta a él durante un fetch, o como dato si una instrucción lo nombra como operando. La lectura no está pegada a la materia; depende de cómo la ejecución la usa en cada momento.
 
-En una computadora pasa algo análogo:
+Esta no es una sutileza filosófica. Es la base de varios fenómenos que el track va a explorar más adelante: punteros a función (datos que después se interpretan como instrucciones), exploits que sobrescriben código (datos que la ejecución terminará leyendo como instrucciones aunque eso no fuera intención del programa), debuggers que muestran las mismas direcciones a veces como código y a veces como datos. Todo eso depende de aceptar, desde acá, que una posición de memoria es solamente eso: una posición con un valor, y el rol se decide en el uso.
 
-- cuando una región se toma como el siguiente paso del procedimiento, esa región cumple el rol de código
-- cuando una region se consulta para obtener un valor, una tabla o un texto, esa region cumple el rol de dato
-- cuando una región se consulta para obtener un valor, una tabla o un texto, esa región cumple el rol de dato
-- lo decisivo no es una diferencia de "sustancia", sino el papel que ese contenido cumple en ese momento
+## Las piezas del estado mínimo
 
-Esa intuición tiene mucho alcance. Si las instrucciones pueden almacenarse como información, también pueden copiarse, cargarse, analizarse, transformarse y generarse. De ahí salen compiladores, intérpretes, loaders y muchas otras piezas que no tendrían sentido si el programa viviera pegado al cableado de la máquina.
+Con las tres ideas (estado, instrucción, transición) y la noción de programa almacenado, ya se puede nombrar el estado mínimo que el nivel va a observar. Son cinco componentes:
 
-En L1 no hace falta ir más lejos. Alcanza con fijar esta idea: código y dato no son dos universos físicos separados; son dos usos posibles de información almacenada dentro del mismo modelo de máquina.
+1. **Memoria**: una secuencia de posiciones, cada una identificada por una dirección, cada una con un valor.
+2. **Registros**: un puñado pequeño de posiciones especiales, nombradas (no direccionadas), accesibles instantáneamente desde la CPU.
+3. **CPU**: el ejecutor del paso actual; la pieza que toma una instrucción y produce la transición.
+4. **`pc`** (program counter): la dirección de la próxima instrucción a ejecutar.
+5. **Programa**: las instrucciones cargadas en memoria, formando una sub-secuencia contigua de posiciones cuyos valores se interpretan como instrucciones cuando el `pc` las señala.
 
-Si esto ya se entiende, la idea de programa almacenado deja de sonar misteriosa. Una máquina general puede cambiar de comportamiento porque aquello que le dice qué hacer también vive almacenado.
+Los próximos capítulos van a examinar cada pieza por separado: el [capítulo 02](02-memoria.md) se concentra en la memoria, el [capítulo 03](03-cpu-registros.md) en CPU y registros, el [capítulo 04](04-instrucciones-operandos.md) en las clases de instrucciones del ISA de juguete. Antes de eso, conviene ver una traza completa que use las cinco piezas al mismo tiempo, aunque sea brevemente.
 
-Todavía no hace falta nombrar todas las piezas de esa máquina. Alcanza con una intuición previa: hay información guardada, hay alguna parte del sistema que la va leyendo como procedimiento y hay un comportamiento que cambia según lo almacenado.
+## Una primera traza de juguete
 
-## Von Neumann sin folklore
+Considerar el siguiente programa, cargado en memoria a partir de la dirección 0:
 
-Con esa intuición en la mano, la referencia a von Neumann entra por una razón más fuerte que un nombre propio. Sirve para fijar el salto conceptual que vuelve a una computadora una máquina general y no una máquina cableada para una sola tarea.
+| dirección | contenido (interpretado) |
+| --------- | ------------------------ |
+| 0 | `LOAD r0, [40]` |
+| 1 | `ADD r0, 1` |
+| 2 | `STORE r0, [40]` |
+| 3 | `(fin)` |
+| ... | ... |
+| 40 | `7` |
 
-Antes de esa intuición, es fácil imaginar otra clase de artefacto: una máquina armada para hacer un cálculo puntual. Si hace falta otra conducta, no se carga otro programa: hay que cambiar la máquina, recablearla o construir otra.
+Las direcciones 0 a 2 contienen tres instrucciones; la dirección 40 contiene el dato que las instrucciones van a manipular. El programa carga el valor de la posición 40 en el registro `r0`, le suma 1, y lo escribe de vuelta en la posición 40. Estado inicial: `pc = 0`, `r0 = 0`, `mem[40] = 7`. El resto de la memoria no cambia y se omite.
 
-La idea de programa almacenado rompe eso. La máquina física ya no contiene cada algoritmo posible en su cableado. Contiene una unidad ejecutora capaz de hacer un repertorio finito de pasos simples, una memoria direccionable donde guardar información y alguna forma de marcar cuál es el siguiente paso del procedimiento. Más adelante a esas piezas les pondremos nombres más precisos.
+La traza completa:
 
-| Si el procedimiento estuviera fijado en la máquina | Si el procedimiento vive en memoria |
-|---|---|
-| cambiar de tarea exige rediseñar o recablear | cambiar de tarea exige cargar otra secuencia |
-| la máquina queda atada a una conducta puntual | la misma máquina puede ejecutar conductas muy distintas |
-| "el algoritmo" vive en el hardware | "el algoritmo" vive en información almacenada |
+| momento | `pc` | `r0` | `mem[40]` | instrucción aplicada |
+| ------- | ---- | ---- | --------- | -------------------- |
+| inicio       | 0 | 0 | 7 | (ninguna) |
+| tras paso 1  | 1 | 7 | 7 | `LOAD r0, [40]`   |
+| tras paso 2  | 2 | 8 | 7 | `ADD r0, 1`       |
+| tras paso 3  | 3 | 8 | 8 | `STORE r0, [40]`  |
 
-En ese modelo:
+Cada fila es un estado. Cada transición entre filas consecutivas es la aplicación de la instrucción nombrada en la última columna. La columna `pc` muestra que avanza una posición por paso —comportamiento por defecto del que el [capítulo 06](06-flujo-de-control.md) va a dar la versión completa. La columna `r0` cambia en los pasos 1 y 2 (las dos primeras instrucciones lo modifican) y queda igual en el paso 3 (`STORE` lee de `r0` pero no lo cambia). La columna `mem[40]` cambia sólo en el paso 3.
 
-- la misma memoria guarda información direccionable
-- una parte de esa información puede ser leída como **instrucciones**
-- otra parte puede ser leida como **datos**
-- otra parte puede ser leída como **datos**
-- una unidad ejecutora toma el siguiente paso indicado, lo interpreta y deja preparada la máquina para continuar
+Vale la pena leer esta tabla con detalle, porque concentra casi todo el nivel. Tres pasos, cuatro filas, todo el cambio visible. Una persona que mire esta traza y pueda explicar por qué `r0` cambia en los primeros dos pasos pero no en el tercero, ya entendió la mitad de lo que `L1` busca instalar. La otra mitad —cómo cada pieza se comporta y cómo el flujo se desvía— viene en los capítulos siguientes.
 
-La intuición fuerte es esta: el algoritmo deja de estar soldado a la máquina y pasa a estar representado en memoria.
-
-Eso parece una frase chica, pero cambia todo. La misma máquina puede sumar una lista, ordenar un arreglo, buscar un patrón en un archivo o compilar otro programa sin ser reconstruida. Solo hay que cargar otra secuencia de instrucciones y darle otros datos. Acá está el poder de la idea: una computadora de propósito general no es una máquina que "sabe hacer todo", sino una máquina suficientemente simple y general como para seguir procedimientos distintos según lo que encuentra almacenado.
-
-La intuición de Turing conecta directo con esto. La máquina universal no es "una máquina enorme" que trae todas las soluciones adentro. Es la idea de que una máquina puede leer la descripción de otro procedimiento y comportarse según esa descripción. Dicho de manera operativa: si un procedimiento puede representarse como información, otra máquina suficientemente general puede leerlo y ejecutarlo.
-
-## El modelo mínimo que hace falta
-
-Una vez fijada esa intuición, recién conviene bajar al recorte mínimo que hace falta para trabajar el resto del nivel.
-
-Ahora sí conviene poner nombres más precisos a las piezas que veníamos describiendo de manera informal.
-
-El modelo chico que alcanza en este punto del plan es este:
-
-- una **CPU**, es decir, la pieza que ejecuta instrucciones
-- un conjunto pequeño de **registros** que guardan estado cercano
-- una **memoria** direccionable
-- un **program counter**, es decir, un registro que marca qué instrucción toca ejecutar ahora
-- un conjunto de **instrucciones** que transforman ese estado
-
-Todavía no hace falta hablar de binarios, transistores, pipelines ni caches. Tampoco hace falta conocer un lenguaje de assembly real. Lo que hace falta es poder mirar una situación y responder: qué estado había antes, qué instrucción se aplica y qué estado queda después.
-
-Un modelo mínimo puede escribirse así:
-
-| Pieza | Estado observable |
-|---|---|
-| `pc` | dirección de la instrucción actual |
-| `r0` | un registro general |
-| `mem[40]` | una celda de memoria |
-| programa | secuencia finita de instrucciones |
-
-Con eso ya se puede dejar de pensar "el programa hace cosas" y empezar a pensar "esta instruccion cambia estas partes del estado".
-
-Cuando en este nivel se habla de **estado de la máquina**, se está hablando justamente del valor actual de esas piezas observables: qué instrucción toca ejecutar ahora, qué contienen algunos registros y qué valores relevantes hay en memoria. Ejecutar deja de sonar mágico cuando se lo mira así: un estado pasa a otro porque una instrucción transforma una parte de lo que la máquina tenía en ese momento.
-
-## Estado, instrucciones y transiciones
-
-Ahora que las piezas ya tienen nombre, la forma más directa de bajar esa intuición a tierra es seguir una traza pequeña.
-
-Supóngase este programa mínimo, escrito en una pseudonotación:
-
-```text
-0: LOAD r0, [40]
-1: ADD  r0, 1
-2: STORE r0, [40]
-3: HALT
-```
-
-Y este estado inicial:
-
-| Componente | Valor inicial |
-|---|---|
-| `pc` | `0` |
-| `r0` | `0` |
-| `mem[40]` | `7` |
-
-Si se sigue la ejecución paso a paso, lo que importa no es la notación exacta sino la transición de estado:
-
-| Paso | Instrucción | Estado antes | Estado después |
-|---|---|---|---|
-| 1 | `LOAD r0, [40]` | `pc=0`, `r0=0`, `mem[40]=7` | `pc=1`, `r0=7`, `mem[40]=7` |
-| 2 | `ADD r0, 1` | `pc=1`, `r0=7`, `mem[40]=7` | `pc=2`, `r0=8`, `mem[40]=7` |
-| 3 | `STORE r0, [40]` | `pc=2`, `r0=8`, `mem[40]=7` | `pc=3`, `r0=8`, `mem[40]=8` |
-| 4 | `HALT` | `pc=3`, `r0=8`, `mem[40]=8` | ejecución detenida |
-
-Si en las direcciones `0..3` hubiera otra secuencia, la CPU sería la misma pero la historia de estados sería otra. Ese es exactamente el punto del programa almacenado: la máquina no cambia de identidad, cambia el procedimiento que va leyendo desde memoria.
-
-Ese cuadro ya alcanza para ver varias cosas importantes:
-
-- la CPU no "entiende el problema"; aplica instrucciones
-- no todas las instrucciones cambian las mismas partes del estado
-- el `pc` ancla el orden de ejecución
-- memoria y registros cumplen roles distintos
-- ejecutar no es otra cosa que encadenar transiciones de estado
-
-Esta forma de pensar sirve mucho más adelante cuando aparezcan punteros, stack frames, syscalls, debuggers y assembly. En todos esos casos la pregunta fuerte sigue siendo la misma: qué parte del estado cambia y por qué.
-
-## Entrada, salida y entorno
-
-El modelo anterior parece cerrado, pero una computadora real no vive aislada. Recibe entrada, produce salida y convive con un entorno.
-
-En este punto alcanza con una intuición mínima:
-
-- una entrada puede terminar cambiando memoria, registros o flujo de control
-- una salida observable suele ser el efecto de un cambio de estado que después se vuelve visible afuera
-- el entorno importa porque la máquina no vive solo para transformarse a sí misma; también interactúa con dispositivos, archivos, red o terminal
-
-Todavía no hace falta bajar eso a syscalls ni a sistema operativo. Lo que hace falta es no imaginar la ejecución como una cajita sellada. El programa tiene estado interno, pero también produce efectos y reacciona a información que llega desde afuera.
-
-Por eso, incluso en un modelo tan chico como el de este capítulo, conviene reservar una casilla mental para "entorno": algo externo que puede alimentar datos o consumir resultados sin que por eso desaparezca el modelo de estado.
-
-## Qué deja afuera este modelo
-
-Este capítulo deja afuera bastante a propósito.
-
-- Deja afuera como se representan exactamente los datos. Eso es `L2`.
-- Deja afuera cómo se construye el ejecutable que la máquina termina corriendo. Eso es `L3`.
-- Deja afuera como se ven instrucciones reales en assembly. Eso es `L7`.
-- Deja afuera detalles de microarquitectura, pipelines, caches y branch prediction.
-- Deja afuera también el detalle de procesos, syscalls, scheduler y memoria virtual.
-
-No porque esos temas no importen, sino porque conviene llegar a ellos con una base común ya fijada. Si primero no queda clara la idea de máquina + estado + transiciones, los niveles siguientes se vuelven nombres técnicos sin forma estable.
-
-El criterio de L1 no es explicar toda la computadora. Es explicar el modelo mínimo que permite dejar de tratarla como magia.
+Una observación final sobre la traza, conectada con la sección anterior: las direcciones 0, 1, 2 contienen instrucciones porque el `pc` las recorre durante los tres pasos. La dirección 40 contiene un dato porque las instrucciones la nombran como operando. Si en un programa distinto el `pc` llegara a apuntar a la dirección 40, su contenido —el valor 7, o lo que esté en ese momento— se leería como instrucción. La materia es la misma; el rol depende del uso.

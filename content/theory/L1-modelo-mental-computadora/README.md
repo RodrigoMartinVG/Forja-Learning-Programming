@@ -1,49 +1,58 @@
-# L1 - Modelo mental de una computadora
+# L1 — Modelo mental de una computadora
 
-> Autoría del nivel abierta en `outline.md`.
->
-> Este README sigue funcionando como documento de diseño interno, aunque el nivel ya tenga capítulos y ejercicios renderizables.
->
-> Diseño curricular -> `docs/forja-contenido.md`
-> Introducción general -> `content/theory/README.md`
-> Outline del nivel -> `outline.md`
-> Diseño del simulador -> `simulador.md`
+> Documento de diseño interno del nivel. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md). Plan de capítulos y ejercicios: [outline.md](outline.md).
 
 ## Estado editorial
 
-- Objetivo del nivel: fijar el modelo mental mínimo de CPU, registros, memoria, direcciones y programa en ejecución antes de abrir `L2`, `L3` y `L7`.
-- Proyecto asociado: ninguno.
-- Estado actual: `outline.md`, los capítulos `00` a `04`, los ejercicios `01` a `05` y una primera implementación del simulador con carga, stepping manual y ejecución continua en `Web Worker` ya existen; los artefactos de `src/` siguen pendientes.
-- Nota de alcance: `L1` sigue siendo una unidad conceptual base. No debe absorber representación binaria, compilación ni assembly más allá de lo mínimo necesario para ubicar el mapa.
+- Authoría real abierta.
+- Outline aprobado en mayo de 2026.
+- Capítulos `chapters/00`–`chapters/07` redactados.
+- Ejercicios en `exercises/` con un archivo por consigna.
 
-## Prerequisitos
+## Prerrequisitos
 
-- L0
+[`L0`](../L0-setup-laboratorio/) completo. El nivel asume que la persona tiene el laboratorio abierto, el devcontainer activo y la rutina de arranque del [capítulo 04 de `L0`](../L0-setup-laboratorio/chapters/04-workflow.md) instalada como costumbre.
 
-## Proyectos asociados
+## Bloque editorial de entrada recomendado
 
-- Sin proyectos asociados todavía.
+Antes de empezar `L1` conviene haber leído [content/theory/forja.md](../forja.md) y [content/theory/README.md](../README.md). Esos dos archivos sitúan a Forja como track y a este nivel como el punto donde se construye el modelo mental que el resto va a asumir disponible.
 
-## Capítulos del nivel
+## Objetivo del nivel
 
-| Archivo | Título | Nota |
-|---|---|---|
-| `chapters/00-introduccion.md` | Introducción | Ubica L1 en el mapa y fija su alcance. |
-| `chapters/01-maquina-de-estado.md` | La computadora como máquina de estado | Estado, instrucciones y transiciones como modelo mínimo. |
-| `chapters/02-cpu-registros-memoria.md` | CPU, registros y memoria | Roles distintos antes de punteros y representación binaria. |
-| `chapters/03-fetch-decode-execute.md` | El ciclo fetch-decode-execute | Trazas concretas de cambio de estado. |
-| `chapters/04-codigo-datos-programa.md` | Código, datos y programa en ejecución | Source, memoria cargada y proceso como programa con estado. |
+Que la persona pueda describir un programa en ejecución como una máquina de estado mínima donde CPU, registros, memoria, instrucciones y `pc` cambian según un ciclo observable, sin necesitar todavía representación binaria precisa ni assembly real.
 
-## Ejercicios del nivel
+## Capítulos
 
-| Archivo | Título | Nota |
-|---|---|---|
-| `exercises/01-seguir-una-traza.md` | Seguir una traza simple | Seguir cambios de `pc`, registros y memoria paso a paso. |
-| `exercises/02-distinguir-las-piezas.md` | Distinguir las piezas | Separar CPU, registros, memoria, direcciones, código y datos. |
-| `exercises/03-salto-condicional.md` | Leer un salto condicional | Decidir cómo cambia el `pc` cuando hay bifurcación. |
-| `exercises/04-source-codigo-y-proceso.md` | Separar source, código y proceso | No mezclar texto fuente, memoria cargada, datos y ejecución. |
-| `exercises/05-comparar-estados.md` | Comparar dos estados | Distinguir cambios de código, estado de ejecución y datos. |
+1. [Por qué este nivel existe](chapters/00-introduccion.md)
+2. [La computadora como máquina de estado](chapters/01-maquina-de-estado.md)
+3. [Memoria como espacio direccionable](chapters/02-memoria.md)
+4. [CPU y registros](chapters/03-cpu-registros.md)
+5. [Instrucciones y operandos](chapters/04-instrucciones-operandos.md)
+6. [El ciclo fetch-decode-execute](chapters/05-fetch-decode-execute.md)
+7. [Flujo de control: program counter, saltos y loops](chapters/06-flujo-de-control.md)
+8. [Código, datos y programa en ejecución](chapters/07-codigo-datos-programa.md)
 
-## Próximo paso
+## Ejercicios
 
-Derivar `src/` con fragmentos mínimos que acompañen las trazas y distinciones del nivel, y extender la solapa `simulador` con mejores trazas didácticas, escenarios curriculares y la evolución prevista para niveles posteriores.
+Los ejercicios viven en [exercises/](exercises/), un archivo por consigna. Cada uno produce evidencia observable (traza completada, clasificación contra criterio, predicción contra ejecución) o es multiple choice con verificación. La materialidad principal del nivel es la **traza tabular de estado**: casi todos los ejercicios producen o leen una.
+
+## Pieza interactiva
+
+La solapa `simulador` del nivel ejecuta el ISA de juguete paso a paso y muestra el estado completo (registros, memoria, `pc`) en cada transición. Es apoyo de observación para los ejercicios; no reemplaza los capítulos. Diseño en [simulador.md](simulador.md), [simulador-layouts.md](simulador-layouts.md) y [simulator-presets/](simulator-presets/).
+
+## Proyecto asociado
+
+Ninguno. `L1` es puramente conceptual y produce el lenguaje de estado que `L2`, `L3` y `L7` van a tomar como base.
+
+## Próximo paso después de `L1`
+
+[`L2` — Representación de la información](../L2-representacion-informacion/) profundiza la idea —ya instalada acá como distinción rol/interpretación— de que el patrón material no trae interpretación pegada. Bits, bytes, endianness y convenciones de lectura aparecen en `L2` apoyados directamente sobre el estado mínimo que `L1` deja firme. Entrar a `L2` sin haber estabilizado este modelo vuelve la representación binaria un ejercicio de notación en vez de una elección de lectura sobre material previamente comprendido.
+
+Más adelante, [`L3`](../L3-pipeline-compilacion-c/) usa la separación entre source, código cargado y proceso del [capítulo 07](chapters/07-codigo-datos-programa.md) como base directa del pipeline de compilación. [`L7`](../L7-alfabetizacion-assembly/) reemplaza el ISA de juguete por x86-64 real sin tener que reconstruir el modelo, sólo refinarlo.
+
+## Notas de mantenimiento
+
+- El ISA de juguete (instrucciones nominales `LOAD`, `STORE`, `MOV`, `ADD`, `SUB`, `JMP`, `JNZ`) debe usarse de forma consistente entre capítulos. Si se introduce una variante, revisar todos los capítulos donde aparezca.
+- La traza tabular es la forma material principal. Si un capítulo deja de tener al menos una traza, el nivel pierde su materialidad central (v2 §R3).
+- No mencionar x86, ARM ni ninguna ISA real más allá de la nota breve en la introducción. Esa frontera la cruza `L7`, no `L1`.
+- La transición a `L2` vive en este README, no en los capítulos.

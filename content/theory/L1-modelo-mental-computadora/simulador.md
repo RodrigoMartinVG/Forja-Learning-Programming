@@ -12,7 +12,7 @@ La primera versión tiene que servir para reforzar lo que ya explican los capít
 
 ## Por qué va en una solapa propia
 
-Esta pieza no conviene vivir como capítulo de teoría ni como ejercicio aislado.
+Esta pieza no debe vivir como capítulo de teoría ni como ejercicio aislado.
 
 - como capítulo sería demasiado grande y con demasiado estado propio
 - como ejercicio quedaría subrepresentada, porque no es una práctica acotada sino una herramienta de exploración
@@ -47,7 +47,7 @@ Estado visible en `L1`:
 - instrucción actual
 - traza de cambios recientes
 
-Estado que no conviene exponer todavía en la primera cara del simulador:
+Estado que no debe exponerse todavía en la primera cara del simulador:
 
 - flags
 - stack pointer
@@ -107,7 +107,7 @@ La interfaz de `L1` no debería usar hexadecimal en esta etapa. Decimal alcanza 
 
 ## Especificación corta del parser
 
-Para la primera iteración conviene cerrar una gramática corta y predecible.
+Para la primera iteración hace falta cerrar una gramática corta y predecible.
 
 Reglas generales:
 
@@ -115,7 +115,7 @@ Reglas generales:
 - programa: una instrucción por línea con formato `direccion: instruccion`
 - datos: una celda por línea con formato `direccion: valor`
 - una misma dirección no puede repetirse
-- en la v1 tampoco conviene reutilizar una dirección como código y como dato
+- en la v1 tampoco debe reutilizarse una dirección como código y como dato
 - sin labels en esta etapa
 - sin comentarios en esta etapa
 
@@ -280,7 +280,7 @@ La recomendación práctica sigue siendo la misma: cualquier ejecución continua
 
 Los presets no deberían quedar hardcodeados sin contexto pedagógico.
 
-Conviene pensarlos como contenido del nivel:
+Hay que tratarlos como contenido del nivel:
 
 - un preset base para `LOAD` + `ADD` + `STORE`
 - un preset para salto condicional con `JNZ`
@@ -301,7 +301,7 @@ Idea general:
 - `L7`: instrucciones con una notación más cercana a assembly real
 - niveles posteriores: stack, syscalls, procesos, scheduler, memoria virtual y otros mecanismos
 
-La regla es simple: el simulador nunca debe mostrar como sabido algo que el nivel todavía no explicó.
+El simulador nunca debe mostrar como sabido algo que el nivel todavía no explicó.
 
 ## Decisiones de arquitectura
 

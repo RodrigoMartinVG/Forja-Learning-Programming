@@ -1,69 +1,74 @@
-# Introducción al Workspace
+# Teoría
 
-Si ya entendiste qué es Forja como plataforma, el siguiente paso es más operativo: entender cómo se entra a este workspace y cómo se recorre sin perderse en el mapa.
+Esta carpeta no es un apéndice menor del repo. Es la columna vertebral conceptual de Forja.
 
-Esta introducción no es un nivel. Es la puerta de entrada editorial al workspace y al recorrido que arranca en `L0`.
+Acá viven las introducciones previas al track, los niveles teóricos, los capítulos, los ejercicios y las piezas auxiliares que hacen falta para volver visible el mapa. Si `projects/` muestra qué se construye, `theory/` explica con qué modelo conviene mirar y construir esas piezas.
 
-Hay una regla operativa que conviene dejar explícita desde el principio: Forja se trabaja con el repositorio abierto en una IDE, idealmente VS Code, y con el contenedor Linux de ese mismo repo ya levantado. La web ayuda a navegar y leer, pero no reemplaza ese entorno de trabajo.
+## Qué ofrece esta parte del workspace
 
-## Qué vas a encontrar en el workspace
+Dentro de `theory/` no hay solo texto corrido. Hay una superficie de trabajo bastante más rica:
 
-Al abrir Forja aparecen cuatro piezas principales:
+- introducciones que ubican la plataforma antes de `L0`
+- niveles con foco único y progresión explícita
+- capítulos que desarrollan una sola distinción fuerte por tramo
+- ejercicios que obligan a observar artefactos, estados, comandos o salidas reales
+- piezas auxiliares como laboratorios, simuladores o documentos de apoyo cuando un nivel lo necesita
 
-- `Que es Forja`, para ubicar motivacion, expectativas y tono del plan
-- esta introduccion, para entender por donde conviene entrar
-- el mapa curricular con niveles `L0-L57`
-- proyectos focalizados e integradores que reaparecen a medida que el recorrido avanza
+La meta de esta carpeta no es cubrir temas por acumulación. Es hacer que cada capa del mapa entre con una función clara antes de reaparecer en proyectos y herramientas más complejas.
 
-No hace falta entender toda la estructura interna del repo para empezar. Al principio alcanza con distinguir que se lee, que se ejecuta y que se construye.
+## Qué teoría sostiene Forja
 
-## Como se relacionan esas piezas
+El mapa teórico arranca por una base deliberadamente dura:
 
-- `Que es Forja` explica por que existe la plataforma y que tipo de recorrido propone.
-- `L0` fija el laboratorio para que el resto del plan no se apoye en un setup ambiguo.
-- Los niveles desarrollan teoria, ejemplos y ejercicios observables.
-- Los proyectos reutilizan y tensionan esa teoria en artefactos concretos.
+- `L0`: laboratorio reproducible
+- `L1`: modelo mental mínimo de una computadora
+- `L2`: representación material de la información
+- `L3`: pipeline de compilación en C
 
-## Como se recorre
+Esa base existe para que el resto de la plataforma no quede apoyado sobre intuiciones borrosas.
 
-La secuencia recomendada al entrar al workspace no es saltar al primer tema que suene atractivo. Conviene seguir una ruta corta y disciplinada:
+Después la teoría se abre a un mapa bastante más grande: C, Rust, POSIX, concurrencia, compiladores, persistencia, redes, runtimes, contenedores, virtualización y frontera con kernel. El usuario no entra acá para ver cuatro notas técnicas. Entra a la mitad conceptual de una plataforma amplia.
 
-1. leer `Que es Forja`
-2. leer esta introduccion
-3. abrir el repo en la IDE, entrar al devcontainer y dejar una terminal lista dentro del contenedor
-4. abrir `L0` y recorrer sus capitulos en orden
-5. ejecutar los comandos o mini-labs mientras se lee
-6. resolver `exercises.md` como verificacion observable
-7. pasar al proyecto asociado cuando exista
-8. volver al mapa para seguir el siguiente tramo del recorrido
+## Cómo se conecta con proyectos
 
-La idea no es separar teoria y practica como si fueran dos productos distintos. El workspace existe justamente para hacer visible como se referencian entre si.
+`theory/` y `projects/` no están separados por comodidad organizativa. Están separados porque cumplen trabajos distintos.
 
-## Por que L0 viene primero
+- la teoría instala modelos, vocabulario preciso y errores que conviene desarmar temprano
+- los proyectos fuerzan a usar esas distinciones en piezas reconocibles como shells, allocators, parsers, runtimes, linkers, contenedores o sistemas de red
 
-L0 no existe para enseñar Docker por hobby. Existe para eliminar una fuente de ruido que arruina todo lo demas: un laboratorio inconsistente.
+La relación correcta no es “primero leer todo y después practicar”. La relación correcta es circular: una teoría prepara un proyecto y un proyecto devuelve presión sobre la teoría.
 
-Si el compilador, el debugger o el entorno cambian de una maquina a otra, despues es muy facil confundir un problema del setup con un problema del codigo. Por eso el primer nivel fija el contrato del entorno antes de entrar a C, Rust o sistemas POSIX.
+## Por dónde entrar
 
-## Ruta minima de entrada
+La entrada corta sigue siendo esta:
 
-Si estas entrando por primera vez, la secuencia recomendada es:
+1. leer [content/theory/forja.md](content/theory/forja.md)
+2. abrir `L0-setup-laboratorio`
+3. dejar el laboratorio operativo y verificable
+4. recién después avanzar al resto de niveles
 
-1. leer `Que es Forja`
-2. leer esta introduccion
-3. abrir el repo en la IDE y entrar al devcontainer
-4. abrir `L0` y empezar por `content/theory/L0-setup-laboratorio/chapters/00-introduccion.md`
-5. recorrer `L0` completo
-6. hacer `content/projects/focused/devcontainer-setup/`
-7. volver al mapa y continuar con `L1`
+Esa secuencia evita un error común: querer entrar directamente al contenido más vistoso sin tener entorno reproducible, ruta de lectura y criterio para separar problemas del sistema de problemas del nivel.
 
-## Que mirar dentro de un nivel
+## Cómo leer un nivel
 
-Cuando se abre un nivel, conviene distinguir cuatro piezas:
+Un nivel puede incluir varias piezas. Las más comunes son estas:
 
-- `00-introduccion.md`, para ubicar el nivel en el mapa y entender que cubre y que no.
-- los capitulos, donde vive el cuerpo principal del contenido.
-- los ejercicios, en `exercises.md` o en entradas separadas dentro de `exercises/`, para verificar el recorrido con evidencia.
-- el proyecto asociado, cuando exista, como siguiente paso natural del nivel.
+- `README.md`, si hace falta fijar estado editorial o alcance del nivel
+- `outline.md`, donde vive el contrato de escritura
+- `chapters/`, donde vive el cuerpo del nivel
+- `exercises/` o `exercises.md`, donde vive la práctica guiada
+- documentos auxiliares como simuladores o laboratorios, cuando el nivel necesita una pieza interactiva o de diseño
 
-No todos los niveles tienen hoy la misma profundidad editorial, pero la forma de entrar no cambia: primero las introducciones, despues `L0`, y recien ahi el resto del mapa.
+No todas las carpetas tienen el mismo grado de authoría real en el mismo momento. El mapa visible puede ser más grande que el cuerpo ya escrito, pero la estructura tiene que seguir siendo honesta para que el usuario vea qué parte del canon ya está desarrollada y cuál sigue en expansión.
+
+## La primera tarea real
+
+La primera tarea real dentro de `theory/` no es elegir el tema más atractivo. Es entrar a `L0` y comprobar que repo, contenedor y toolchain base coinciden con lo que el proyecto declara.
+
+Sin eso, la lectura del resto del mapa queda contaminada por fallos del entorno.
+
+## Lo que sigue
+
+Una vez que `L0` está sano, el recorrido ya puede avanzar por el núcleo inicial del track y después abrirse al resto de la plataforma con otra estabilidad.
+
+La razón de que esta carpeta exista antes de cualquier proyecto vistoso es simple: Forja quiere que el usuario entienda qué está mirando cuando más adelante aparezcan procesos, compiladores, runtimes, contenedores o kernel. `theory/` es la mitad que instala ese criterio.

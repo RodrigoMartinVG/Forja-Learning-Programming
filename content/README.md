@@ -2,6 +2,8 @@
 
 `content/` contiene todo el material curricular del proyecto.
 
+Referencia editorial canónica: [estandar_editorial_forja.md](../estandar_editorial_forja.md)
+
 ## Estado editorial actual
 
 El canon visible del repo ya esta sembrado estructuralmente, pero casi todo `content/` sigue en una mezcla de authoria real puntual y placeholders honestos.

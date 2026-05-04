@@ -1,5 +1,7 @@
 # Documentacion de Forja
 
+Referencia editorial canónica: [estandar_editorial_forja.md](../estandar_editorial_forja.md)
+
 Esta carpeta contiene los documentos maestros del proyecto. Define el canon visible, la arquitectura y el orden de construccion; no contiene el cuerpo renderizado de niveles y proyectos.
 
 - `forja-contenido.md`: plan curricular humano, niveles, caminos de navegacion y bibliografia
