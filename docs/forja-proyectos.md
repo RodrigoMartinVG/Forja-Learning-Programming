@@ -85,81 +85,109 @@ Ejemplos:
 
 La tabla siguiente describe el catálogo estructural visible actual. Los candidatos de ampliación aceptados a nivel documental aparecen después, separados de ese catálogo para no confundir dirección curricular con proyecto ya materializado en el repo.
 
-| Proyecto | Tipo | Nivel(es) | Dominio |
-|---|---|---|---|
-| `devcontainer-setup` | Focalizado | L0 | Entorno |
-| `hello-c` | Focalizado | L8 | C lenguaje |
-| `caesar-cipher` | Focalizado | L8 | C lenguaje |
-| `word-count` | Focalizado | L8 | C lenguaje |
-| `stringlib` | Focalizado | L9 | C lenguaje |
-| `dynamic-array` | Focalizado | L10 | C lenguaje |
-| `elf-explorer` | Focalizado | L11 | C + arquitectura |
-| `getopt-impl` | Focalizado | L12 | C lenguaje |
-| `hello-rust` | Focalizado | L14 | Rust lenguaje |
-| `fizzbuzz-rust` | Focalizado | L14 | Rust lenguaje |
-| `mini-calculator` | Focalizado | L14 | Rust lenguaje |
-| `data-structures-rust` | Focalizado | L15 | Rust lenguaje |
-| `custom-iterator` | Focalizado | L16 | Rust lenguaje |
-| `parser-combinators` | Focalizado | L16 | Rust lenguaje |
-| `ffi-demo` | Focalizado | L18 | FFI C/Rust |
-| `spl_stat` | Focalizado | L20 | POSIX archivos |
-| `spl_ls` | Focalizado | L20 | POSIX archivos |
-| `spl_du` | Focalizado | L20 | POSIX archivos |
-| `file-monitor` | Focalizado | L20 | POSIX archivos |
-| `spl_pstree` | Focalizado | L21 | Procesos |
-| `impl_abort` | Focalizado | L21 | Procesos |
-| `impl_alarm` | Focalizado | L21 | Procesos |
-| `scheduler-sim` | Focalizado | L23 | Scheduling |
-| `vma-explorer` | Focalizado | L24 | Memoria virtual |
-| `cow-demo` | Focalizado | L24 | Memoria virtual |
-| `spl_cp` | Focalizado | L24 | Memoria virtual |
-| `mini-linker` | Focalizado | L25 | ELF y linking |
-| `custom-malloc` | Integrador | L26 | Allocators |
-| `thread-pool` | Focalizado | L27 | Concurrencia |
-| `prod-cons` | Focalizado | L27 | Concurrencia |
-| `rwlock-impl` | Focalizado | L27 | Concurrencia |
-| `impl_arc` | Focalizado | L28 | Concurrencia avanzada |
-| `lock-free-queue` | Focalizado | L30 | Concurrencia avanzada |
-| `rcu-demo` | Focalizado | L30 | Concurrencia avanzada |
-| `named-pipe-sem` | Focalizado | L31 | IPC |
-| `ipc-explorer` | Focalizado | L31 | IPC |
-| `miniqueue` | Integrador | L31 | IPC |
-| `mish` | Integrador | L21, L31, L32 | Shell |
-| `mini-debugger` | Integrador | L21, L24 | Procesos + memoria |
-| `regex-engine` | Focalizado | L33 | Autómatas |
-| `expr-parser` | Focalizado | L34 | Parsers |
-| `Semtex` | Integrador | L34, L35, L36, L37 | Compiladores |
-| `Logico` | Integrador | L34, L35, L36, L37, L54 | Intérpretes + JIT |
-| `KVolt` | Integrador | L41, L45, L53 | Persistencia |
-| `MiniSQL` | Integrador | L42 | Persistencia |
-| `mem-cache` | Integrador | L43 | Persistencia en memoria |
-| `mini-broker` | Integrador | L44 | Event logs y mensajería |
-| `perf-benchmarks` | Focalizado | L45 | Performance |
-| `flamegraph-lab` | Focalizado | L45 | Performance |
-| `cache-locality-exp` | Focalizado | L45 | Performance |
-| `false-sharing-exp` | Focalizado | L45 | Performance |
-| `HTTP server` | Integrador | L47 | Redes |
-| `shell remoto TCP` | Focalizado | L47 | Redes |
-| `minisync` | Integrador | L47 | Redes |
-| `mini-dns-resolver` | Focalizado | L47 | Redes |
-| `mini-tcpdump` | Focalizado | L47 | Redes |
-| `websocket-server` | Focalizado | L48 | Redes |
-| `http2-server` | Focalizado | L48 | Redes |
-| `tinyssh` | Integrador | L49 | Seguridad |
-| `impl_script` | Focalizado | L49 | Seguridad |
-| `async-runtime` | Integrador | L50 | I/O asíncrono |
-| `io_uring-echo` | Focalizado | L50 | I/O asíncrono |
-| `minidocker` | Integrador | L51 | Contenedores |
-| `orquestador` | Integrador | L52 | Sistemas distribuidos |
-| `TCP/IP stack` | Integrador | L48, L52 | Redes + distribuido |
-| `raft-lite` | Integrador | L53 | Consenso distribuido |
-| `JIT-Brain` | Integrador | L54 | Compiladores avanzados |
-| `char-driver` | Focalizado | L56 | Kernel |
-| `ebpf-tracer` | Focalizado | L57 | Kernel + eBPF |
-| `RAM-FileSystem` | Focalizado | L57 | Kernel |
-| `KVM mini-hypervisor` | Integrador | L57 | Kernel |
+La columna `Lenguaje` indica con qué se implementa el proyecto; si aparece `C → Rust` significa que la fase inicial es en C y se reabre en Rust más adelante. La columna `Estado` distingue proyectos con README real escrito (`real`), placeholders estructurales que existen como carpeta y `project.yaml` pero todavía no como documento de recorrido (`placeholder`), y candidatos documentales sin slug ni carpeta consolidada (`candidato`).
 
-### 3.1 Proyectos aceptados a nivel documental pero fuera del catálogo estructural
+| Proyecto | Tipo | Nivel(es) | Dominio | Lenguaje | Estado |
+|---|---|---|---|---|---|
+| `devcontainer-setup` | Focalizado | L0 | Entorno | shell + Docker | real |
+| `hello-c` | Focalizado | L8 | C lenguaje | C | placeholder |
+| `caesar-cipher` | Focalizado | L8 | C lenguaje | C | placeholder |
+| `word-count` | Focalizado | L8 | C lenguaje | C | placeholder |
+| `stringlib` | Focalizado | L9 | C lenguaje | C | placeholder |
+| `dynamic-array` | Focalizado | L10 | C lenguaje | C | placeholder |
+| `elf-explorer` | Focalizado | L11 | C + arquitectura | C | placeholder |
+| `getopt-impl` | Focalizado | L12 | C lenguaje | C | placeholder |
+| `hello-rust` | Focalizado | L14 | Rust lenguaje | Rust | placeholder |
+| `fizzbuzz-rust` | Focalizado | L14 | Rust lenguaje | Rust | placeholder |
+| `mini-calculator` | Focalizado | L14 | Rust lenguaje | Rust | placeholder |
+| `data-structures-rust` | Focalizado | L15 | Rust lenguaje | Rust | placeholder |
+| `custom-iterator` | Focalizado | L16 | Rust lenguaje | Rust | placeholder |
+| `parser-combinators` | Focalizado | L16 | Rust lenguaje | Rust | placeholder |
+| `ffi-demo` | Focalizado | L18 | FFI C/Rust | C + Rust | placeholder |
+| `spl_stat` | Focalizado | L20 | POSIX archivos | C | placeholder |
+| `spl_ls` | Focalizado | L20 | POSIX archivos | C | placeholder |
+| `spl_du` | Focalizado | L20 | POSIX archivos | C | placeholder |
+| `file-monitor` | Focalizado | L20 | POSIX archivos | C | placeholder |
+| `spl_pstree` | Focalizado | L21 | Procesos | C | placeholder |
+| `impl_abort` | Focalizado | L21 | Procesos | C | placeholder |
+| `impl_alarm` | Focalizado | L21 | Procesos | C | placeholder |
+| `scheduler-sim` | Focalizado | L23 | Scheduling | Rust | placeholder |
+| `vma-explorer` | Focalizado | L24 | Memoria virtual | C | placeholder |
+| `cow-demo` | Focalizado | L24 | Memoria virtual | C | placeholder |
+| `spl_cp` | Focalizado | L24 | Memoria virtual | C | placeholder |
+| `mini-linker` | Focalizado | L25 | ELF y linking | C | placeholder |
+| `custom-malloc` | Integrador | L26 | Allocators | C | placeholder |
+| `thread-pool` | Focalizado | L27 | Concurrencia | C | placeholder |
+| `prod-cons` | Focalizado | L27 | Concurrencia | C | placeholder |
+| `rwlock-impl` | Focalizado | L27 | Concurrencia | C | placeholder |
+| `impl_arc` | Focalizado | L28 | Concurrencia avanzada | Rust | placeholder |
+| `lock-free-queue` | Focalizado | L30 | Concurrencia avanzada | Rust | placeholder |
+| `rcu-demo` | Focalizado | L30 | Concurrencia avanzada | C | placeholder |
+| `named-pipe-sem` | Focalizado | L31 | IPC | C | placeholder |
+| `ipc-explorer` | Focalizado | L31 | IPC | C | placeholder |
+| `miniqueue` | Integrador | L31 | IPC | C | placeholder |
+| `mish` | Integrador | L21, L31, L32 | Shell | C | placeholder |
+| `mini-debugger` | Integrador | L21, L24 | Procesos + memoria | C | placeholder |
+| `regex-engine` | Focalizado | L33 | Autómatas | Rust | placeholder |
+| `expr-parser` | Focalizado | L34 | Parsers | Rust | placeholder |
+| `Semtex` | Integrador | L34, L35, L36, L37 | Compiladores | Rust | placeholder |
+| `Logico` | Integrador | L34, L35, L36, L37, L54 | Intérpretes + JIT | C | placeholder |
+| `KVolt` | Integrador | L41, L45, L53 | Persistencia | Rust | placeholder |
+| `MiniSQL` | Integrador | L42 | Persistencia | Rust | placeholder |
+| `mem-cache` | Integrador | L43 | Persistencia en memoria | C | placeholder |
+| `mini-broker` | Integrador | L44 | Event logs y mensajería | Rust | placeholder |
+| `perf-benchmarks` | Focalizado | L45 | Performance | C + Rust | placeholder |
+| `flamegraph-lab` | Focalizado | L45 | Performance | C + Rust | placeholder |
+| `cache-locality-exp` | Focalizado | L45 | Performance | C | placeholder |
+| `false-sharing-exp` | Focalizado | L45 | Performance | C | placeholder |
+| `HTTP server` | Integrador | L47 | Redes | C → Rust | placeholder |
+| `shell remoto TCP` | Focalizado | L47 | Redes | C | placeholder |
+| `minisync` | Integrador | L47 | Redes | Rust | placeholder |
+| `mini-dns-resolver` | Focalizado | L47 | Redes | Rust | placeholder |
+| `mini-tcpdump` | Focalizado | L47 | Redes | C | placeholder |
+| `websocket-server` | Focalizado | L48 | Redes | Rust | placeholder |
+| `http2-server` | Focalizado | L48 | Redes | Rust | placeholder |
+| `tinyssh` | Integrador | L49 | Seguridad | Rust | placeholder |
+| `impl_script` | Focalizado | L49 | Seguridad | C | placeholder |
+| `async-runtime` | Integrador | L50 | I/O asíncrono | Rust | placeholder |
+| `io_uring-echo` | Focalizado | L50 | I/O asíncrono | C + Rust | placeholder |
+| `minidocker` | Integrador | L51 | Contenedores | Rust | placeholder |
+| `orquestador` | Integrador | L52 | Sistemas distribuidos | Rust | placeholder |
+| `TCP/IP stack` | Integrador | L48, L52 | Redes + distribuido | Rust | placeholder |
+| `raft-lite` | Integrador | L53 | Consenso distribuido | Rust | placeholder |
+| `JIT-Brain` | Integrador | L54 | Compiladores avanzados | C | placeholder |
+| `char-driver` | Focalizado | L56 | Kernel | C | placeholder |
+| `ebpf-tracer` | Focalizado | L57 | Kernel + eBPF | C + BPF | placeholder |
+| `RAM-FileSystem` | Focalizado | L57 | Kernel | C | placeholder |
+| `KVM mini-hypervisor` | Integrador | L57 | Kernel | C | placeholder |
+
+### 3.2 Dependencias entre proyectos
+
+Esta tabla nombra explícitamente las dependencias y reaperturas que hoy viven dispersas en notas de arco. La columna `Depende de` lista proyectos sobre cuyo trabajo previo se apoya el integrador. La columna `Reabre / consume` lista proyectos que vuelven a abrirse o son insumo dentro del arco.
+
+| Proyecto | Depende de | Reabre / consume |
+|---|---|---|
+| `mish` | — | reabre Fase 5 con `expr-parser` y herramientas de L34 |
+| `mini-debugger` | — | reaparece junto a `vma-explorer` en L24 |
+| `custom-malloc` | — | sustrato natural para `gc-lab` y para reaperturas de `Logico` |
+| `Semtex` | `expr-parser` | reabre con tipos en L36/L37 |
+| `Logico` | `custom-malloc` | reabre con GC (L39), runtime/VM (L40) y `JIT-Brain` (L54) |
+| `KVolt` | — | se reabre en L45 (medición) y en L53 (replicación opcional sobre `raft-lite`) |
+| `MiniSQL` | `KVolt` (storage engine) | — |
+| `mem-cache` | — | reapertura opcional como servicio en L47/L50 y replicación en L53 |
+| `mini-broker` | — | reapertura opcional como servicio en L47/L50, replicación en L53, integración con candidato de task queues tipadas |
+| `HTTP server` | — | revisita opcional en L50 con `io_uring`; consumidor natural de observabilidad distribuida (L46) |
+| `tinyssh` | `shell remoto TCP` | usa librería criptográfica industrial (`ring` o libsodium) |
+| `async-runtime` | `epoll`-based work de L29/L50 | se beneficia de runtime/VM previo de L40 |
+| `minidocker` | — | usa `libseccomp`; aporta sustrato a `orquestador` |
+| `orquestador` | `minidocker`, `TCP/IP stack` (parcial) | reabre con consenso vía `raft-lite` en L53 |
+| `raft-lite` | — | replica `KVolt`, `mem-cache` o `mini-broker` opcionalmente |
+| `TCP/IP stack` | — | se integra con la red de `orquestador` en L52 |
+| `JIT-Brain` | `Logico` (frontend), L40 (runtime/VM) | cierra el arco de compiladores |
+| `KVM mini-hypervisor` | L55 (frontera user/kernel) | — |
+| `ebpf-tracer` | L55 (frontera user/kernel) | — |
+
+### 3.3 Proyectos aceptados a nivel documental pero fuera del catálogo estructural
 
 | Proyecto candidato | Rol previsto | Acople curricular | Estado estructural |
 |---|---|---|---|

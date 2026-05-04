@@ -173,6 +173,12 @@ En cada nivel, la línea `Proyectos asociados` nombra solo asociaciones estructu
 
 Foco: tener un ambiente reproducible y verificado.
 
+Salida: el lector abre el repo en el devcontainer declarado, ejecuta `verify-setup.sh`, distingue imagen, contenedor, workspace y toolchain, y diagnostica un fallo de entorno sin confundirlo con un bug del código de un nivel posterior.
+
+Prerrequisitos: ninguno; se asume conocimiento previo de programación general.
+
+Materialidad típica: salida de `verify-setup.sh`, contraste entre toolchain declarada por el repo y herramientas efectivamente disponibles en el contenedor, diff entre estado esperado y observado.
+
 Temas centrales:
 
 - devcontainer y laboratorio Linux
@@ -185,6 +191,12 @@ Proyectos asociados: `devcontainer-setup`.
 #### L1 — Modelo mental de una computadora
 
 Foco: entender CPU, memoria, registros y proceso antes de escribir sistemas.
+
+Salida: el lector describe un programa en ejecución como una máquina de estado mínima (CPU, registros, memoria, `pc`), traza el ciclo `fetch → decode → execute` paso a paso y distingue rol e interpretación de un mismo bloque de memoria como instrucción o como dato.
+
+Prerrequisitos: L0.
+
+Materialidad típica: trazas tabulares de estado sobre un ISA de juguete (`LOAD`, `STORE`, `MOV`, `ADD`, `JNZ`); evolución del `pc` y de registros frente a saltos.
 
 Temas centrales:
 
@@ -199,6 +211,12 @@ Proyectos asociados hoy en repo: ninguno; unidad conceptual base.
 
 Foco: cómo viven los datos en hardware.
 
+Salida: el lector mira un dump de bytes y, dada una convención de lectura (entero sin signo, complemento a dos, ASCII, UTF-8, little-endian, IEEE 754), explica qué valor representa y qué cambiaría si la convención cambiara.
+
+Prerrequisitos: L0, L1.
+
+Materialidad típica: hexdump, mismo patrón leído bajo distintas convenciones, comparación LE vs BE del mismo entero, ejemplo de overflow al operar en ancho fijo.
+
 Temas centrales:
 
 - bits, bytes, enteros y complemento a dos
@@ -211,6 +229,12 @@ Proyectos asociados hoy en repo: ninguno. La inspección binaria y la práctica 
 #### L3 — El pipeline de compilación en C
 
 Foco: dejar de tratar al compilador como caja negra.
+
+Salida: el lector toma un `.c` simple, ejecuta el pipeline paso a paso (`.c → .i → .s → .o → ejecutable`), inspecciona cada artefacto intermedio, distingue linking estático y dinámico, y diagnostica un error ubicándolo en la etapa correcta.
+
+Prerrequisitos: L0, L1, L2.
+
+Materialidad típica: `gcc -E`, `gcc -S`, `gcc -c`, invocación manual del linker, `nm`, `objdump`, `file`, `readelf`, `make` sobre un pequeño proyecto multi-archivo.
 
 Temas centrales:
 
@@ -225,6 +249,12 @@ Proyectos asociados hoy en repo: ninguno. La compilación manual de `hello.c` se
 
 Foco: entender `cargo` como herramienta de build, test y dependencias.
 
+Salida: el lector crea un crate con dependencia y tests, y explica el rol de `Cargo.toml`, `Cargo.lock` y `target/`.
+
+Prerrequisitos: L3.
+
+Materialidad típica: salida de `cargo build -v`, inspección de `target/`, diff de `Cargo.lock` antes y después de actualizar una dependencia.
+
 Temas centrales:
 
 - `cargo new`, `build`, `run`, `test`, `doc`
@@ -237,6 +267,12 @@ Proyectos asociados hoy en repo: ninguno. El crate mínimo con dependencia y tes
 #### L5 — Herramientas de observabilidad I
 
 Foco: leer warnings y usar debugger como herramienta permanente.
+
+Salida: el lector usa `gdb` para inspeccionar memoria y variables, y lee críticamente un warning del compilador en lugar de silenciarlo.
+
+Prerrequisitos: L3, L4.
+
+Materialidad típica: sesión `gdb` con breakpoints, output de `clippy`, advertencia de `gcc -Wall -Wextra` antes y después de corregirla.
 
 Temas centrales:
 
@@ -251,6 +287,12 @@ Proyectos asociados hoy en repo: ninguno. El debugging en C y Rust se ejercita d
 
 Foco: sanitizers, valgrind y strace como parte del flujo normal.
 
+Salida: el lector reproduce errores de memoria con sanitizers o valgrind y rastrea syscalls relevantes con `strace`.
+
+Prerrequisitos: L5.
+
+Materialidad típica: salida de ASan ante un use-after-free, `valgrind` reportando una fuga, traza `strace` de un programa simple.
+
 Temas centrales:
 
 - ASan, UBSan, MSan y ThreadSanitizer
@@ -263,6 +305,12 @@ Proyectos asociados hoy en repo: ninguno. Sanitizers, valgrind y `strace` se pra
 #### L7 — Alfabetización assembly
 
 Foco: leer assembly generado por el compilador.
+
+Salida: el lector lee el `.s` de una función simple, reconoce prólogo y epílogo, y explica la calling convention System V para sus argumentos.
+
+Prerrequisitos: L1, L3.
+
+Materialidad típica: `gcc -S` de una función con argumentos, comparación `-O0` vs `-O2`, stepping en `gdb` instrucción a instrucción.
 
 Temas centrales:
 
@@ -279,6 +327,12 @@ Proyectos asociados hoy en repo: ninguno. La lectura de `.s`, el stepping en `gd
 
 Foco: sintaxis, tipos básicos, control flow, arrays, strings e I/O.
 
+Salida: el lector escribe programas C con I/O, control flow y manipulación de strings sin confundir array y puntero.
+
+Prerrequisitos: L3.
+
+Materialidad típica: programas C compilados con `-Wall -Wextra` sin warnings, lectura comentada de `<stdio.h>` y `<string.h>`.
+
 Temas centrales:
 
 - compilación básica con `gcc`
@@ -291,6 +345,12 @@ Proyectos asociados: `hello-c`, `caesar-cipher`, `word-count`.
 #### L9 — C: punteros
 
 Foco: punteros como aritmética de memoria.
+
+Salida: el lector razona sobre direcciones, aritmética de punteros y la equivalencia y diferencia entre arrays y punteros.
+
+Prerrequisitos: L8, L2.
+
+Materialidad típica: impresión de direcciones con `%p`, `gdb` inspeccionando memoria por dirección, sanitizer disparando ante un acceso fuera de rango.
 
 Temas centrales:
 
@@ -305,6 +365,12 @@ Proyectos asociados: `stringlib`.
 
 Foco: layout de datos en memoria.
 
+Salida: el lector predice el layout en memoria de un `struct` con padding y verifica el tamaño real con `sizeof` y `offsetof`.
+
+Prerrequisitos: L9.
+
+Materialidad típica: hexdump de un `struct`, salida de `offsetof` para cada campo, `pahole` opcional sobre el `.o`.
+
 Temas centrales:
 
 - `struct`, `union` y `enum`
@@ -317,6 +383,12 @@ Proyectos asociados: `dynamic-array`.
 #### L11 — C: preprocesador, linkage y undefined behavior
 
 Foco: las capas invisibles que explican gran parte de la complejidad de C.
+
+Salida: el lector explica la diferencia entre `static`, `inline` y `extern` aplicada a un caso real, y reconoce un caso clásico de UB.
+
+Prerrequisitos: L10, L3.
+
+Materialidad típica: `gcc -E` mostrando expansión de macro, error real de `undefined reference` resuelto, UBSan disparando sobre overflow con signo.
 
 Temas centrales:
 
@@ -331,6 +403,12 @@ Proyectos asociados: `elf-explorer`.
 
 Foco: stack, heap, ciclo de vida y errores clásicos de memoria.
 
+Salida: el lector implementa programas con `malloc`/`free` correctos y diagnostica use-after-free, double-free y leaks con sanitizers.
+
+Prerrequisitos: L9, L6.
+
+Materialidad típica: ASan reportando UAF con stack del culprit, `valgrind --leak-check=full`, layout de proceso leído desde `/proc/self/maps`.
+
 Temas centrales:
 
 - layout de un proceso
@@ -343,6 +421,12 @@ Proyectos asociados: `getopt-impl`.
 #### L13 — C: modelo de errores y testing
 
 Foco: cómo se reportan fallos y cómo se testea código de sistemas en C.
+
+Salida: el lector escribe código C con manejo de errores explícito y una suite de tests con sanitizers activos.
+
+Prerrequisitos: L12.
+
+Materialidad típica: diff de golden files, suite corriendo bajo ASan/UBSan, fuzzing básico con libFuzzer o AFL sobre una función pequeña.
 
 Temas centrales:
 
@@ -359,6 +443,12 @@ Proyectos asociados hoy en repo: ninguno. El nivel endurece `stringlib` y `dynam
 
 Foco: Rust antes del borrow checker.
 
+Salida: el lector escribe programas Rust idiomáticos con tipos algebraicos y `Option`/`match`, sin necesidad todavía de pelear con ownership.
+
+Prerrequisitos: L4.
+
+Materialidad típica: `cargo run` y `cargo test` sobre programas pequeños, errores de tipo del compilador leídos como guía.
+
 Temas centrales:
 
 - `let`, mutabilidad y shadowing
@@ -371,6 +461,12 @@ Proyectos asociados: `hello-rust`, `fizzbuzz-rust`, `mini-calculator`.
 #### L15 — Rust: ownership y borrowing
 
 Foco: el sistema que hace a Rust distinto de C.
+
+Salida: el lector explica por qué el compilador rechaza un programa concreto y lo reescribe respetando ownership.
+
+Prerrequisitos: L14, L9.
+
+Materialidad típica: errores `E0382`, `E0502` reproducidos y resueltos; comparación del mismo problema en C con use-after-free reproducible.
 
 Temas centrales:
 
@@ -385,6 +481,12 @@ Proyectos asociados: `data-structures-rust`.
 
 Foco: traits, genéricos, dispatch y macros.
 
+Salida: el lector diseña una API con traits, decide entre dispatch estático y `dyn Trait`, y explica el impacto sobre monomorphization.
+
+Prerrequisitos: L15.
+
+Materialidad típica: tamaño de binario antes y después de pasar a `dyn Trait`, errores de coherencia de traits, `cargo expand` de una macro derive.
+
 Temas centrales:
 
 - traits estándar y propios
@@ -397,6 +499,12 @@ Proyectos asociados: `custom-iterator`, `parser-combinators`.
 #### L17 — Rust: manejo de errores y testing
 
 Foco: ergonomía idiomática de errores y testing en Rust.
+
+Salida: el lector diseña un tipo de error propagable con `?` y escribe tests unitarios, de integración y property-based.
+
+Prerrequisitos: L16.
+
+Materialidad típica: salida de `cargo test`, `proptest` shrinkando un caso fallido, error tipado propagado a través de varias capas.
 
 Temas centrales:
 
@@ -411,6 +519,12 @@ Proyectos asociados hoy en repo: ninguno. El objetivo es consolidar manejo de er
 
 Foco: el puente entre Rust, C y las APIs del sistema.
 
+Salida: el lector llama desde Rust a una librería C, escribe un wrapper seguro y justifica cada bloque `unsafe` con su invariante.
+
+Prerrequisitos: L17, L11.
+
+Materialidad típica: `bindgen` generando bindings, `cargo expand` sobre el wrapper, `miri` ejecutando un test del lado seguro.
+
 Temas centrales:
 
 - `extern "C"`, `bindgen` y `cbindgen`
@@ -423,6 +537,12 @@ Proyectos asociados: `ffi-demo`.
 #### L19 — Rust systems avanzado
 
 Foco: consolidar el tramo de Rust que aparece en librerías y runtimes reales antes de salir al bloque POSIX.
+
+Salida: el lector decide entre `Rc`, `Arc`, `RefCell`, `Mutex`, `Pin` para un caso dado, y construye un wrapper seguro sobre una primitiva insegura.
+
+Prerrequisitos: L18.
+
+Materialidad típica: tests con `loom`, errores reales de `Send`/`Sync` resueltos, ejemplo de `Pin` en una struct self-referential.
 
 Temas centrales:
 
@@ -439,6 +559,12 @@ Proyectos asociados hoy en repo: ninguno. Es un nivel puente para consolidar Rus
 
 Foco: la abstracción central de Unix.
 
+Salida: el lector navega el filesystem por syscalls, distingue inode, path y file descriptor, y observa eventos con `inotify`.
+
+Prerrequisitos: L13 o L17.
+
+Materialidad típica: `strace` de `cat`, salida comparada de `stat()` y `lstat()`, contenido de `/proc/self/fd/`.
+
 Temas centrales:
 
 - inode, pathname y file descriptor
@@ -451,6 +577,12 @@ Proyectos asociados: `spl_stat`, `spl_ls`, `spl_du`, `file-monitor`.
 #### L21 — Procesos y señales
 
 Foco: procesos, `fork`, `exec`, `wait` y señales.
+
+Salida: el lector implementa el patrón `fork`+`exec`+`wait` y maneja `SIGCHLD` y `SIGINT` con `sigaction` correctamente.
+
+Prerrequisitos: L20.
+
+Materialidad típica: `pstree` durante un `fork`, `strace -f` siguiendo `fork`+`exec`, reproducción de procesos zombie y huérfanos.
 
 Temas centrales:
 
@@ -465,6 +597,12 @@ Proyectos asociados: `spl_pstree`, `impl_abort`, `impl_alarm`, inicio de `mish`,
 
 Foco: bajar a las APIs y patrones de Unix real que no cabían en el recorrido POSIX base.
 
+Salida: el lector configura redirecciones, abre archivos relativos a un fd con `openat`, y explica por qué `poll`/`select` no escalan en cargas grandes.
+
+Prerrequisitos: L21.
+
+Materialidad típica: `strace` de un shell con redirecciones, PTY abierto con `openpty`, comparación de benchmarks `poll` vs `epoll` con muchos fds inactivos.
+
 Temas centrales:
 
 - PTY/TTY, redirecciones y descriptores heredados
@@ -477,6 +615,12 @@ Proyectos asociados hoy en repo: ninguno. Funciona como capa de APIs y patrones 
 #### L23 — Scheduling
 
 Foco: cómo decide el kernel qué corre y cuándo.
+
+Salida: el lector explica una traza de scheduling con FIFO, RR y MLFQ, y describe cómo CFS reparte CPU entre procesos.
+
+Prerrequisitos: L21.
+
+Materialidad típica: `schedtool`, `chrt`, `/proc/<pid>/sched`, simulador de scheduler propio del nivel.
 
 Temas centrales:
 
@@ -491,6 +635,12 @@ Proyectos asociados: `scheduler-sim`.
 
 Foco: paginación, `mmap`, VMAs y copy-on-write.
 
+Salida: el lector lee `/proc/<pid>/maps`, explica un page fault concreto y usa `mmap` con `MAP_PRIVATE` y `MAP_SHARED` con criterio.
+
+Prerrequisitos: L21, L9.
+
+Materialidad típica: `/proc/<pid>/maps`, `pmap`, traza de `mmap`+escribir+`fork` mostrando COW disparando un page fault.
+
 Temas centrales:
 
 - MMU y tablas de páginas
@@ -504,6 +654,12 @@ Proyectos asociados: `vma-explorer`, `cow-demo`, `spl_cp`, continuación de `min
 
 Foco: qué vive dentro de un ejecutable y cómo se enlaza.
 
+Salida: el lector identifica headers, secciones y segmentos en un ELF y traza una llamada dinámica vía PLT/GOT.
+
+Prerrequisitos: L11, L7.
+
+Materialidad típica: `readelf -a`, `objdump -d`, `nm`, `ldd`, `LD_DEBUG=bindings` mostrando una resolución dinámica.
+
 Temas centrales:
 
 - ELF64, headers, secciones y segmentos
@@ -516,6 +672,12 @@ Proyectos asociados: `mini-linker`.
 #### L26 — Allocators
 
 Foco: implementar `malloc` y `free` desde cero.
+
+Salida: el lector implementa un allocator con free list y coalescencia, y explica las decisiones de fit y de división de bloques.
+
+Prerrequisitos: L24, L12.
+
+Materialidad típica: traza de `malloc`/`free` interceptada con `LD_PRELOAD`, benchmarks contra glibc malloc, layout interno del heap visualizado.
 
 Temas centrales:
 
@@ -532,6 +694,12 @@ Proyectos asociados: `custom-malloc`.
 
 Foco: usar concurrencia basada en memoria compartida.
 
+Salida: el lector escribe un productor-consumidor correcto con mutex y condvar y reproduce un data race controlado para luego corregirlo.
+
+Prerrequisitos: L21, L17.
+
+Materialidad típica: ThreadSanitizer disparando en un data race, `strace` mostrando llamadas a `futex`, traza de bloqueo y desbloqueo.
+
 Temas centrales:
 
 - `pthread_create`, `join`, `detach`
@@ -544,6 +712,12 @@ Proyectos asociados: `thread-pool`, `prod-cons`, `rwlock-impl`.
 #### L28 — Concurrencia II: el hardware debajo de las primitivas
 
 Foco: entender por qué existen los modelos de memoria.
+
+Salida: el lector explica qué reordena el compilador, qué reordena la CPU y cómo MESI sostiene la semántica de un mutex.
+
+Prerrequisitos: L27, L7.
+
+Materialidad típica: comparación entre `volatile` y `atomic`, `perf c2c` o equivalente para detectar false sharing, ejemplo reproducible de reordenamiento.
 
 Temas centrales:
 
@@ -558,6 +732,12 @@ Proyectos asociados: `impl_arc`.
 
 Foco: resolver coordinación práctica y paso de mensajes antes del salto a lock-free completo.
 
+Salida: el lector diseña un dispatch con channels y backpressure y razona por qué ese caso no necesita lock-free todavía.
+
+Prerrequisitos: L27.
+
+Materialidad típica: implementación de channel bounded con condvar, traza de overflow disparando backpressure, comparación con un diseño sin límite.
+
 Temas centrales:
 
 - channels bounded y unbounded
@@ -570,6 +750,12 @@ Proyectos asociados hoy en repo: ninguno. Ordena patrones de coordinación prác
 #### L30 — Concurrencia III: lock-free y concurrencia avanzada
 
 Foco: diseñar primitivas y estructuras concurrentes con atomics.
+
+Salida: el lector implementa una Treiber stack y explica los memory orders elegidos en cada CAS.
+
+Prerrequisitos: L28, L29.
+
+Materialidad típica: tests con `loom` o `relacy`, ejemplo reproducible de ABA, hazard pointer dentro de una cola Michael-Scott.
 
 Temas centrales:
 
@@ -586,6 +772,12 @@ Proyectos asociados: `lock-free-queue`, `rcu-demo`.
 
 Foco: cómo hablan entre sí procesos distintos.
 
+Salida: el lector elige entre pipes, FIFOs, shared memory o sockets para un caso dado y diseña el wire format correspondiente.
+
+Prerrequisitos: L21, L20.
+
+Materialidad típica: salida de `ipcs`, hexdump de un mensaje sobre shared memory, `strace` cruzado entre dos procesos comunicándose.
+
 Temas centrales:
 
 - pipes y FIFOs
@@ -600,6 +792,12 @@ Proyectos asociados: `named-pipe-sem`, `ipc-explorer`, cierre de `mish`, inicio 
 #### L32 — El parser de mish no escala
 
 Foco: construir la motivación concreta del arco de compiladores.
+
+Salida: el lector identifica al menos tres casos concretos donde el parser artesanal de `mish` falla, y argumenta la necesidad de gramática formal.
+
+Prerrequisitos: L31, fases previas de `mish`.
+
+Materialidad típica: input de shell que rompe el parser actual, traza del estado fallido, gramática parcial en notación BNF para el mismo lenguaje.
 
 Temas centrales:
 
@@ -618,6 +816,12 @@ Nota de diseño curricular: `L32` deja de ser un simple escalón de transición 
 
 Foco: transformar texto en tokens con teoría útil.
 
+Salida: el lector traduce una expresión regular a NFA y luego a DFA, y explica por qué backtracking puede ser exponencial en algunos motores.
+
+Prerrequisitos: L17 o L13.
+
+Materialidad típica: dibujo de NFA y DFA equivalentes, benchmark de regex catastrófica que dispara backtracking.
+
 Temas centrales:
 
 - DFA y NFA
@@ -630,6 +834,12 @@ Proyectos asociados: `regex-engine`.
 #### L34 — Parsers y gramáticas
 
 Foco: transformar tokens en estructura.
+
+Salida: el lector escribe un recursive descent o un Pratt parser que respeta precedencia y produce un AST navegable.
+
+Prerrequisitos: L33, L16.
+
+Materialidad típica: AST impreso para una expresión con precedencias mezcladas, error de parse reportado con posición exacta.
 
 Temas centrales:
 
@@ -644,6 +854,12 @@ Proyectos asociados: `expr-parser`, `Semtex` Fase 1, `Lógico` Fase 1, cierre de
 
 Foco: ejecutar un AST.
 
+Salida: el lector implementa un evaluador con entornos léxicos correctos y closures que cierran sobre las variables vivas.
+
+Prerrequisitos: L34.
+
+Materialidad típica: REPL con closures funcionando, ejemplo comparado de scoping léxico vs dinámico, traza de evaluación.
+
 Temas centrales:
 
 - REPL
@@ -657,6 +873,12 @@ Proyectos asociados: `Lógico` v1, `Semtex` Fases 2-3.
 
 Foco: resolver tipos a mano antes de formalizar HM.
 
+Salida: el lector resuelve a mano un sistema de constraints con union-find y explica cada paso de unificación.
+
+Prerrequisitos: L35.
+
+Materialidad típica: árbol de constraints generado a partir de un programa pequeño, traza de `unify` y union-find sobre el mismo problema.
+
 Temas centrales:
 
 - tipos simples
@@ -669,6 +891,12 @@ Proyectos asociados: `logico`, `semtex`. Aun así, el corazón del nivel sigue v
 #### L37 — Inferencia de tipos: el algoritmo W
 
 Foco: Hindley-Milner formalizado e implementado.
+
+Salida: el lector implementa el algoritmo W con generalización y aplica inferencia a un programa Lisp simple.
+
+Prerrequisitos: L36.
+
+Materialidad típica: derivación de tipos paso a paso de un programa, error de unificación reportado con posición y tipos involucrados.
 
 Temas centrales:
 
@@ -689,6 +917,12 @@ Nota de alcance del bloque 8: este tramo ya quedó descomprimido. Antes de persi
 
 Foco: representar datos fuera del proceso de forma estable y evolucionable.
 
+Salida: el lector diseña un wire format binario con versionado backward y forward compatible y lo evoluciona sin romper consumidores existentes.
+
+Prerrequisitos: L17, L10, L31.
+
+Materialidad típica: hexdump del formato definido, prueba cruzada entre dos versiones del mismo lector, checksum verificado tras corrupción inducida.
+
 Temas centrales:
 
 - wire formats binarios y de texto
@@ -701,6 +935,12 @@ Proyectos asociados hoy en repo: ninguno. Este nivel explicita una capa del cano
 #### L39 — GC fundamental
 
 Foco: estudiar GC como problema propio antes de esconderlo dentro de un intérprete o VM.
+
+Salida: el lector implementa mark-sweep sobre un grafo de objetos y explica los tradeoffs de pausas y throughput frente a copying.
+
+Prerrequisitos: L26, L35.
+
+Materialidad típica: traza de roots, snapshot del heap antes y después del marcado, medición de pausa para distintos tamaños de heap.
 
 Temas centrales:
 
@@ -715,6 +955,12 @@ Proyectos asociados hoy en repo: ninguno. La capa de GC queda incorporada al can
 
 Foco: explicar cómo se organiza la ejecución más allá del AST antes de llegar al async runtime.
 
+Salida: el lector diseña el object layout de una VM mínima y ejecuta bytecode con un dispatch loop coherente.
+
+Prerrequisitos: L39, L37.
+
+Materialidad típica: hexdump del bytecode emitido, traza del dispatch loop ejecutando un programa, layout del objeto en memoria.
+
 Temas centrales:
 
 - object layout, tagging y representación en heap
@@ -727,6 +973,12 @@ Proyectos asociados hoy en repo: ninguno. El nivel formaliza la capa runtime/VM 
 #### L41 — Persistencia I: durabilidad y B-Trees
 
 Foco: durabilidad y storage engines basados en árbol.
+
+Salida: el lector explica cómo `fsync` y un WAL garantizan durabilidad ante crash y construye un B-Tree on-disk simple.
+
+Prerrequisitos: L24, L12.
+
+Materialidad típica: hexdump de páginas B-Tree, simulación de crash y recovery con WAL, `strace` mostrando los `fsync` críticos.
 
 Temas centrales:
 
@@ -741,6 +993,12 @@ Proyectos asociados: `KVolt` Fases 1-2.
 
 Foco: storage engines orientados a escritura y bases de datos con lenguaje propio.
 
+Salida: el lector compara LSM-Tree y B-Tree para una carga dada y razona MVCC sobre un caso concreto de transacciones concurrentes.
+
+Prerrequisitos: L41.
+
+Materialidad típica: archivos SST de un LSM, plan SQL impreso por `EXPLAIN`, traza de versiones MVCC bajo lectura concurrente.
+
 Temas centrales:
 
 - LSM-Tree y compactación
@@ -753,6 +1011,12 @@ Proyectos asociados: `KVolt` Fases 3-4, `MiniSQL`.
 #### L43 — Persistencia III: cachés en memoria y políticas de evicción
 
 Foco: memoria volátil, límites físicos del hardware y diseño de motores de caché antes de envolverlos en red.
+
+Salida: el lector implementa una caché con TTL y evicción LRU/LFU correcta y razona snapshot por `fork()` aprovechando COW.
+
+Prerrequisitos: L24, L29.
+
+Materialidad típica: traza de hits y misses, snapshot de memoria pre y post `fork`, benchmark comparando políticas de evicción bajo la misma carga.
 
 Temas centrales:
 
@@ -767,6 +1031,12 @@ Proyectos asociados: `mem-cache`.
 
 Foco: convertir un WAL en un log de eventos y construir mensajería durable antes de entrar al stack de red.
 
+Salida: el lector implementa un broker durable con offsets de consumidor, replay y backpressure ante consumidor lento.
+
+Prerrequisitos: L41, L29.
+
+Materialidad típica: log on-disk con offsets reales, traza de un consumidor lento provocando backpressure, replay desde un offset arbitrario.
+
 Temas centrales:
 
 - log-structured storage como event log inmutable
@@ -779,6 +1049,12 @@ Proyectos asociados: `mini-broker`.
 #### L45 — Performance Engineering
 
 Foco: medir antes de optimizar.
+
+Salida: el lector formula una hipótesis, mide, cambia y vuelve a medir, y produce un flamegraph que justifica la decisión.
+
+Prerrequisitos: L28, L24.
+
+Materialidad típica: flamegraph de `perf`, salida de `perf stat`, benchmark con confianza estadística antes y después del cambio.
 
 Temas centrales:
 
@@ -794,6 +1070,12 @@ Proyectos asociados: `perf-benchmarks`, `flamegraph-lab`, `cache-locality-exp`, 
 
 Foco: instrumentar servicios y flujos distribuidos antes de pasar a redes modernas, seguridad y runtimes async.
 
+Salida: el lector instrumenta un servicio con structured logging, métricas y trazas correlacionadas, y diagnostica una falla a partir de esas señales.
+
+Prerrequisitos: L45, L31.
+
+Materialidad típica: log JSON con correlation ID coherente entre servicios, traza distribuida visualizada, dashboard mínimo con SLO definido.
+
 Temas centrales:
 
 - structured logging y correlation IDs
@@ -806,6 +1088,12 @@ Proyectos asociados hoy en repo: ninguno. La observabilidad distribuida queda co
 #### L47 — Redes I: fundamentos TCP y HTTP
 
 Foco: sockets, TCP y HTTP/1.1.
+
+Salida: el lector implementa un servidor TCP concurrente y explica la máquina de estados de TCP sobre una conexión real capturada.
+
+Prerrequisitos: L31, L27.
+
+Materialidad típica: captura `tcpdump` de un handshake, salida de `ss -tan`, intercambio HTTP/1.1 hecho a mano por `nc`.
 
 Temas centrales:
 
@@ -820,6 +1108,12 @@ Proyectos asociados: `HTTP server` Fases 1-3, `shell remoto TCP`, `minisync`.
 
 Foco: lo que aparece encima de TCP en sistemas reales.
 
+Salida: el lector explica el wire format de DNS y la estructura de un frame HTTP/2 leyendo bytes reales de una captura.
+
+Prerrequisitos: L47.
+
+Materialidad típica: captura `tcpdump` o Wireshark de DNS, frames HTTP/2 anotados, handshake TLS observado en bytes.
+
 Temas centrales:
 
 - TLS como capa separada
@@ -833,6 +1127,12 @@ Proyectos asociados: `HTTP server` Fase 4, `mini-dns-resolver`, `mini-tcpdump`, 
 
 Foco: criptografía aplicada y protocolos seguros.
 
+Salida: el lector explica AEAD, intercambio Curve25519 y autenticación SSH-2 leyendo bytes de una sesión real.
+
+Prerrequisitos: L48.
+
+Materialidad típica: trazas SSH y TLS comentadas, vector de prueba AEAD, ejemplo real de criptografía mal usada y su consecuencia observable.
+
 Temas centrales:
 
 - AEAD, Curve25519 y Ed25519
@@ -845,6 +1145,12 @@ Proyectos asociados: `tinyssh`, `impl_script`.
 #### L50 — I/O asíncrono y runtimes
 
 Foco: readiness, completion y runtimes async.
+
+Salida: el lector implementa un executor sobre `epoll` y explica las diferencias entre el modelo readiness y el modelo completion (`io_uring`).
+
+Prerrequisitos: L29, L19.
+
+Materialidad típica: trazas `strace` de `epoll_wait` y `io_uring_enter`, ejecución manual de un `Future` paso a paso, comparación de throughput entre ambos backends.
 
 Temas centrales:
 
@@ -863,6 +1169,12 @@ Nota de alcance: `L50` sigue siendo la llegada al async runtime y al I/O moderno
 
 Foco: las primitivas del kernel que hacen posible un contenedor.
 
+Salida: el lector construye un contenedor mínimo con namespaces, cgroups, OverlayFS y seccomp sin Docker.
+
+Prerrequisitos: L24, L21, L31.
+
+Materialidad típica: `unshare`, `nsenter`, jerarquía de cgroups en `/sys/fs/cgroup`, política seccomp aplicada y verificada.
+
 Temas centrales:
 
 - namespaces
@@ -876,6 +1188,12 @@ Proyectos asociados: `minidocker`.
 
 Foco: coordinar múltiples contenedores como sistema, todavía con un control plane único.
 
+Salida: el lector implementa un reconciliation loop que mantiene estado deseado contra estado observado entre múltiples nodos.
+
+Prerrequisitos: L51, L46.
+
+Materialidad típica: traza del loop de reconciliación, gRPC entre control plane y worker, healthcheck fallando y disparando reconciliación.
+
 Temas centrales:
 
 - reconciliation loop
@@ -888,6 +1206,12 @@ Proyectos asociados: `orquestador`, continuación de `TCP/IP stack`.
 #### L53 — Replicación y consenso
 
 Foco: lograr que varias instancias se comporten como una sola unidad confiable.
+
+Salida: el lector implementa elección de líder Raft y replicación de log con quórum, y razona CAP/PACELC sobre el diseño resultante.
+
+Prerrequisitos: L52.
+
+Materialidad típica: traza de elección con timeouts exponenciales, partición simulada y comportamiento observado, log replicado entre nodos.
 
 Temas centrales:
 
@@ -904,6 +1228,12 @@ Proyectos asociados: `raft-lite`, replicación opcional de `mem-cache`, `mini-br
 
 Foco: emitir código ejecutable en runtime.
 
+Salida: el lector emite código x86-64 a páginas ejecutables, integra register allocation simple y mide el resultado contra el intérprete equivalente.
+
+Prerrequisitos: L40, L7, L25.
+
+Materialidad típica: hexdump del código emitido, `mprotect` aplicado a la página, benchmark JIT vs interpretado.
+
 Temas centrales:
 
 - IR y SSA
@@ -916,6 +1246,12 @@ Proyectos asociados: `JIT-Brain`.
 #### L55 — Frontera user/kernel
 
 Foco: explicitar el contrato entre userspace y kernel antes de entrar a módulos, drivers y subsistemas internos.
+
+Salida: el lector explica el ABI de syscall, configura `seccomp` y `capabilities`, y razona la frontera concreta en JIT, contenedores y eBPF.
+
+Prerrequisitos: L51, L25.
+
+Materialidad típica: salida de `strace`, política seccomp aplicada, comparación de capacidades entre un proceso privilegiado y uno restringido.
 
 Temas centrales:
 
@@ -932,6 +1268,12 @@ Proyectos asociados hoy en repo: ninguno. Es el puente conceptual hacia `char-dr
 
 Foco: entrar al kernel por módulos, drivers y eBPF.
 
+Salida: el lector escribe un módulo kernel con `file_operations` propio y maneja correctamente `copy_to_user` y `copy_from_user`.
+
+Prerrequisitos: L55.
+
+Materialidad típica: `dmesg` con prints del módulo, ciclo `insmod`/`rmmod`, archivo `/dev/` propio funcionando.
+
 Temas centrales:
 
 - Linux Kernel Modules
@@ -944,6 +1286,12 @@ Proyectos asociados: `char-driver`.
 #### L57 — Kernel space II: VFS, allocators del kernel, CFS y virtualización
 
 Foco: recorrer las grandes subsistemas internos del kernel que conectan con el resto del plan.
+
+Salida: el lector ubica un filesystem en VFS, distingue buddy y slab allocator, y explica la API mínima de KVM para arrancar una VM.
+
+Prerrequisitos: L56.
+
+Materialidad típica: módulo de filesystem simple registrado en VFS, traza de un programa eBPF, ioctl real contra `/dev/kvm`.
 
 Temas centrales:
 
