@@ -319,6 +319,67 @@ Sub-contrato del 6.3 con regla extra:
 - **No** usa la plantilla `Qué es / Qué cubre / Qué no cubre / Cómo trabajarlo / El nivel siguiente`. Si el revisor encuentra esa estructura, el archivo se rechaza (A8).
 - La transición a `LX+1` no aparece en el cuerpo. Vive en el `README.md` (R7, 6.2).
 
+#### 6.4.1 Epígrafe del nivel
+
+La introducción de cada nivel **abre con un epígrafe**: una cita de un científico, filósofo, ensayista, escritor o personaje de ficción identificable, que dialogue de forma **tangencial o parabólica** con el tema del nivel. Es parte del canon editorial de Forja: todo `00-introduccion.md` con authoría real lleva epígrafe. La única excepción admisible está al final de esta subsección.
+
+**Dónde y cómo aparece.**
+
+- Encima del primer heading `##` del archivo, después del `# Título`. Nunca en otro capítulo del nivel; sólo en `00-introduccion.md`.
+- Formato: blockquote con la cita, salto de línea, atribución precedida por em-dash y entre cursivas, con la obra o fuente cuando exista.
+- Idioma: la cita va traducida al español. Si la formulación original en otro idioma agrega valor (juego de palabras, cadencia), se permite citar en idioma original y agregar la traducción debajo entre paréntesis.
+- Para personajes de ficción, la atribución nombra al personaje y la obra: `— Ivan Karamázov, en Los hermanos Karamázov, F. Dostoyevski`. No se atribuye a la persona del autor lo que dice el personaje.
+
+**Forma canónica.**
+
+```markdown
+# Introducción
+
+> La cita, breve, una a tres líneas como mucho.
+> — *Atribución, Obra (año si corresponde)*
+
+## Primera sección
+```
+
+**Reglas de selección.**
+
+- **Tangencial, no literal.** La cita ilumina el tema desde un ángulo oblicuo: una metáfora, una analogía, una observación general que el lector puede reinterpretar a la luz del nivel. Si la cita habla *literalmente* del tema técnico, sobra.
+- **Verificable.** Sólo se usan citas con fuente identificable (libro, ensayo, carta, entrevista, capítulo, episodio). Si la atribución es dudosa, se prefijea con "Atribuida a" o se descarta. No se usan citas pescadas de listas de internet sin verificación.
+- **No-cliché.** Quedan vetadas las citas archirepetidas en formación técnica, además de cualquier variante reconocible de las mismas. Lista no exhaustiva:
+  - Newton sobre los hombros de gigantes.
+  - Galileo sobre el universo escrito en lenguaje matemático.
+  - Clarke sobre tecnología avanzada indistinguible de la magia.
+  - Dijkstra sobre que la informática no es más sobre computadoras que la astronomía sobre telescopios.
+  - Knuth sobre la optimización prematura.
+  - Brooks sobre nueve mujeres y un bebé.
+  - "KISS", "YAGNI", "en mi máquina funciona", "no es un bug, es un feature", "si no está roto no lo arregles", "la mejor línea de código es la que no se escribe", "mide dos veces, corta una", "primero resuelve el problema, luego escribe el código", "si te tomó más de diez minutos hacerlo dos veces, automatízalo".
+  - Cualquier cita motivacional genérica de la industria del software, aforismos de management, y frases de redes sociales atribuidas vagamente a Einstein, Twain, Borges o similares sin fuente firme.
+- **No epígrafes en cadena.** Un epígrafe por nivel. No se acumulan dos citas. No se anida una cita técnica debajo de una literaria.
+
+**Guiño interno (canónico, una vez por nivel).**
+
+A lo largo del nivel se retoma, **una sola vez**, una imagen, palabra o estructura del epígrafe, integrándola con naturalidad en la prosa de un capítulo intermedio. El guiño no es comentario sobre la cita ni explicación de ella: es eco de vocabulario o de forma, suficientemente sutil como para que un lector que no haya registrado el epígrafe lea el pasaje sin tropiezo. Reglas:
+
+- **No en `00-introduccion.md`**: el epígrafe ya está ahí; el guiño vive en otro capítulo.
+- **No en el último capítulo**: cerrar un nivel "volviendo" a la cita es gesto retórico previsible y queda vetado.
+- **No nombrar al autor citado** dentro del guiño ("como decía X…"). El eco es léxico o estructural, no atribuido.
+- **Una sola vez por nivel**. Repetir el guiño lo convierte en motivo decorativo y lo destruye.
+- Si la cita admite subversión o lectura irónica desde el contenido técnico, esa es una forma legítima del guiño (ejemplo: contrastar con Humpty Dumpty para fijar que las convenciones no son arbitrarias).
+
+**Cuándo no usar epígrafe (excepción).**
+
+Si después de búsqueda honesta no aparece una cita que cumpla todas las reglas anteriores, el nivel abre sin epígrafe y sin guiño. Es preferible la ausencia limpia a una cita débil, literal, mal atribuida o decorativa. Esta excepción se documenta en el `outline.md` del nivel con una línea: *"sin epígrafe: <razón>"*. No se ejerce por comodidad.
+
+**Registro en el `outline.md`.**
+
+El `outline.md` del nivel registra el epígrafe como parte del diseño del Capítulo 00, en un bloque dedicado dentro de la entrada de ese capítulo. El bloque incluye:
+
+- la cita elegida y su atribución completa (con obra y año cuando exista);
+- una línea breve sobre por qué es tangencial al tema y no cae en la lista de vetos;
+- el capítulo donde va a aparecer el guiño y la imagen, palabra o estructura que se retoma.
+
+Si el epígrafe se descarta, el bloque queda como `**Epígrafe:** sin epígrafe — <razón>`. La regla §7 de [CONVENTIONS.md](CONVENTIONS.md) exige que esta decisión esté tomada **antes** de redactar `00-introduccion.md`: el epígrafe forma parte del outline, igual que los objetivos del capítulo y las secciones planificadas.
+
 ### 6.5 Ejercicios (`exercises.md` o `exercises/`)
 - Ponen al lector a observar, distinguir, registrar o explicar.
 - Permiten imperativo en segunda persona (3.1).

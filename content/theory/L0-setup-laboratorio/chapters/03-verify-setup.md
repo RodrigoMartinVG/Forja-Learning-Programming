@@ -40,6 +40,8 @@ La función ejecuta el comando dentro de un sub-shell que carga el entorno compl
 
 Esa simpleza es deliberada. El script no descubre cosas inteligentemente; lo único que hace es **invocar comandos que el alumno también podría invocar a mano**, y reportar el resultado en formato uniforme. Saber esto importa por una razón pedagógica: si una línea del script reporta `[fail]`, el siguiente paso natural es copiar el comando equivalente de la lista y correrlo a mano para ver el mensaje de error completo, sin la abreviación a una línea que `run_check` aplica.
 
+Lo que el script ofrece, entonces, no es una solución a ningún fallo del laboratorio. Es algo más austero y previo: la posibilidad de **ver el problema** con suficiente granularidad como para poder nombrarlo. Distinguir un `gcc` ausente de un `gcc` instalado pero fuera del `PATH` es trabajo del que pregunta, no del script; el script sólo asegura que la pregunta tenga dónde apoyarse.
+
 ## Las clases de chequeo que hace el script
 
 La lista de invocaciones a `run_check` no es plana en cuanto a su intención; agrupa varias clases de verificación que conviene ver por separado, aunque en el archivo aparezcan mezcladas en orden lineal.

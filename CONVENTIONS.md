@@ -197,7 +197,11 @@ El outline se escribe **antes** del contenido y se actualiza cada vez que el con
 
 Cuando exista un outline de nivel o un outline/plan de proyecto, debe ser tan exhaustivo, amplio y profundo como haga falta para modelar la pieza completa. Si el problema pide ocho capítulos, seis fases o varios desvíos de implementación, se listan todos. No se escatima esfuerzo para que el outline capture la estructura real del trabajo.
 
-### 7.2 Forma del outline
+### 7.2 El outline define el epígrafe del nivel
+
+La entrada del Capítulo 00 dentro del outline incluye un bloque `**Epígrafe:**` con la cita elegida, su atribución completa, una línea sobre por qué es tangencial y no cliché, y el capítulo donde va el guiño con la imagen retomada. La cita queda fijada **antes** de redactar `00-introduccion.md`. La regla detallada vive en [estandar_editorial_forja.md §6.4.1](estandar_editorial_forja.md). Si tras búsqueda honesta no aparece cita aceptable, el bloque dice `sin epígrafe — <razón>`.
+
+### 7.3 Forma del outline
 
 Como documento de diseño (v2 §6.6), el outline contiene en este orden: objetivo, contrato conceptual, decisiones tomadas con su razón, decisiones pendientes o exclusiones, y relación con el nivel y artefactos hermanos.
 
@@ -241,7 +245,7 @@ Plantilla mínima:
 - ...
 ```
 
-### 7.3 Outline y estándar editorial v2
+### 7.4 Outline y estándar editorial v2
 
 El outline se diseña con conciencia del estándar editorial. En particular:
 

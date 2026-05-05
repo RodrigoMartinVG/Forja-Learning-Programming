@@ -96,6 +96,15 @@ Para el redactor, no para el cuerpo del capítulo (v2 §R7).
 
 **Cierre conceptual:** la persona sabe qué cinco artefactos van a ser inspeccionados.
 
+**Epígrafe:**
+
+> Un hombre estira el alambre; otro lo endereza; un tercero lo corta; un cuarto lo afila.
+> — *Adam Smith, sobre la fábrica de alfileres, en La riqueza de las naciones (1776)*
+
+Tangencial: una operación que parece atómica («hacer un alfiler») en realidad es una cadena de pasos especializados encadenados. Misma forma estructural que `gcc hello.c -o hello` esconde cuatro etapas. Fuente firme, autor del XVIII en otro dominio.
+
+**Guiño previsto:** [01-source-artefactos-ejecutable.md](chapters/01-source-artefactos-ejecutable.md), tras listar las herramientas de inspección. Eco estructural usando el término que Smith acuñó: *«esa **división del trabajo** entre herramientas es el reflejo de la división del trabajo entre etapas»*. Sin nombrar a Smith ni a los alfileres.
+
 **Notas v2:** este capítulo es de máximo riesgo de plantilla (`Qué cubre / Qué no cubre / Cómo trabajarlo / El nivel siguiente`). Vetada por v2 §A5/§A6/§B4. Las exclusiones se mencionan en una oración. La transición a `L4` vive en el `README.md`.
 
 ---

@@ -105,6 +105,16 @@ Para el redactor, no para el cuerpo del capítulo (estandar_editorial_forja §R7
 
 **Cierre conceptual:** la persona sabe qué archivos componen un crate recién creado y dónde van a aparecer los artefactos cuando se compile.
 
+**Epígrafe:**
+
+> ¿Quién construyó Tebas, la de las siete puertas?
+> En los libros figuran sólo los reyes.
+> — *Bertolt Brecht, Preguntas de un obrero que lee (1935)*
+
+Tangencial: el poema separa al nombre que aparece en los libros del trabajo que efectivamente se hizo. En `L4` `cargo build` figura como quien construye, pero el trabajo material lo hacen `rustc`, el linker y las dependencias resueltas. La cita habla de ciudades y reyes, no de software; el lector reinterpreta la imagen al pisar el contenido. Fuente firme (poema de 1935). No cae en vetos.
+
+**Guiño previsto:** [01-de-gcc-a-cargo.md](chapters/01-de-gcc-a-cargo.md), tras mostrar `cargo build -v` por primera vez. Eco léxico apuntando a los obreros invisibles del comando: una formulación breve sobre que detrás de la línea «Compiling foo v0.1.0» hay invocaciones concretas a `rustc` que el flag verbose hace visibles. Sin nombrar a Brecht ni a Tebas.
+
 **Notas v2:** capítulo de máximo riesgo de plantilla (`Qué cubre / Qué no cubre / Cómo trabajarlo / El nivel siguiente`). Vetada por estandar §A5/§A6/§B4. Las exclusiones se mencionan en una oración. La transición a `L5` y a `L14` vive en el `README.md`.
 
 ---

@@ -86,6 +86,15 @@ Información para el redactor, no para el cuerpo del capítulo (v2 §R7).
 
 **Cierre conceptual:** la persona sabe qué cuatro piezas va a inspeccionar y por qué orden.
 
+**Epígrafe:**
+
+> No es que no puedan ver la solución. Es que no pueden ver el problema.
+> — *G. K. Chesterton, «La punta de un alfiler», en El escándalo del Padre Brown (1935)*
+
+Tangencial: el detective inglés nombra el desplazamiento entre síntoma visible y problema real, exactamente lo que `L0` instala con la separación de capas del laboratorio. Verificable (cuento de 1935). No cae en vetos.
+
+**Guiño previsto:** [03-verify-setup.md](chapters/03-verify-setup.md), tras presentar `verify-setup.sh` como contrato observable. Eco léxico: *«ver el problema con suficiente granularidad como para nombrarlo»*. Sin nombrar a Chesterton.
+
 **Notas v2 para el redactor:** este capítulo es el que más riesgo tiene de caer en la plantilla `Qué es / Qué cubre / Qué no cubre / Cómo trabajarlo / El nivel siguiente`. Esa plantilla está vetada (v2 §A5/§A6/§B4). Las exclusiones se declaran en una oración breve dentro de prosa, no como sección. La transición a `L1` vive en el `README.md` del nivel, no acá.
 
 ---

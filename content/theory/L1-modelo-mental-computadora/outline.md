@@ -94,6 +94,16 @@ Para el redactor, no para el cuerpo del capítulo (v2 §R7).
 
 **Cierre conceptual:** la persona sabe qué clase de modelo va a construir y por qué la traza es el modo de trabajo.
 
+**Epígrafe:**
+
+> —¿Por qué me hablas de las piedras? Es sólo el arco lo que me importa.
+> —Sin piedras no hay arco.
+> — *Diálogo entre Kublai Kan y Marco Polo, en Las ciudades invisibles, Italo Calvino (1972)*
+
+Tangencial: opone *pieza* y *estructura* sin mencionar máquinas. Resuena con la austeridad del modelo de cinco piezas y la idea de que el programa en ejecución no vive en una pieza aislada sino en su composición. Fuente firme. Personaje de ficción con atribución correcta (diálogo, no autor).
+
+**Guiño previsto:** [05-fetch-decode-execute.md](chapters/05-fetch-decode-execute.md), tras cerrar el ciclo. Eco estructural: *«ninguna pieza por separado contiene el programa; vive en lo que ocurre cuando se las apoya unas contra otras»*. Sin mencionar a Calvino ni a las piedras.
+
 **Notas v2 para el redactor:** este capítulo es el que más riesgo tiene de caer en plantilla. Las exclusiones (representación binaria, pipeline, assembly real) van en una sola oración en prosa, no como sección. La transición a `L2` vive en el `README.md`.
 
 ---

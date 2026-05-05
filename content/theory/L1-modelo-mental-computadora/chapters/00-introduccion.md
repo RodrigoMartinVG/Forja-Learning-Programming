@@ -1,5 +1,9 @@
 # Por qué este nivel existe
 
+> —¿Por qué me hablas de las piedras? Es sólo el arco lo que me importa.
+> —Sin piedras no hay arco.
+> — *Diálogo entre Kublai Kan y Marco Polo, en Las ciudades invisibles, Italo Calvino (1972)*
+
 ## Una receta, un cocinero y la idea de máquina universal
 
 Antes de cualquier tecnicismo, conviene apoyarse en una imagen cotidiana para nombrar dos ideas que después el nivel va a desplegar con cuidado: **algoritmo** y **máquina universal**.

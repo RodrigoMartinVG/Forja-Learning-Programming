@@ -93,6 +93,15 @@ Para el redactor, no para el cuerpo de capítulo (v2 §R7).
 
 **Cierre conceptual:** la persona sabe que toda lectura del nivel va a venir acompañada de la convención bajo la cual lee.
 
+**Epígrafe:**
+
+> Cuando yo uso una palabra, significa exactamente lo que yo decido que signifique, ni más ni menos.
+> — *Humpty Dumpty, en A través del espejo, Lewis Carroll (1871)*
+
+Tangencial por **subversión**: el personaje afirma exactamente lo contrario de lo que `L2` enseña (las convenciones no son arbitrariedad del lector, son acuerdo previo y compartido). El guiño explota esa tensión. Personaje de ficción con atribución correcta. Fuente firme.
+
+**Guiño previsto:** [01-bits-bytes-ancho.md](chapters/01-bits-bytes-ancho.md), tras presentar las 256 filas de un byte. Subversión léxica: *«una convención no es un capricho del lector: un patrón no significa lo que cada uno decida que signifique»*. Sin nombrar a Humpty Dumpty.
+
 **Notas v2:** las exclusiones se mencionan en una oración breve. Nada de plantilla `Qué cubre / Qué no cubre / Cómo trabajarlo`.
 
 ---

@@ -1,5 +1,8 @@
 # Por qué este nivel existe
 
+> Cuando yo uso una palabra, significa exactamente lo que yo decido que signifique, ni más ni menos.
+> — *Humpty Dumpty, en A través del espejo, Lewis Carroll (1871)*
+
 ## El byte sin convención no representa nada
 
 `L1` cerró con un modelo mínimo de máquina: piezas, estado, transiciones, una traza tabular donde cada paso de ejecución es legible. En esa traza, las posiciones de memoria aparecieron siempre con un valor adentro —un número entero, escrito en decimal—, y nada más. Una posición de memoria valía 7, otra valía 40, otra valía `STORE r0, [40]`. La pregunta de *qué clase de cosa* era ese 7 quedó implícita: a veces era un dato numérico, a veces una dirección, a veces un código de instrucción. La trinidad rol/interpretación del [capítulo 02 de `L1`](../../L1-modelo-mental-computadora/chapters/02-memoria.md) ya había avisado que la materia y la lectura son cosas distintas, pero el nivel no entró en cómo esa materia está realmente escrita.

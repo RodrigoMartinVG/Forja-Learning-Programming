@@ -1,5 +1,8 @@
 # Por qué este nivel existe
 
+> Un hombre estira el alambre; otro lo endereza; un tercero lo corta; un cuarto lo afila.
+> — *Adam Smith, sobre la fábrica de alfileres, en La riqueza de las naciones (1776)*
+
 ## Un comando que esconde un pipeline
 
 En un terminal Linux con gcc instalado, compilar un programa C de un solo archivo se hace con un solo comando:

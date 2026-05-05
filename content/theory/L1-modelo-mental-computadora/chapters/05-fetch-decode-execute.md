@@ -52,6 +52,8 @@ Cuando todo esto termina, el paso se considera completo: hay un nuevo estado, un
 
 Cada paso macro —cada fila de la traza estándar— corresponde a un ciclo fetch/decode/execute completo. Lo que la traza muestra como una sola transición (una fila a la siguiente) es internamente la sucesión de los tres subpasos. La columna `pc` es la única que delata el ritmo del ciclo desde afuera: cada vez que el `pc` cambia, hubo un ciclo entero entre medio.
 
+Ninguna pieza, leída por separado, contiene el programa. La CPU sin memoria no ejecuta nada; la memoria sin CPU es contenido inerte; el `pc` aislado es un número sin referente. Lo que se llama *programa en ejecución* no vive en ninguna de las piezas: vive en lo que ocurre cuando se las apoya unas contra otras, ciclo tras ciclo. La traza es la forma material de mirar ese apoyo desde afuera.
+
 ## Un ciclo paso a paso sobre la traza de juguete
 
 Para fijar la descomposición, conviene aplicarla a una traza concreta. Considerar el siguiente programa, con estado inicial `pc = 0`, `r0 = 0`, `mem[40] = 7`:

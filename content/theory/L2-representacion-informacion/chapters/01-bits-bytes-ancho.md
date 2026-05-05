@@ -25,6 +25,8 @@ Un byte representa $2^8 = 256$ patrones distintos. Esos patrones son lo siguient
 
 256 filas. Ninguna repetida, ninguna omitida. Cuál de esos patrones se le asigne a qué valor —entero, caracter, fragmento de instrucción— depende de la convención que se use para leerlos, y los capítulos siguientes van a ir mostrando convenciones distintas. Pero la materia subyacente, el patrón en sí, es siempre uno de esos 256.
 
+La palabra *convención* hace trabajo pesado en este nivel y conviene precisarla. Una convención no es un capricho del lector: un patrón no significa lo que cada uno decida que signifique en el momento de leerlo. Una convención es un acuerdo previo y compartido sobre cómo se interpreta el patrón, fijado antes de la lectura. Dos lectores que apliquen la misma convención al mismo byte llegan al mismo valor; si llegan a valores distintos, alguno de los dos está leyendo bajo otra convención. La libertad está en elegir qué convención se aplica, no en qué dice la convención elegida.
+
 ## Cuántos valores caben en n bits
 
 La fórmula es $2^n$ para $n$ bits. La razón es directa: cada bit duplica el espacio de patrones. Con un bit hay 2 patrones; agregar un segundo bit produce dos copias del espacio anterior —una con el nuevo bit en 0, otra con el nuevo bit en 1—, y así sucesivamente. La tabla siguiente lista los anchos más relevantes para el nivel:

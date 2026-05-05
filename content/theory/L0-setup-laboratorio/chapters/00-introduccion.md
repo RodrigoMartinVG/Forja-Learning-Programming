@@ -1,5 +1,8 @@
 # Por qué este nivel existe
 
+> No es que no puedan ver la solución. Es que no pueden ver el problema.
+> — *G. K. Chesterton, «La punta de un alfiler», en El escándalo del Padre Brown (1935)*
+
 ## Un mismo síntoma, varios orígenes
 
 El track empieza acá por una razón muy concreta: cuando un comando falla en un proyecto de sistemas, el error casi nunca está en el lugar donde se manifiesta. Una compilación que se rompe puede ser bug del código, pero también puede ser una herramienta ausente. Un programa que no arranca puede tener un puntero mal usado, o puede ser que el contenedor donde se intenta ejecutar no tenga la biblioteca que el binario espera. Un debugger que no encuentra símbolos puede señalar un problema real, o puede revelar simplemente que la versión instalada no coincide con la que el repo declara usar.

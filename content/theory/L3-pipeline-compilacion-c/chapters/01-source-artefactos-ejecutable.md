@@ -64,6 +64,8 @@ Para los archivos de texto, las herramientas son las del shell: `cat`, `head`, `
 
 En este capítulo solo se introducen los nombres. Cada herramienta vuelve a aparecer en el capítulo del artefacto que ayuda a inspeccionar.
 
+La especialización de las herramientas, vista de cerca, no es accidental: es la misma forma que tiene el pipeline. `nm` no abre un `.c` ni un `.s`; `ldd` no entiende un `.o`; `objdump -d` no sabe nada de `#include` ni de macros. Cada cual hace una sola cosa sobre un solo formato. Esa división del trabajo entre herramientas es el reflejo, hacia el lado del diagnóstico, de la división del trabajo que ya hay entre etapas: cada etapa transforma un formato en el siguiente y nadie hace dos etapas a la vez.
+
 ## Cuál sirve para qué pregunta
 
 Los cinco artefactos no son intercambiables: cada uno responde a una pregunta distinta sobre el programa. La tabla siguiente lista preguntas típicas y el artefacto que tiene la respuesta:
