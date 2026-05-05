@@ -1,4 +1,4 @@
-# Convenciones del Repositorio
+﻿# Convenciones del Repositorio
 
 > Documento usable de convenciones estructurales y operativas de Forja.
 >
@@ -64,10 +64,12 @@ Ejemplos: `L0-setup-laboratorio`, `L1-modelo-mental-computadora`, …, `L57-kern
 
 | Estado | Contenido mínimo obligatorio |
 |---|---|
-| **Placeholder canónico** (nivel todavía no entró en authoría real) | `README.md`, `meta.yaml` |
-| **Authoría real** | `README.md`, `meta.yaml`, `outline.md`, `chapters/`, `exercises.md` o `exercises/`, `src/` cuando corresponda |
+| **Placeholder canónico** (nivel todavía no entró en authoría real) | `meta.yaml` |
+| **Authoría real** | `meta.yaml`, `outline.md`, `chapters/`, `exercises/` o `exercises.md`, `src/` cuando corresponda. `README.md` opcional como portada editorial. |
 
-El paso de placeholder a authoría real **empieza por `outline.md`** (ver §7 y §8). No se crean `chapters/` ni `exercises.md` antes de tener un outline aprobado.
+El paso de placeholder a authoría real **empieza por `outline.md`** (ver §7 y §8). La aparición de `outline.md` en la carpeta del nivel es la señal de que el nivel salió de placeholder. No se crean `chapters/` ni `exercises.md` antes de tener un outline aprobado.
+
+Mientras un nivel está en placeholder no se mantiene un `README.md` propio: la web sintetiza el cuerpo placeholder a partir de `meta.yaml` (ver `web/vite.config.ts`). El `README.md` reaparece como portada cuando el nivel pasa a authoría real y necesita una.
 
 ---
 
@@ -84,14 +86,14 @@ Los slugs de proyecto usan `kebab-case` ASCII (ver §2).
 
 | Estado | Contenido mínimo obligatorio |
 |---|---|
-| **Placeholder estructural** | `project.yaml`. `README.md` puede existir como placeholder declarado. |
-| **Authoría real** | `project.yaml`, `c/` y/o `rust/`, subdirectorios `phase-n/`, y dentro de cada fase `README.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`. |
+| **Placeholder estructural** | `project.yaml`. La web sintetiza el cuerpo placeholder al vuelo desde la metadata. |
+| **Authoría real** | `project.yaml`, `c/` y/o `rust/`, subdirectorios `phase-n/`, y dentro de cada fase `README.md`, `STUDY_GUIDE.md`, `IMPROVEMENTS.md`. El `README.md` raíz del proyecto aparece como portada de arco. |
 
 Si un proyecto necesita un outline o plan de fases antes o durante la authoría real, se trata con la misma seriedad que un outline de nivel: modela todo el arco necesario, no una versión recortada para "dejarlo corto".
 
 ### 4.2 Autoridad cuando el README y `project.yaml` discrepan
 
-Mientras el proyecto siga en placeholder, manda `project.yaml`. El README gana solo cuando el proyecto entra en authoría real y pasa a ser documento mantenido deliberadamente.
+Mientras el proyecto siga en placeholder no existe `README.md` raíz: manda `project.yaml` y la web sintetiza el cuerpo. El README gana solo cuando el proyecto entra en authoría real y pasa a ser documento mantenido deliberadamente.
 
 ---
 
@@ -101,11 +103,10 @@ Los placeholders trackeables son correctos mientras un nivel o proyecto todavía
 
 - La estructura canónica del directorio ya debe existir.
 - `meta.yaml` acompaña siempre a cada nivel canónico, incluso en placeholder.
-- `README.md` puede existir como placeholder desde mucho antes del contenido final.
-- `outline.md` no se crea por anticipado: aparece cuando un nivel entra en authoría real.
-- En proyectos, `project.yaml` existe antes que la documentación de arco. El `README.md` puede quedarse como placeholder estructural durante mucho tiempo.
-- El archivo declara explícitamente si es contenido para estudiar o documento interno de diseño.
-- Cuando llega contenido real, el placeholder se reemplaza sin romper la estructura esperada del repo.
+- En placeholder **no se mantienen `README.md` a mano**: la web sintetiza el cuerpo desde la metadata (ver `web/vite.config.ts`, funciones `synthesizeLevelReadme` y `synthesizeProjectReadme`). Si por algún motivo aparece un `README.md` en una carpeta placeholder, gana sobre el sintetizado.
+- `outline.md` no se crea por anticipado: aparece cuando un nivel entra en authoría real, y su presencia es la señal estructural del cambio de estado.
+- En proyectos, `project.yaml` existe antes que la documentación de arco.
+- Cuando llega contenido real, el `outline.md` y/o el `README.md` editorial se siembran sin romper la estructura esperada del repo.
 
 El estándar editorial v2 (§8) regula la **prosa** de un placeholder. Esta sección regula su **estructura**.
 
@@ -128,9 +129,9 @@ En la prosa del contenido: *"en la siguiente sección"* refiere a un `##`; *"en 
 
 ```
 LN-slug/
-  README.md          ← documento de diseño interno del nivel
-  meta.yaml          ← metadata del catálogo
-  outline.md         ← contrato de diseño (existe en authoría real)
+  meta.yaml          ← metadata del catálogo (siempre)
+  outline.md         ← contrato de diseño (señala authoría real)
+  README.md          ← portada editorial opcional (solo en authoría real)
   chapters/
     00-introduccion.md
     01-primer-tema.md
@@ -148,11 +149,11 @@ LN-slug/
 - Los archivos de `chapters/` se ordenan lexicográficamente. El prefijo numérico (`00`, `01`, `02`…) define el orden y el número que aparece en el sidebar.
 - `00-introduccion.md` es obligatorio y usa exactamente ese nombre. No se reemplaza por `00-panorama.md`, `00-mapa.md` u otras variantes.
 - La primera línea de cada archivo es un heading `# Título` sin prefijo numérico ni la palabra "Capítulo". Ese título aparece en el sidebar.
-- `README.md` del nivel es documento de diseño interno; no se muestra en la web cuando existe `chapters/`.
+- `README.md` del nivel es portada editorial opcional. Mientras el nivel está en placeholder, no existe en disco y la web lo sintetiza desde `meta.yaml`. Cuando aparece, se trata como documento mantenido y no se muestra en la web si ya existe `chapters/`.
 
 ### 6.4 Bloque editorial de entrada antes de L0
 
-Antes del primer nivel existe un bloque editorial compuesto por [content/theory/forja.md](content/theory/forja.md) y [content/theory/README.md](content/theory/README.md).
+Antes del primer nivel existe un bloque editorial compuesto por [content/intro/forja/forja.md](content/intro/forja/forja.md) y [content/intro/workspace/workspace.md](content/intro/workspace/workspace.md).
 
 Ese bloque no cuenta como nivel ni reemplaza a `L0`. Su función:
 
@@ -307,46 +308,20 @@ Si un tema no aparece arriba, se asume que vive en v2.
 
 ## 11. Plantillas y matriz de decisiones
 
-### 11.1 README.md placeholder de nivel
+### 11.1 Cuerpo placeholder de nivel y proyecto
 
-Plantilla por defecto para niveles que todavía no entraron en authoría real:
+Mientras un nivel o proyecto está en placeholder, **no se mantiene un `README.md` en disco**. La web sintetiza el cuerpo a partir de la metadata (`meta.yaml` / `project.yaml`) en `web/vite.config.ts`, funciones `synthesizeLevelReadme` y `synthesizeProjectReadme`. Si se necesita ajustar el texto que ven los visitantes en estado placeholder, se edita el sintetizador, no el contenido.
 
-```markdown
-# LN — Nombre del nivel
-
-> Placeholder editorial del nivel.
->
-> Qué es Forja → `content/theory/forja.md`
-> Introducción al Workspace → `content/theory/README.md`
-> Diseño curricular → `docs/forja-contenido.md`
-
-## Estado editorial
-
-- Este nivel ya existe en el canon.
-- Todavía no entró en authoría real.
-- `outline.md`, `chapters/`, `src/` y `exercises.md` aparecen cuando se abra esa fase.
-
-## Prerrequisitos
-
-...
-
-## Proyectos asociados
-
-...
-
-## Próximo paso
-
-Abrir authoría real del nivel, crear un `outline.md` exhaustivo y derivar de ahí los capítulos, ejercicios y artefactos necesarios.
-```
+Cuando el nivel entra en authoría real, primero se siembra `outline.md`. El `README.md` editorial (si lo hay) llega después del outline.
 
 ### 11.2 Matriz: ¿qué archivo crear cuándo?
 
 | Situación | Crear ahora | No crear todavía |
 |---|---|---|
-| Nivel canónico nuevo, sin authoría | `README.md` (placeholder), `meta.yaml` | `outline.md`, `chapters/`, `exercises.md`, `src/` |
+| Nivel canónico nuevo, sin authoría | `meta.yaml` (la web sintetiza el cuerpo) | `README.md`, `outline.md`, `chapters/`, `exercises.md`, `src/` |
 | Nivel entra en authoría real | `outline.md` exhaustivo | `chapters/` recién después del outline |
-| Outline aprobado | `chapters/00-introduccion.md`, los capítulos siguientes en orden | `exercises.md` antes de tener al menos los capítulos centrales |
-| Proyecto canónico nuevo | `project.yaml` | `c/`, `rust/`, fases |
+| Outline aprobado | `chapters/00-introduccion.md`, los capítulos siguientes en orden, `README.md` editorial si corresponde | `exercises.md` antes de tener al menos los capítulos centrales |
+| Proyecto canónico nuevo | `project.yaml` (la web sintetiza el cuerpo) | `README.md`, `c/`, `rust/`, fases |
 | Proyecto entra en authoría real | `README.md` real, plan de fases si corresponde | fases sin diseño previo |
 
 ### 11.3 Decisión rápida: ¿esto va a CONVENTIONS o al estándar v2?
@@ -388,7 +363,7 @@ Su uso correcto es como apoyo de segunda pasada (§8). No define el primer outli
 - [docs/forja-proyectos.md](docs/forja-proyectos.md) — catálogo y arcos de proyectos.
 - [docs/forja-arquitectura.md](docs/forja-arquitectura.md) — arquitectura técnica del repo y la web.
 - [docs/forja-construccion.md](docs/forja-construccion.md) — dinámica operativa de construcción.
-- [content/theory/forja.md](content/theory/forja.md) y [content/theory/README.md](content/theory/README.md) — bloque editorial de entrada.
+- [content/intro/forja/forja.md](content/intro/forja/forja.md) y [content/intro/workspace/workspace.md](content/intro/workspace/workspace.md) — bloque editorial de entrada.
 
 ---
 

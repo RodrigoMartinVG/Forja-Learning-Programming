@@ -1,4 +1,4 @@
-# Outline: L3 — Pipeline de compilación de C
+﻿# Outline: L3 — Pipeline de compilación de C
 
 > Documento de diseño interno. No se sirve en la web. Guía para escribir capítulos y ejercicios de `L3`. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md).
 
@@ -7,7 +7,7 @@
 ## Metadatos
 
 - **Prerrequisitos:** `L0`, `L1`, `L2`.
-- **Bloque editorial de entrada recomendado:** `content/theory/forja.md`, `content/theory/README.md`.
+- **Bloque editorial de entrada recomendado:** `content/intro/forja/forja.md`, `content/intro/workspace/workspace.md`.
 - **Proyectos asociados:** preparación directa para proyectos `mini-make` y similares en `L7+`.
 - **Desbloquea:** `L4`.
 - **Fuente curricular:** [docs/forja-contenido.md §6 L3](../../../docs/forja-contenido.md).

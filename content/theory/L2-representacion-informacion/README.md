@@ -1,11 +1,11 @@
-# L2 - Representación de la información
+﻿# L2 - Representación de la información
 
 > README editorial del nivel.
 >
 > Este archivo fija alcance, estructura y estado de trabajo de `L2`. No reemplaza capítulos, ejercicios ni la solapa `laboratorio`: sirve para mantener continuidad curricular dentro del repo.
 >
 > Diseño curricular -> `docs/forja-contenido.md`
-> Introducción general -> `content/theory/README.md`
+> Introducción general -> `content/intro/workspace/workspace.md`
 > Outline del nivel -> `outline.md`
 > Diseño del laboratorio interactivo -> `laboratorio.md`
 

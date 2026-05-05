@@ -1,4 +1,4 @@
-# L4 — El sistema de build de Rust
+﻿# L4 — El sistema de build de Rust
 
 > Documento de diseño interno del nivel. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md). Plan de capítulos y ejercicios: [outline.md](outline.md).
 
@@ -15,7 +15,7 @@
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L4` conviene haber leído [content/theory/forja.md](../forja.md) y [content/theory/README.md](../README.md), y haber completado los capítulos centrales de `L3`. Este nivel no enseña Rust como lenguaje: enseña el **build system** que cualquier proyecto Rust usa, asumiendo que la toolchain ya está instalada (lo dejó verificado `L0`).
+Antes de empezar `L4` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md), y haber completado los capítulos centrales de `L3`. Este nivel no enseña Rust como lenguaje: enseña el **build system** que cualquier proyecto Rust usa, asumiendo que la toolchain ya está instalada (lo dejó verificado `L0`).
 
 ## Objetivo del nivel
 

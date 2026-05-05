@@ -1,4 +1,4 @@
-# L0 — Setup del laboratorio
+﻿# L0 — Setup del laboratorio
 
 > Documento de diseño interno del nivel. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md). Plan de capítulos y ejercicios: [outline.md](outline.md).
 
@@ -15,7 +15,7 @@ Ninguno técnico. El nivel parte de una persona que tiene VS Code instalado, Doc
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L0` conviene haber leído [content/theory/forja.md](../forja.md) y [content/theory/README.md](../README.md). Esos dos archivos sitúan a Forja como track y al workspace como objeto de trabajo. `L0` empieza asumiendo ese contexto.
+Antes de empezar `L0` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y al workspace como objeto de trabajo. `L0` empieza asumiendo ese contexto.
 
 ## Objetivo del nivel
 

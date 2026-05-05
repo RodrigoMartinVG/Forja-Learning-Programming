@@ -1,13 +1,13 @@
-# L3 - El pipeline de compilacion en C
+﻿# L3 - El pipeline de compilacion en C
 
 > README editorial del nivel.
 >
 > Este archivo fija alcance, estructura, artefactos y estado de trabajo de `L3`. No reemplaza capitulos, ejercicios ni `src/`: sirve para mantener estable el contrato curricular del nivel dentro del repo.
 >
 > Diseno curricular -> `docs/forja-contenido.md`
-> Introduccion general -> `content/theory/README.md`
+> Introduccion general -> `content/intro/workspace/workspace.md`
 > Outline del nivel -> `outline.md`
-> Artefactos del nivel -> `src/README.md`
+> Artefactos del nivel -> `src/ARTIFACTS.md`
 
 ## Estado editorial
 

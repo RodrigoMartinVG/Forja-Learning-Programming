@@ -26,8 +26,8 @@
 
 El canon visible del repo ya cubre `L0-L57` y el catálogo estructural actual de proyectos. Eso no implica authoría real homogénea dentro de `content/`.
 
-- En teoría, el placeholder estructural mínimo canónico es `README.md` + `meta.yaml`. Hoy solo `L0` tiene outline, capítulos y ejercicios escritos como contenido real.
-- En proyectos, el placeholder estructural mínimo es `README.md` + `project.yaml` + los directorios de lenguaje pertinentes. Hoy solo `devcontainer-setup` tiene un `README.md` raíz de authoría real.
+- En teoría, el placeholder estructural mínimo canónico es `meta.yaml`. La web sintetiza el cuerpo placeholder al vuelo desde la metadata. `outline.md`, `chapters/`, `exercises/` y `README.md` editorial aparecen cuando se abre authoría real.
+- En proyectos, el placeholder estructural mínimo es `project.yaml`. El `README.md` raíz aparece cuando el proyecto entra en authoría real.
 - `docs/` puede describir candidatos y capas futuras antes de que exista su materialización completa. La web y el build solo consumen lo que ya existe estructuralmente en `metadata/` y `content/`.
 
 ---

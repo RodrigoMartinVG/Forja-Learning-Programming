@@ -201,7 +201,44 @@ function readSimulatorPresetsDir(base: string, dirname: string): SimulatorPreset
     .filter((entry) => entry.program.length > 0)
 }
 
-function readLevelContent(theoryDir: string): {
+function synthesizeLevelReadme(level: LevelMeta, projects: ProjectMeta[]): string {
+  const associated = projects
+    .filter((p) => p.display_levels?.includes(level.id) || p.anchor_level === level.id)
+    .map((p) => `- ${p.codename}`)
+
+  const prereqs = (level.prerequisites ?? []).map((p) => `- ${p}`)
+
+  const lines: string[] = [
+    `# ${level.id} - ${level.title}`,
+    '',
+    '> Placeholder editorial sintetizado desde `meta.yaml`.',
+    '>',
+    '> Diseño curricular → `docs/forja-contenido.md`',
+    '',
+    '## Estado actual',
+    '',
+    '- Este nivel ya existe en el canon y hoy se mantiene como placeholder mínimo.',
+    '- Contenido teórico: pendiente.',
+    '- La aparición de `outline.md` marca el inicio de authoría real.',
+    '',
+    '## Prerequisitos',
+    '',
+    prereqs.length > 0 ? prereqs.join('\n') : '- (sin prerequisitos declarados en `meta.yaml`)',
+    '',
+    '## Proyectos asociados',
+    '',
+    associated.length > 0 ? associated.join('\n') : '- (sin proyectos asociados en `metadata/`)',
+    '',
+    '## Próximo paso',
+    '',
+    'Cuando se abra authoría real del nivel, sembrar primero `outline.md` y después el resto del nivel (`README.md` propio, `chapters/`, `exercises/`, etc.).',
+    '',
+  ]
+
+  return lines.join('\n')
+}
+
+function readLevelContent(theoryDir: string, level: LevelMeta, projects: ProjectMeta[]): {
   readme: string
   exercises: string
   laboratory: string
@@ -223,8 +260,11 @@ function readLevelContent(theoryDir: string): {
   const exerciseEntries = readMarkdownEntriesDir(base, 'exercises')
   const simulatorPresets = readSimulatorPresetsDir(base, 'simulator-presets')
 
+  const readmeOnDisk = readFile('README.md')
+  const readme = readmeOnDisk || synthesizeLevelReadme(level, projects)
+
   return {
-    readme: readFile('README.md'),
+    readme,
     exercises: readFile('exercises.md'),
     laboratory: readFile('laboratorio.md'),
     simulator: readFile('simulador.md'),
@@ -241,13 +281,50 @@ const CONTENT_INDEX_RESOLVED_ID = '\0' + CONTENT_INDEX_ID
 const CONTENT_BODY_ID = 'virtual:forja-content-body'
 const CONTENT_BODY_RESOLVED_ID = '\0' + CONTENT_BODY_ID
 
+function synthesizeProjectReadme(project: ProjectMeta): string {
+  const kind = project.type === 'integrating' ? 'integrador' : 'focalizado'
+  const langs = (project.languages ?? []).map((l) => `- ${l}`)
+  const display = (project.display_levels ?? []).map((l) => `- ${l}`)
+
+  const lines: string[] = [
+    `# ${project.codename ?? project.id}`,
+    '',
+    `> Placeholder estructural del proyecto ${kind} sintetizado desde \`project.yaml\`.`,
+    '>',
+    '> Catálogo de proyectos → `docs/forja-proyectos.md`',
+    '> Metadata estructural → `project.yaml`',
+    '',
+    '## Estado actual',
+    '',
+    '- Este proyecto ya existe en el catálogo canónico.',
+    '- `project.yaml` es la fuente de verdad para niveles, lenguajes y reaperturas.',
+    '- Mientras no haya authoría real, este cuerpo se sintetiza al vuelo desde la metadata.',
+    '',
+    '## Niveles visibles',
+    '',
+    display.length > 0 ? display.join('\n') : '- (sin `display_levels` declarados)',
+    '',
+    '## Lenguajes previstos',
+    '',
+    langs.length > 0 ? langs.join('\n') : '- (sin lenguajes declarados)',
+    '',
+    '## Próximo paso',
+    '',
+    'Cuando se abra authoría real del proyecto, crear un `README.md` exhaustivo de arco y las fases `phase-n/` que hagan falta.',
+    '',
+  ]
+
+  return lines.join('\n')
+}
+
 function readProjectContent(projects: ProjectMeta[]): Record<string, { readme: string }> {
   const projectContent: Record<string, { readme: string }> = {}
 
   for (const project of projects) {
     const readmePath = join(repoRoot, project.dir, 'README.md')
+    const onDisk = existsSync(readmePath) ? readFileSync(readmePath, 'utf-8') : ''
     projectContent[project.id] = {
-      readme: existsSync(readmePath) ? readFileSync(readmePath, 'utf-8') : '',
+      readme: onDisk || synthesizeProjectReadme(project),
     }
   }
 
@@ -256,8 +333,8 @@ function readProjectContent(projects: ProjectMeta[]): Record<string, { readme: s
 
 function readIntroContent(): Record<string, string> {
   const introSources = {
-    forja: join(repoRoot, 'content', 'theory', 'forja.md'),
-    workspace: join(repoRoot, 'content', 'theory', 'README.md'),
+    forja: join(repoRoot, 'content', 'intro', 'forja', 'forja.md'),
+    workspace: join(repoRoot, 'content', 'intro', 'workspace', 'workspace.md'),
     theory: join(repoRoot, 'content', 'theory', 'README.md'),
   }
 
@@ -298,7 +375,7 @@ function forjaContentPlugin(): Plugin {
 
         for (const level of levels) {
           if (level.theory_dir) {
-            levelContent[level.id] = readLevelContent(level.theory_dir)
+            levelContent[level.id] = readLevelContent(level.theory_dir, level, projects)
           }
         }
 

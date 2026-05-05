@@ -20,8 +20,9 @@ Monorepo de aprendizaje de programación de sistemas (C, Rust, sistemas operativ
 
 ## Estado real (no fingir authoría que no existe)
 
-- Sólo algunos `Lx` (x es un número) están en authoría real dentro del track teórico.
-- Sólo algunos projects en `content/projects/` está en authoría real de proyecto.
+- En el track teórico, `L0`–`L4` están en authoría real. El resto de los `Lx` viven como placeholder estructural.
+- El bloque editorial previo a `L0` vive en [content/intro/forja/](content/intro/forja/) y [content/intro/workspace/](content/intro/workspace/).
+- Sólo algunos projects en `content/projects/` están en authoría real de proyecto.
 - El resto del canon vive como **placeholder estructural honesto**, y eso es válido. No completar contenido inventado para "rellenar".
 
 ## Documentos que mandan (en este orden)
@@ -34,7 +35,7 @@ Monorepo de aprendizaje de programación de sistemas (C, Rust, sistemas operativ
    - [docs/forja-proyectos.md](../docs/forja-proyectos.md): catálogo de proyectos y arcos.
    - [docs/forja-arquitectura.md](../docs/forja-arquitectura.md): estructura del repo, metadata, web, laboratorio.
    - [docs/forja-construccion.md](../docs/forja-construccion.md): orden maestro de construcción.
-5. `metadata/levels.yaml`, `meta.yaml` por nivel y `project.yaml` por proyecto: **fuente de verdad estructural**. Si un README discrepa con el YAML mientras el ítem está en placeholder, manda el YAML.
+5. `metadata/levels.yaml`, `meta.yaml` por nivel y `project.yaml` por proyecto: **fuente de verdad estructural**. Mientras un nivel o proyecto esté en placeholder, no existe `README.md` en disco: la web sintetiza el cuerpo desde el YAML (ver `web/vite.config.ts`, `synthesizeLevelReadme` / `synthesizeProjectReadme`). La aparición de `outline.md` (niveles) o de un `README.md` raíz mantenido (proyectos) es la señal estructural de authoría real.
 
 ## Reglas operativas que se olvidan seguido
 

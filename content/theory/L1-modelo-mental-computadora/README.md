@@ -1,4 +1,4 @@
-# L1 — Modelo mental de una computadora
+﻿# L1 — Modelo mental de una computadora
 
 > Documento de diseño interno del nivel. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md). Plan de capítulos y ejercicios: [outline.md](outline.md).
 
@@ -15,7 +15,7 @@
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L1` conviene haber leído [content/theory/forja.md](../forja.md) y [content/theory/README.md](../README.md). Esos dos archivos sitúan a Forja como track y a este nivel como el punto donde se construye el modelo mental que el resto va a asumir disponible.
+Antes de empezar `L1` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y a este nivel como el punto donde se construye el modelo mental que el resto va a asumir disponible.
 
 ## Objetivo del nivel
 

@@ -1,4 +1,4 @@
-# Outline: L2 — Representación de la información
+﻿# Outline: L2 — Representación de la información
 
 > Documento de diseño interno. No se sirve en la web. Guía para escribir capítulos y ejercicios de `L2`. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md).
 
@@ -7,7 +7,7 @@
 ## Metadatos
 
 - **Prerrequisitos:** `L0`, `L1`.
-- **Bloque editorial de entrada recomendado:** `content/theory/forja.md`, `content/theory/README.md`.
+- **Bloque editorial de entrada recomendado:** `content/intro/forja/forja.md`, `content/intro/workspace/workspace.md`.
 - **Proyectos asociados:** ninguno propio. Aporta base directa a proyectos de `L7+`.
 - **Desbloquea:** `L3`.
 - **Fuente curricular:** [docs/forja-contenido.md §6 L2](../../../docs/forja-contenido.md).

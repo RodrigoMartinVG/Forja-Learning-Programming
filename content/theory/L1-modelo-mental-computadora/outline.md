@@ -1,4 +1,4 @@
-# Outline: L1 — Modelo mental de una computadora
+﻿# Outline: L1 — Modelo mental de una computadora
 
 > Documento de diseño interno. No se sirve en la web. Guía para escribir capítulos y ejercicios de `L1`. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md).
 
@@ -7,7 +7,7 @@
 ## Metadatos
 
 - **Prerrequisitos:** `L0`.
-- **Bloque editorial de entrada recomendado:** `content/theory/forja.md`, `content/theory/README.md`.
+- **Bloque editorial de entrada recomendado:** `content/intro/forja/forja.md`, `content/intro/workspace/workspace.md`.
 - **Proyectos asociados:** ninguno.
 - **Desbloquea:** `L2`.
 - **Fuente curricular:** [docs/forja-contenido.md §6 L1](../../../docs/forja-contenido.md).

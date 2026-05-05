@@ -1,4 +1,4 @@
-# Outline: L0 — Setup del laboratorio
+﻿# Outline: L0 — Setup del laboratorio
 
 > Documento de diseño interno. No se sirve en la web. Guía para escribir capítulos y ejercicios de `L0`. La voz, prosa y anti-patrones aplicables están en [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Las reglas estructurales viven en [CONVENTIONS.md](../../../CONVENTIONS.md).
 
@@ -7,7 +7,7 @@
 ## Metadatos
 
 - **Prerrequisitos:** ninguno.
-- **Bloque editorial de entrada recomendado:** `content/theory/forja.md`, `content/theory/README.md`.
+- **Bloque editorial de entrada recomendado:** `content/intro/forja/forja.md`, `content/intro/workspace/workspace.md`.
 - **Proyecto asociado:** `content/projects/focused/devcontainer-setup`.
 - **Desbloquea:** `L1`.
 - **Fuente curricular:** [docs/forja-contenido.md §6 L0](../../../docs/forja-contenido.md).

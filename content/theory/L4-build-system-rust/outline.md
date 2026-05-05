@@ -1,4 +1,4 @@
-# Outline: L4 — El sistema de build de Rust
+﻿# Outline: L4 — El sistema de build de Rust
 
 > Documento de diseño interno. No se sirve en la web. Guía para escribir capítulos y ejercicios de `L4`. Voz y prosa: [estandar_editorial_forja.md](../../../estandar_editorial_forja.md). Estructura: [CONVENTIONS.md](../../../CONVENTIONS.md).
 
@@ -7,7 +7,7 @@
 ## Metadatos
 
 - **Prerrequisitos:** `L3`.
-- **Bloque editorial de entrada recomendado:** `content/theory/forja.md`, `content/theory/README.md`.
+- **Bloque editorial de entrada recomendado:** `content/intro/forja/forja.md`, `content/intro/workspace/workspace.md`.
 - **Proyectos asociados:** ninguno propio. Sirve de base para `hello-rust`, `fizzbuzz-rust` y `mini-calculator` en `L14`.
 - **Desbloquea:** `L5`, y en particular el flujo Rust de `L14`.
 - **Fuente curricular:** [docs/forja-contenido.md §6 L4](../../../docs/forja-contenido.md).
