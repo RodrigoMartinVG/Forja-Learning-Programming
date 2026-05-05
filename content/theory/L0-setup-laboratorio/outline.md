@@ -263,6 +263,55 @@ Información para el redactor, no para el cuerpo del capítulo (v2 §R7).
 
 ---
 
+### Capítulo 06 — El laboratorio desde Docker (opcional)
+
+**Archivo:** `chapters/06-laboratorio-desde-docker.md`
+
+**Estatus:** opcional. No es prerrequisito de `L1`. Pensado como profundización para quien quiera ver con sus propios ojos las piezas del cap. 01 desde el lado de Docker.
+
+**Objetivo:** materializar las afirmaciones del capítulo 01 desde fuera del devcontainer: que la imagen tiene un id, que el contenedor es una instancia listable, que el workspace es un bind mount con `Source` y `Destination`, y que devcontainer es una capa fina sobre `docker build` + `docker run` con `-v`.
+
+**Problema técnico que abre:** desde dentro del contenedor no se puede comprobar la existencia material de la imagen, del contenedor mismo ni del bind mount. Eso deja al cap. 01 sosteniéndose por confianza en su propio modelo. Mirar desde Docker cierra esa brecha.
+
+**Modelo mental que instala:**
+- el devcontainer es `docker build` + `docker run -v` automatizados por VS Code;
+- `docker ps`, `docker images`, `docker inspect` son la perspectiva externa que confirma el modelo del cap. 01;
+- `stop`/`start`/`exec`/`rm` son las primitivas que VS Code dispara por debajo;
+- el bind mount del repo se puede reproducir manualmente con `-v "$PWD:/workspaces/<repo>"`.
+
+**Secciones planificadas (H2):**
+- `## Por qué mirar el lab desde afuera`
+- `## Las tres listas: imágenes, contenedores corriendo, contenedores totales`
+- `## Inspeccionar un contenedor: el bind mount como objeto`
+- `## Ciclo de vida del contenedor`
+- `## Limpieza de objetos viejos`
+- `## El lab sin devcontainer, sólo con Docker`
+- `## Lo que este capítulo no se ocupa de cubrir`
+
+**Materialidad obligatoria:**
+- `docker images`, `docker ps`, `docker ps -a` con output representativo;
+- `docker inspect` filtrado a `.Mounts` mostrando `Source` y `Destination`;
+- comandos `docker stop` / `start` / `exec` / `rm` con su efecto;
+- comando completo de `docker build` apuntando a `.devcontainer/Dockerfile`;
+- comando completo de `docker run -it --rm -v "$PWD:/workspaces/..." -w /workspaces/... forja-lab bash`.
+
+**Confusiones que desmonta:**
+- el devcontainer como sistema mágico sin equivalente explícito en `docker`;
+- creer que una nueva terminal del devcontainer es un contenedor nuevo (es un `docker exec`);
+- creer que `Rebuild Container` y `rm` + reabrir son lo mismo;
+- mezclar bind mounts con volúmenes nombrados (sólo se cubre el primero).
+
+**Fuera de alcance dentro del capítulo:**
+- redes y publicación de puertos;
+- volúmenes nombrados;
+- `docker compose`;
+- multi-stage builds;
+- registries.
+
+**Cierre conceptual:** la persona puede listar las piezas del lab desde fuera, comprobar el bind mount con `docker inspect`, y reproducir el levantamiento del lab sin VS Code si hace falta.
+
+---
+
 ## Ejercicios
 
 `exercises.md` único (volumen bajo, contenido no especialmente independiente entre ejercicios).
@@ -327,6 +376,7 @@ Ninguna en `L0`. El "laboratorio" del nivel es el propio devcontainer. Toda obse
 ## Notas finales para el redactor
 
 - El nivel debe sentirse como contrato operativo, no como tutorial de Docker. Cada explicación se ancla en archivos del repo o comandos observables.
-- Los seis capítulos forman cadena: piezas → toolchain → verificación → workflow → diagnóstico. No reordenar.
+- Los cinco capítulos canónicos forman cadena: piezas → toolchain → verificación → workflow → diagnóstico. No reordenar.
+- El capítulo 06 es opcional y posterior al cierre canónico. No debe convertirse en prerrequisito ni mencionarse desde los capítulos 01–04 como dependencia. El capítulo 05 puede referirlo únicamente como recurso para diagnósticos que requieran perspectiva externa al contenedor.
 - Si al escribir un capítulo aparece un H2 fuera de los planificados, primero verificar que no caiga en v2 §A5 antes de incorporarlo.
 - La transición hacia `L1` y la conexión con el proyecto `devcontainer-setup` se mencionan en el `README.md` del nivel, no en el cuerpo de los capítulos.

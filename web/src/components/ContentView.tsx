@@ -249,16 +249,17 @@ function LevelView({
   return (
     <div className="content-view anim-fade-up">
 
-      {/* ── Topbar: left (Forja + Mapa) | center (breadcrumb) | right (tabs + prog) ── */}
+      {/* ── Topbar: left (Forja) | center (Mapa + breadcrumb) | right (tabs + prog) ── */}
       <header className="content-topbar">
 
         <div className="content-topbar__left">
           <button className="ws-header__logo" onClick={onHome}>Forja</button>
           <div className="content-topbar__left-sep" />
-          <button className="content-tab" onClick={onBack}>Mapa</button>
         </div>
 
         <div className="content-topbar__crumb">
+          <button className="content-tab content-topbar__crumb-back" onClick={onBack}>Mapa</button>
+          <span className="content-topbar__crumb-sep">/</span>
           <span className="content-topbar__crumb-seg">
             {DOMAIN_NAME[level.domain] ?? level.domain}
           </span>
