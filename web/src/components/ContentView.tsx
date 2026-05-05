@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { levels, projects } from 'virtual:forja-content'
 import { introContent, levelContent, projectContent } from 'virtual:forja-content-body'
@@ -122,6 +122,12 @@ function IntroView({
   const body = introContent[introId] ?? ''
   const meta = INTRO_META[introId] ?? INTRO_META.workspace
 
+  // Scroll-to-top al cambiar de intro (footer pager / cross-link en MD)
+  useEffect(() => {
+    const el = document.querySelector('.content-body') as HTMLElement | null
+    el?.scrollTo({ top: 0, behavior: 'instant' })
+  }, [introId])
+
   const openTarget = (target: { type: 'intro' | 'level'; id: string }) => {
     if (target.type === 'intro') {
       navigate(withWorkspaceSearch(`/workspace/intro/${target.id}`, workspaceSearch))
@@ -221,6 +227,9 @@ function LevelView({
   const [selectedProject, setSelectedProject] = useState<ProjectMeta | null>(null)
   const bodyRef = useRef<HTMLDivElement>(null)
   const scrollTop = () => bodyRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+
+  // Reset scroll cuando cambia el nivel
+  useEffect(() => { scrollTop() }, [level.id])
 
   const content            = levelContent[level.id]
   const chapters           = content?.chapters ?? []
@@ -504,6 +513,12 @@ function ProjectView({
   const handleBack = fromLevel
     ? () => navigate(withWorkspaceSearch(`/workspace/level/${fromLevel}`, workspaceSearch))
     : onBack
+
+  // Reset scroll al cambiar de proyecto
+  useEffect(() => {
+    const el = document.querySelector('.content-body') as HTMLElement | null
+    el?.scrollTo({ top: 0, behavior: 'instant' })
+  }, [project?.id])
 
   if (!project) {
     return (

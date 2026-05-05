@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -52,33 +53,84 @@ function MermaidBlock({ code }: { code: string }) {
 
 // ─── Custom code renderer ────────────────────────────────────────────────────
 
-const components: Components = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pre({ children, ...props }: any) {
-    const child = Array.isArray(children) ? children[0] : children
-    // Mermaid: render as diagram
-    if (child?.props?.className?.includes('language-mermaid')) {
-      const code = String(child.props.children ?? '').replace(/\n$/, '')
-      return <MermaidBlock code={code} />
-    }
-    // Untagged blocks are program output / terminal sessions, not source code
-    const hasLanguage = child?.props?.className?.includes('language-')
-    if (!hasLanguage) {
-      const cls = ['output', props.className].filter(Boolean).join(' ')
-      return <pre {...props} className={cls}>{children}</pre>
-    }
-    return <pre {...props}>{children}</pre>
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  code({ className, children, ...props }: any) {
-    if (!className) return <code {...props}>{children}</code>
-    return <code className={className} {...props}>{children}</code>
-  },
+// Resolve markdown-relative links to in-app SPA routes.
+// Examples handled:
+//   ../workspace/workspace.md          → /workspace/intro/workspace
+//   ../forja/forja.md                  → /workspace/intro/forja
+//   ../../intro/forja/forja.md         → /workspace/intro/forja
+//   ../../../theory/L0-...             → null (let it fallback to MapView)
+function resolveInternalHref(href: string): string | null {
+  if (!href) return null
+  // Quick deny list: external, hash-only, mailto, etc.
+  if (/^(https?:|mailto:|tel:|#)/i.test(href)) return null
+  // Intro cross-links (forja ↔ workspace)
+  const introMatch = href.match(/(?:^|\/)(forja|workspace)\/\1\.md$/i)
+  if (introMatch) {
+    return `/workspace/intro/${introMatch[1].toLowerCase()}`
+  }
+  return null
+}
+
+function buildComponents(navigate: ReturnType<typeof useNavigate>): Components {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pre({ children, ...props }: any) {
+      const child = Array.isArray(children) ? children[0] : children
+      // Mermaid: render as diagram
+      if (child?.props?.className?.includes('language-mermaid')) {
+        const code = String(child.props.children ?? '').replace(/\n$/, '')
+        return <MermaidBlock code={code} />
+      }
+      // Untagged blocks are program output / terminal sessions, not source code
+      const hasLanguage = child?.props?.className?.includes('language-')
+      if (!hasLanguage) {
+        const cls = ['output', props.className].filter(Boolean).join(' ')
+        return <pre {...props} className={cls}>{children}</pre>
+      }
+      return <pre {...props}>{children}</pre>
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    code({ className, children, ...props }: any) {
+      if (!className) return <code {...props}>{children}</code>
+      return <code className={className} {...props}>{children}</code>
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    a({ href, children, ...props }: any) {
+      const target = typeof href === 'string' ? resolveInternalHref(href) : null
+      if (target) {
+        return (
+          <a
+            href={target}
+            onClick={(e) => {
+              if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
+              e.preventDefault()
+              navigate(target)
+            }}
+          >
+            {children}
+          </a>
+        )
+      }
+      // External or unmatched: open in new tab when http(s)
+      const isExternal = typeof href === 'string' && /^https?:/i.test(href)
+      return (
+        <a
+          href={href}
+          {...props}
+          {...(isExternal ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+        >
+          {children}
+        </a>
+      )
+    },
+  }
 }
 
 // ─── Public component ─────────────────────────────────────────────────────────
 
 export default function MdRenderer({ children }: { children: string }) {
+  const navigate = useNavigate()
+  const components = buildComponents(navigate)
   return (
     <div className="md">
       <ReactMarkdown
