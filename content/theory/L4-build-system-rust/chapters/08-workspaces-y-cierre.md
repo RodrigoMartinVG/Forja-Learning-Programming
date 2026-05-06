@@ -5,7 +5,7 @@
 Un solo package alcanza para crates pequeños: una herramienta de línea de comandos, una biblioteca con su propio binario de prueba, un servicio chico. La necesidad de pasar a un workspace aparece cuando un proyecto crece de un modo concreto:
 
 - el código del proyecto se quiere separar en varias bibliotecas con responsabilidades distintas, cada una versionable y testeable por separado, pero coordinadas;
-- aparecen varios binarios que comparten lógica y conviene factorizar esa lógica en una biblioteca interna;
+- aparecen varios binarios que comparten lógica y hace falta factorizar esa lógica en una biblioteca interna;
 - una biblioteca propia quiere un crate de ejemplos no triviales o un crate de benchmarking aparte, sin contaminar el manifiesto principal con `dev-dependencies` que solo importan en esos contextos.
 
 Sin workspace, cada uno de estos packages es un proyecto separado: cada uno descarga sus dependencias en su propio `target/`, mantiene su propio `Cargo.lock`, recompila independientemente. Para cinco packages que comparten cuatro dependencias pesadas, eso significa compilar las cuatro dependencias cinco veces y arrastrar cinco lockfiles que pueden divergir y producir builds incompatibles dentro del mismo proyecto.

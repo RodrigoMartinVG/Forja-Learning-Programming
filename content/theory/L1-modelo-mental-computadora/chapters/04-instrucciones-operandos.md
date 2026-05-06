@@ -32,7 +32,7 @@ Esta instrucción copia el contenido de `r0` en `r1`. Antes de ejecutarla, los d
 
 El comportamiento se puede resumir así: lee de un registro, escribe en otro registro, no toca memoria, avanza el `pc` por defecto. Cualquier `MOV` en el nivel sigue exactamente este patrón.
 
-Una observación que evita una confusión recurrente: `MOV` no significa "mover" en el sentido de quitar de un lado y poner en otro. El registro fuente queda con su valor original; lo que se copia es el contenido. Después de `MOV r1, r0`, ambos registros contienen lo mismo. La palabra "movimiento" es histórica y no del todo precisa, pero está demasiado fijada para cambiarla; conviene leerla mentalmente como "copia".
+Una observación que evita una confusión recurrente: `MOV` no significa "mover" en el sentido de quitar de un lado y poner en otro. El registro fuente queda con su valor original; lo que se copia es el contenido. Después de `MOV r1, r0`, ambos registros contienen lo mismo. La palabra "movimiento" es histórica y no del todo precisa, pero está demasiado fijada para cambiarla; en la lectura mental funciona como "copia".
 
 ## Acceso a memoria: `LOAD` y `STORE`
 
@@ -50,7 +50,7 @@ STORE r0, [40]
 
 `STORE` lee de registro y escribe en memoria. La instrucción consulta el contenido del registro fuente (`r0`) y lo copia en la posición de memoria destino (40). El registro no cambia: `STORE` lo lee, no lo modifica. Lo que cambia es la posición de memoria, que pasa a contener el valor que estaba en el registro.
 
-La asimetría entre `LOAD` y `STORE` —cuál lee de dónde y cuál escribe dónde— es una fuente recurrente de confusión, sobre todo porque la sintaxis es casi idéntica: las dos escriben primero un registro y después una posición de memoria entre corchetes. La regla mnemónica que ayuda: `LOAD` "carga al registro" (el destino, el lado que cambia, es el registro de la izquierda); `STORE` "guarda en memoria" (el destino es la posición de memoria de la derecha). Si esa asociación no se asienta, la lectura de cualquier traza con accesos a memoria se vuelve ambigua, así que conviene repetirla hasta que sea reflejo.
+La asimetría entre `LOAD` y `STORE` —cuál lee de dónde y cuál escribe dónde— es una fuente recurrente de confusión, sobre todo porque la sintaxis es casi idéntica: las dos escriben primero un registro y después una posición de memoria entre corchetes. La regla mnemónica que ayuda: `LOAD` "carga al registro" (el destino, el lado que cambia, es el registro de la izquierda); `STORE` "guarda en memoria" (el destino es la posición de memoria de la derecha). Si esa asociación no se asienta, la lectura de cualquier traza con accesos a memoria se vuelve ambigua: hace falta repetir la regla mnemónica hasta que sea reflejo.
 
 ### Direccionamiento directo e indirecto
 
@@ -95,11 +95,11 @@ La diferencia entre las dos formas se puede leer como dos cadenas de lectura dis
 | directo | `LOAD r0, [40]` | la dirección 40 viene en la instrucción → leer `mem[40]` → escribir en `r0` |
 | indirecto | `LOAD r0, [r1]` | leer `r1` para obtener la dirección → leer `mem` en esa dirección → escribir en `r0` |
 
-En el caso directo hay una sola lectura de memoria: la CPU ya tiene la dirección (40) en la instrucción misma y va directo a `mem[40]`. En el caso indirecto hay **dos** lecturas encadenadas: primero leer `r1` para obtener la dirección, después leer `mem` en esa dirección. La cadena de dos eslabones es la imagen mental que conviene fijar; aparece otra vez, casi idéntica, cuando los punteros lleguen en `L9`.
+En el caso directo hay una sola lectura de memoria: la CPU ya tiene la dirección (40) en la instrucción misma y va directo a `mem[40]`. En el caso indirecto hay **dos** lecturas encadenadas: primero leer `r1` para obtener la dirección, después leer `mem` en esa dirección. Esta cadena de dos eslabones es la imagen mental que hace falta fijar; aparece otra vez, casi idéntica, cuando los punteros lleguen en `L9`.
 
 Esa flexibilidad es la base mecánica de los **punteros**, una estructura que vuelve protagonista en [`L9`](../../L9-punteros-en-c/) cuando aparezca el lenguaje C: tener una dirección guardada en un registro o en memoria, y operar sobre ella indirectamente, es lo que permite recorrer arreglos, navegar listas enlazadas y pasar referencias entre funciones. En `L1` el direccionamiento indirecto aparece como mecanismo del ISA; en `L9` aparece como herramienta de programación. Las dos lecturas son la misma cosa vista en niveles distintos.
 
-Una observación práctica que conviene anotar: el direccionamiento indirecto **no agrega instrucciones nuevas** al repertorio. `LOAD` y `STORE` siguen siendo las dos únicas instrucciones de acceso a memoria; lo que se expande es el rango de valores que el segundo operando puede tomar. Esa observación se reflejará en la taxonomía: la columna *lee de* / *escribe en* del cuadro va a tener "memoria" como destino, sin distinguir si la dirección vino directa o indirecta.
+Una observación práctica que vale la pena anotar: el direccionamiento indirecto **no agrega instrucciones nuevas** al repertorio. `LOAD` y `STORE` siguen siendo las dos únicas instrucciones de acceso a memoria; lo que se expande es el rango de valores que el segundo operando puede tomar. Esa observación se reflejará en la taxonomía: la columna *lee de* / *escribe en* del cuadro va a tener "memoria" como destino, sin distinguir si la dirección vino directa o indirecta.
 
 ## Aritmética sobre registros
 
@@ -157,7 +157,7 @@ Las cuatro clases pueden resumirse en una tabla, que es la forma con la que el r
 
 Esta tabla es la herramienta. No hace falta memorizarla en el sentido de poder recitarla; hace falta poder reconstruirla cuando se necesite, porque cada vez que aparezca una nueva instrucción en una traza, las preguntas a hacerse son las que las columnas representan: *¿de dónde lee? ¿dónde escribe? ¿toca el `pc`?*. Una persona que ante cualquier instrucción del ISA de juguete puede contestar las tres preguntas sin titubear, ya tiene el repertorio firme.
 
-Para ejercitar esa habilidad, conviene mirar una traza que combine tres clases en pasos consecutivos. Considerar el siguiente programa, cargado a partir de la dirección 0, con estado inicial `pc = 0`, `r0 = 0`, `r1 = 0`, `mem[40] = 7`:
+Para ejercitar esa habilidad, vale la pena mirar una traza que combine tres clases en pasos consecutivos. Considerar el siguiente programa, cargado a partir de la dirección 0, con estado inicial `pc = 0`, `r0 = 0`, `r1 = 0`, `mem[40] = 7`:
 
 | dirección | contenido |
 | --------- | --------- |

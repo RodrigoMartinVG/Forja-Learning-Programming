@@ -2,7 +2,7 @@
 
 ## Contexto
 
-El [capítulo 01](../chapters/01-devcontainer.md) presentó cinco piezas del laboratorio y, dentro de la primera (los archivos del repo), distinguió dos roles que conviven en `.devcontainer/`: `devcontainer.json` declara *cómo se usa* el contenedor desde VS Code (qué imagen, qué extensiones, qué configuración), y `Dockerfile` declara *qué hay adentro* del contenedor (qué paquetes, qué herramientas, qué usuario). La distinción es fácil de leer en abstracto y fácil de confundir cuando se está mirando un archivo concreto.
+El [capítulo 01](../chapters/01-devcontainer.md) presentó cinco piezas del laboratorio y, dentro de la primera (los archivos del repo), distinguió dos roles que conviven en `.devcontainer/`. `devcontainer.json` declara *cómo se usa* el contenedor desde VS Code (qué imagen, qué extensiones, qué configuración), y `Dockerfile` declara *qué hay adentro* del contenedor (qué paquetes, qué herramientas, qué usuario). La distinción es fácil de leer en abstracto y fácil de confundir cuando se está mirando un archivo concreto.
 
 Este ejercicio fija la distinción con un análisis directo de los dos archivos del repo.
 

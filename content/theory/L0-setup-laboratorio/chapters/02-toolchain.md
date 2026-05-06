@@ -2,7 +2,7 @@
 
 ## La frontera donde nacen los falsos diagnósticos
 
-El capítulo anterior dejó separadas las cinco piezas del laboratorio y prometió que la toolchain era la frontera donde más errores nacen. La razón es que la toolchain combina dos categorías que, mezcladas, parecen una sola: lo que el repo **dice** que va a haber, y lo que dentro del contenedor **realmente responde** cuando se lo invoca. Mientras esas dos cosas coincidan, todo funciona y la distinción no se nota. Cuando dejan de coincidir, el síntoma típico es un comando que retorna `command not found` o, peor, una versión distinta de la esperada, y el origen del problema queda invisible si el lector no tiene presente que se trata de dos categorías distintas.
+El capítulo anterior dejó separadas las cinco piezas del laboratorio y prometió que la toolchain era la frontera donde más errores nacen. La razón es que la toolchain combina dos categorías que, mezcladas, parecen una sola: lo que el repo **dice** que va a haber, y lo que dentro del contenedor **responde** cuando se lo invoca. Mientras esas dos cosas coincidan, todo funciona y la distinción no se nota. Cuando dejan de coincidir, el síntoma típico es un comando que retorna `command not found` o, peor, una versión distinta de la esperada, y el origen del problema queda invisible si el lector no tiene presente que se trata de dos categorías distintas.
 
 Este capítulo entra en esa frontera. Primero nombra qué herramientas integran la toolchain del repo, agrupadas por función. Después distingue tres estados posibles de cada una: declarada, instalada y disponible. Por último introduce dos comandos básicos —`--version` y `which`— que permiten observar empíricamente en cuál de esos estados está cada herramienta dentro del contenedor activo.
 
@@ -17,13 +17,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       python3 jq git curl ca-certificates
 ```
 
-El fragmento es ilustrativo, no idéntico al `Dockerfile` actual del repo: lo que importa es la forma. Cada nombre listado es una declaración: el repo pretende que esa herramienta esté disponible cuando alguien abra una terminal dentro del contenedor. Hasta acá, **no existe ninguna garantía** de que efectivamente lo esté. Lo único que existe es la intención escrita.
+El fragmento es ilustrativo, no idéntico al `Dockerfile` actual del repo: lo que importa es la forma. Cada nombre listado es una declaración: el repo pretende que esa herramienta esté disponible cuando alguien abra una terminal dentro del contenedor. Hasta acá, **no existe ninguna garantía** de que lo esté. Lo único que existe es la intención escrita.
 
 El segundo lugar donde el repo declara herramientas, ya por afuera del `Dockerfile`, es el script `verify-setup.sh` (que se trata en detalle en [03-verify-setup.md](03-verify-setup.md)). Cada `run_check` del script es, en sí mismo, una declaración: si el repo se molesta en chequear `gdb`, es porque el repo afirma que `gdb` debe estar.
 
 ## Toolchain de C: compilador, linker, debugger
 
-La toolchain de C en el repo se organiza alrededor de tres roles que conviene tener nombrados desde ahora, aunque los detalles aparezcan en `L3` y siguientes. El **compilador** traduce código C a código objeto: en el repo aparecen `gcc` y `clang` como dos compiladores distintos cubriendo el mismo rol, y cualquiera de los dos sirve para los ejercicios del nivel. El **linker** combina código objeto y bibliotecas en un ejecutable; en este momento del track no se invoca explícitamente porque el compilador suele llamarlo por debajo, pero su presencia está garantizada por el paquete `binutils`, que también provee las herramientas de inspección (`nm`, `objdump`, `readelf`, `ar`, `ranlib`, `ldd`, `file`). El **debugger** permite suspender un programa y observar su estado; en el repo viven dos: `gdb`, asociado al ecosistema GCC, y `lldb`, asociado al ecosistema LLVM/Clang.
+La toolchain de C en el repo se organiza alrededor de tres roles que vale la pena tener nombrados desde ahora, aunque los detalles aparezcan en `L3` y siguientes. El **compilador** traduce código C a código objeto: en el repo aparecen `gcc` y `clang` como dos compiladores distintos cubriendo el mismo rol, y cualquiera de los dos sirve para los ejercicios del nivel. El **linker** combina código objeto y bibliotecas en un ejecutable; en este momento del track no se invoca explícitamente porque el compilador suele llamarlo por debajo, pero su presencia está garantizada por el paquete `binutils`, que también provee las herramientas de inspección (`nm`, `objdump`, `readelf`, `ar`, `ranlib`, `ldd`, `file`). El **debugger** permite suspender un programa y observar su estado; en el repo viven dos: `gdb`, asociado al ecosistema GCC, y `lldb`, asociado al ecosistema LLVM/Clang.
 
 A esas piezas se suman las herramientas de observabilidad y construcción que el repo declara. `valgrind` y los sanitizers (incorporados como flags al compilador) cubren el dominio de errores de memoria. `strace` y `ltrace` permiten observar las llamadas al sistema y a bibliotecas dinámicas que un proceso emite. `make`, `cmake` y `ninja` cubren la automatización de builds. La existencia de cada una de estas herramientas dentro del contenedor es prerrequisito de los niveles que las usan; `L0` solo las verifica.
 
@@ -43,7 +43,7 @@ La verificación, en este nivel, no entra en cómo se usan. Una invocación con 
 
 ## Declarar, instalar y estar disponible no son lo mismo
 
-Conviene fijar la distinción de tres estados con cuidado, porque el resto del capítulo se apoya en ella.
+La distinción de tres estados hace falta fijarla con cuidado, porque el resto del capítulo se apoya en ella.
 
 **Declarado** significa que el repo, en alguno de sus archivos de declaración, afirma que la herramienta debería existir en el contenedor. La declaración es estática: se lee con un editor de texto, no necesita que el contenedor esté corriendo. Si el `Dockerfile` lista `gdb`, `gdb` está declarado.
 
@@ -73,7 +73,7 @@ $ gdb --version | head -1
 GNU gdb (Debian 13.1-3) 13.1
 ```
 
-`which <herramienta>` responde la pregunta *"¿de qué archivo en disco viene esta invocación?"*. Su salida es la ruta absoluta del ejecutable que el shell elegiría al invocarla. Esa ruta sirve para confirmar dos cosas: primero, que la herramienta efectivamente existe en disco; segundo, que viene del lugar esperado. Si `which gcc` devuelve `/usr/bin/gcc`, viene del paquete del sistema que el `Dockerfile` instaló. Si devuelve algo bajo `/usr/local/bin/` o `/home/...`, fue instalada por otra vía y conviene saberlo.
+`which <herramienta>` responde la pregunta *"¿de qué archivo en disco viene esta invocación?"*. Su salida es la ruta absoluta del ejecutable que el shell elegiría al invocarla. Esa ruta sirve para confirmar dos cosas: primero, que la herramienta existe en disco; segundo, que viene del lugar esperado. Si `which gcc` devuelve `/usr/bin/gcc`, viene del paquete del sistema que el `Dockerfile` instaló. Si devuelve algo bajo `/usr/local/bin/` o `/home/...`, fue instalada por otra vía y vale la pena registrarlo.
 
 ```bash
 $ which gcc

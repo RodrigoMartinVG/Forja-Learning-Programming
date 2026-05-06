@@ -2,13 +2,13 @@
 
 ## Del comando suelto al contrato condensado
 
-Comprobar manualmente cada herramienta con `--version` y `which`, como hizo el [capítulo anterior](02-toolchain.md), funciona perfectamente la primera vez. Funciona también la segunda. A partir de la tercera, repetir treinta invocaciones a mano deja de tener sentido: la rutina se vuelve tediosa, propensa a saltearse un paso por descuido, y poco confiable como evidencia de que el laboratorio efectivamente está sano. El repo resuelve esa fricción con un script que vive en la raíz: `verify-setup.sh`. Su función no es mágica; es exactamente lo que el alumno haría manualmente, pero condensado en una sola pasada y con un formato de salida pensado para leerse rápido.
+Comprobar manualmente cada herramienta con `--version` y `which`, como hizo el [capítulo anterior](02-toolchain.md), funciona perfectamente la primera vez. Funciona también la segunda. A partir de la tercera, repetir treinta invocaciones a mano deja de tener sentido: la rutina se vuelve tediosa, propensa a saltearse un paso por descuido, y poco confiable como evidencia de que el laboratorio está sano. El repo resuelve esa fricción con un script que vive en la raíz: `verify-setup.sh`. Su función no es mágica; es lo que el alumno haría manualmente, condensado en una sola pasada y con un formato de salida pensado para leerse rápido.
 
 Este capítulo abre el script y lo presenta como lo que es: la formalización ejecutable del contrato del laboratorio. *Formalización* porque pone en código lo que de otro modo viviría en la cabeza del que armó el repo. *Ejecutable* porque cualquiera puede correrlo y ver el resultado. *Contrato* porque cada chequeo del script representa una afirmación del repo sobre cómo debe estar el laboratorio para que el resto del track funcione. Entender la salida del script, línea por línea, es entender ese contrato.
 
 ## El esqueleto del script
 
-Antes de mirar la salida, conviene mirar la forma. El script entero se construye alrededor de una función pequeña, `run_check`, que recibe una etiqueta y un comando, lo ejecuta, y reporta si pasó o falló. Después de definir esa función, el cuerpo del script no es más que una lista larga de invocaciones a `run_check`, una por herramienta o por condición a verificar.
+Antes de mirar la salida, hace falta mirar la forma. El script entero se construye alrededor de una función pequeña, `run_check`, que recibe una etiqueta y un comando, lo ejecuta, y reporta si pasó o falló. Después de definir esa función, el cuerpo del script no es más que una lista larga de invocaciones a `run_check`, una por herramienta o por condición a verificar.
 
 ```bash
 #!/usr/bin/env bash
@@ -44,9 +44,9 @@ Lo que el script ofrece, entonces, no es una solución a ningún fallo del labor
 
 ## Las clases de chequeo que hace el script
 
-La lista de invocaciones a `run_check` no es plana en cuanto a su intención; agrupa varias clases de verificación que conviene ver por separado, aunque en el archivo aparezcan mezcladas en orden lineal.
+La lista de invocaciones a `run_check` no es plana en cuanto a su intención; agrupa varias clases de verificación que vale la pena ver por separado, aunque en el archivo aparezcan mezcladas en orden lineal.
 
-La primera clase, y la mayoritaria, es la **verificación de disponibilidad de herramientas en el `PATH`**. La forma típica es `<herramienta> --version`, exactamente como en el capítulo anterior. Cubren esta clase los chequeos de `gcc`, `clang`, `gdb`, `lldb`, `valgrind`, `make`, `cmake`, `ninja`, `strace`, `ltrace`, `nm`, `objdump`, `readelf`, `ar`, `ranlib`, `ldd`, `file`, `git`, `gh`, `python3`, `jq`, `yq`, `hyperfine`, `rustup`, `cargo` y los subcomandos de `cargo` (`fmt`, `clippy`, `expand`, `audit`, `flamegraph`), `cbindgen` y `bindgen`. Ninguno de estos chequeos hace nada con la salida más allá de exigir código de retorno cero: la presencia se infiere de que el comando responda.
+La primera clase, y la mayoritaria, es la **verificación de disponibilidad de herramientas en el `PATH`**. La forma típica es `<herramienta> --version`, como en el capítulo anterior. Cubren esta clase los chequeos de `gcc`, `clang`, `gdb`, `lldb`, `valgrind`, `make`, `cmake`, `ninja`, `strace`, `ltrace`, `nm`, `objdump`, `readelf`, `ar`, `ranlib`, `ldd`, `file`, `git`, `gh`, `python3`, `jq`, `yq`, `hyperfine`, `rustup`, `cargo` y los subcomandos de `cargo` (`fmt`, `clippy`, `expand`, `audit`, `flamegraph`), `cbindgen` y `bindgen`. Ninguno de estos chequeos hace nada con la salida más allá de exigir código de retorno cero: la presencia se infiere de que el comando responda.
 
 La segunda clase es la **verificación condicional con fallback explícito**. Solo aparece para la toolchain `nightly` de Rust y para `miri`, que no son obligatorias en el perfil base. El script primero pregunta si `nightly` está instalada, y solo entonces invoca los chequeos correspondientes; si no lo está, imprime `[skip]` con una nota que explica por qué.
 
@@ -104,7 +104,7 @@ Mirar la salida con esta clave —cada línea es un chequeo individual con su or
 
 ## La salida cuando algo falta
 
-Para entender el otro extremo, conviene ver cómo se comporta el script cuando una herramienta no está disponible. La forma más fácil de provocarlo, para el ejercicio mental, es imaginar que `valgrind` no está instalado:
+Para entender el otro extremo, vale la pena ver cómo se comporta el script cuando una herramienta no está disponible. La forma más fácil de provocarlo, para el ejercicio mental, es imaginar que `valgrind` no está instalado:
 
 ```text
 valgrind               [fail] bash: line 1: valgrind: command not found
@@ -124,7 +124,7 @@ El script tiene un alcance muy específico: comprueba **disponibilidad de herram
 
 No verifica que las versiones de las herramientas coincidan con un mínimo. Reportar la versión sirve como información, pero el script acepta cualquier versión que responda a `--version`. Comparar versiones contra mínimos es ruido temprano: un compilador uno o dos minor por detrás del esperado casi siempre alcanza para los ejercicios de los primeros niveles, y exigirlo numéricamente convertiría el script en barrera burocrática.
 
-No verifica que las herramientas se comporten correctamente más allá de responder a `--version`. Que `gcc` responda con su versión no garantiza que pueda compilar un programa C. Esa garantía requeriría compilar de hecho un programa, lo que añadiría latencia y complejidad al script sin pagar dividendos en este nivel: si `gcc` responde y el `Dockerfile` no fue alterado, su capacidad de compilar está implicada por construcción.
+No verifica que las herramientas se comporten correctamente más allá de responder a `--version`. Que `gcc` responda con su versión no garantiza que pueda compilar un programa C. Esa garantía requeriría compilar un programa de prueba, lo que añadiría latencia y complejidad al script sin pagar dividendos en este nivel: si `gcc` responde y el `Dockerfile` no fue alterado, su capacidad de compilar está implicada por construcción.
 
 No verifica el estado del workspace montado, ni la red, ni permisos de archivos, ni configuración de Git. Cada una de esas cosas son verdaderas piezas del laboratorio en el sentido amplio, pero el script eligió mantenerse en el subconjunto de afirmaciones cuyo fallo es definitivo: si `gdb` no responde, hay un problema; si la red está lenta, no necesariamente. El script reporta lo primero y deja lo segundo para diagnóstico humano.
 

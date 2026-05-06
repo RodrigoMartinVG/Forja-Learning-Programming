@@ -127,7 +127,7 @@ Si los binarios viven en `src/bin/*.rs` y la biblioteca en `src/lib.rs`, las sec
 
 ## Lo que el manifiesto no fija
 
-Para evitar confusiones que aparecen seguido en proyectos reales, conviene declarar lo que `Cargo.toml` deliberadamente **no** decide:
+Para evitar confusiones que aparecen seguido en proyectos reales, vale la pena declarar lo que `Cargo.toml` deliberadamente **no** decide:
 
 - **Las versiones exactas de las dependencias.** El manifiesto declara requisitos; la fijación vive en `Cargo.lock`.
 - **Las flags de codegen para `release` o `debug`.** Esas viven en la sección `[profile.<nombre>]` (capítulo 06), que puede aparecer en este mismo `Cargo.toml`, pero son una sección distinta de `[package]` y `[dependencies]`.
@@ -145,4 +145,4 @@ Después de este capítulo, leer un `Cargo.toml` ajeno permite responder con pre
 - ¿declara más de un crate, y de qué tipo?
 - ¿qué cosas todavía no fija, y dónde van a quedar fijadas?
 
-El próximo capítulo se ocupa exactamente de la última pregunta: cómo `Cargo.lock` traduce los requisitos del manifiesto en versiones exactas, y por qué eso es la primera forma material de reproducibilidad que el flujo de `L3` no había abordado.
+El próximo capítulo se ocupa de la última pregunta: cómo `Cargo.lock` traduce los requisitos del manifiesto en versiones exactas, y por qué eso es la primera forma material de reproducibilidad que el flujo de `L3` no había abordado.

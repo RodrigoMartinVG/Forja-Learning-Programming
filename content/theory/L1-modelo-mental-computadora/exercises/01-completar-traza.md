@@ -50,7 +50,7 @@ La traza correcta es:
 | tras paso 4  | 4 | 15 | 10 | 10 | 15 | 0  | `STORE r0, [51]` |
 | tras paso 5  | 5 | 15 | 10 | 10 | 15 | 10 | `STORE r1, [52]` |
 
-Si alguna fila tiene un valor distinto, conviene parar en esa fila y volver a la instrucción aplicada: ¿qué columnas debería haber tocado, según la taxonomía del [capítulo 04](../chapters/04-instrucciones-operandos.md)? La fuente más común de error es escribir un cambio en una columna que la instrucción no tocaba (por ejemplo, modificar `mem[50]` durante un `LOAD`, que es lectura), o no escribir un cambio que sí ocurrió.
+Si alguna fila tiene un valor distinto, parar en esa fila y volver a la instrucción aplicada: ¿qué columnas debería haber tocado, según la taxonomía del [capítulo 04](../chapters/04-instrucciones-operandos.md)? La fuente más común de error es escribir un cambio en una columna que la instrucción no tocaba (por ejemplo, modificar `mem[50]` durante un `LOAD`, que es lectura), o no escribir un cambio que sí ocurrió.
 
 ## Criterio de finalización
 

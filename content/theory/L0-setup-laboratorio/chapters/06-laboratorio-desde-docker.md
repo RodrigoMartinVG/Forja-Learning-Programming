@@ -12,7 +12,7 @@ Mirar el lab desde afuera no aporta una capacidad nueva; aporta una verificació
 
 ## Las tres listas: imágenes, contenedores corriendo, contenedores totales
 
-Tres comandos alcanzan para enumerar las piezas del lab tal como Docker las ve. Conviene ejecutarlos desde una terminal del **host**, no desde dentro del contenedor.
+Tres comandos alcanzan para enumerar las piezas del lab tal como Docker las ve. Hay que ejecutarlos desde una terminal del **host**, no desde dentro del contenedor.
 
 ```bash
 $ docker images
@@ -37,7 +37,7 @@ b71e229c0aa4   vsc-forja-...  Exited (137) 4 hours ago     stale_shannon
 
 ## Inspeccionar un contenedor: el bind mount como objeto
 
-Las listas anteriores sólo dan nombres. Para ver detalle, está `docker inspect`, que devuelve la descripción completa del objeto en JSON. Aquí interesa una rebanada chica: la sección `Mounts`, que muestra los mounts efectivamente activos.
+Las listas anteriores sólo dan nombres. Para ver detalle, está `docker inspect`, que devuelve la descripción completa del objeto en JSON. Aquí interesa una rebanada chica: la sección `Mounts`, que muestra los mounts activos.
 
 ```bash
 $ docker inspect upbeat_shockley --format '{{json .Mounts}}' | jq
@@ -57,7 +57,7 @@ Esta es la prueba material de la afirmación central del cap. 01: el workspace e
 
 Si en algún momento un archivo creado desde dentro del contenedor "no aparece" en el host, este `inspect` es la primera comprobación útil: confirma si el mount existe, hacia qué `Source` apunta, y con qué modo (`rw` para lectura/escritura, `ro` para sólo lectura).
 
-`docker inspect` sin `--format` y sin `jq` devuelve el JSON entero, que incluye además las variables de entorno que el contenedor recibió, los puertos publicados, la imagen exacta de la que se instanció, y la fecha de creación. Es ruidoso para uso cotidiano; conviene filtrar campos puntuales con `--format`. Algunos atajos útiles:
+`docker inspect` sin `--format` y sin `jq` devuelve el JSON entero, que incluye además las variables de entorno que el contenedor recibió, los puertos publicados, la imagen exacta de la que se instanció, y la fecha de creación. Es ruidoso para uso cotidiano; para uso cotidiano, filtrar campos puntuales con `--format`. Algunos atajos útiles:
 
 ```bash
 $ docker inspect <nombre> --format '{{.Image}}'                     # imagen base
@@ -85,7 +85,7 @@ Segunda: `exec` es la primitiva de "abrir una nueva terminal dentro del contened
 
 Tercera: `rm` borra el contenedor. Lo que se pierde es exactamente lo que el cap. 01 listó como volátil: el sistema de archivos escribible por encima de la imagen. Lo que **no** se pierde es el repo en el host (vivía afuera) ni la imagen (es el molde, no la instancia). Después de un `rm`, la próxima vez que VS Code abra el devcontainer va a crear uno nuevo a partir de la misma imagen, y la sesión arrancará idéntica a la primera vez.
 
-Cuarta: la diferencia entre `Rebuild Container` y `rm` + reabrir es exactamente esta: `Rebuild` reconstruye la imagen *y* recrea el contenedor; `rm` recrea sólo el contenedor. Si lo que cambió fue el `Dockerfile`, hace falta `Rebuild`. Si lo que se quiere es empezar el contenedor "limpio" sin reconstruir la imagen, alcanza con `rm` (y reabrir).
+Cuarta: la diferencia entre `Rebuild Container` y `rm` + reabrir es esta: `Rebuild` reconstruye la imagen *y* recrea el contenedor; `rm` recrea sólo el contenedor. Si lo que cambió fue el `Dockerfile`, hace falta `Rebuild`. Si lo que se quiere es empezar el contenedor "limpio" sin reconstruir la imagen, alcanza con `rm` (y reabrir).
 
 ## Limpieza de objetos viejos
 
@@ -99,7 +99,7 @@ $ docker system prune
 
 `docker rm` y `docker rmi` borran objetos puntuales por id o nombre. `docker system prune` borra de una pasada todos los contenedores detenidos y todas las imágenes "dangling" (capas huérfanas que ya no pertenecen a ninguna imagen con tag). Es la operación correcta cuando la causa real del problema es disco lleno (el [capítulo 05](05-diagnostico.md) la mencionó al pasar en el escenario 1).
 
-Una salvedad importante: `docker system prune -a` (con `-a`) borra también imágenes con tag que no tengan un contenedor activo apuntando a ellas. Eso incluye, potencialmente, la imagen del devcontainer si VS Code está cerrado. No es destructivo —se reconstruye con el siguiente `Rebuild`—, pero implica esperar el build entero la próxima vez. Conviene usarlo a propósito, no como reflejo.
+Una salvedad importante: `docker system prune -a` (con `-a`) borra también imágenes con tag que no tengan un contenedor activo apuntando a ellas. Eso incluye, potencialmente, la imagen del devcontainer si VS Code está cerrado. No es destructivo —se reconstruye con el siguiente `Rebuild`—, pero implica esperar el build entero la próxima vez. Vale la pena usarlo a propósito, no como reflejo.
 
 ## El lab sin devcontainer, sólo con Docker
 
@@ -123,7 +123,7 @@ $ docker run -it --rm \
     forja-lab bash
 ```
 
-Esta es la pieza que materializa, en una sola línea, lo que el cap. 01 llamó *"el bind mount como puente con el host"*. Conviene leerla por flag:
+Esta es la pieza que materializa, en una sola línea, lo que el cap. 01 llamó *"el bind mount como puente con el host"*. Vale la pena leerla por flag:
 
 - `-it` reserva una terminal interactiva (así `bash` recibe tu teclado y muestra prompts).
 - `--rm` elimina el contenedor en cuanto la shell termina. Útil para sesiones efímeras: nada queda en `docker ps -a` después de salir.
@@ -145,7 +145,7 @@ Esa variante es útil cuando se quiere ejecutar algo dentro del contenedor con l
 
 La lista de cosas que entran como "Docker" es enorme y queda casi entera fuera de `L0`. Para fijar expectativas, vale dejar nombrado lo que este capítulo deliberadamente no toca: redes y publicación de puertos (`-p`, `--network`), volúmenes nombrados como mecanismo distinto del bind mount, `docker compose` y orquestación de varios contenedores, multi-stage builds para imágenes más livianas, registries y `docker push`/`pull`. Cada uno de esos temas es legítimo, pero pertenece a niveles posteriores —`L20` y siguientes para procesos y aislamiento, y eventualmente al proyecto `minidocker` cuando aparezca— donde se aprenden por una razón concreta del track, no como excursión general por una herramienta.
 
-Lo que este capítulo sí deja, después de los cinco anteriores, es una capacidad puntual: ante una duda sobre el lab que las observaciones desde dentro del contenedor no terminan de cerrar, el lector puede ubicarse del lado de Docker, listar las piezas, inspeccionar el bind mount, y comprobar si lo que el repo declaró efectivamente está en uso. Esa capacidad no es necesaria para avanzar a `L1`, pero es exactamente la clase de resorte que el resto del track agradece tener disponible cuando un síntoma raro aparece.
+Lo que este capítulo sí deja, después de los cinco anteriores, es una capacidad puntual: ante una duda sobre el lab que las observaciones desde dentro del contenedor no terminan de cerrar, el lector puede ubicarse del lado de Docker, listar las piezas, inspeccionar el bind mount, y comprobar si lo que el repo declaró está en uso. Esa capacidad no es necesaria para avanzar a `L1`, pero es la clase de resorte que el resto del track agradece tener disponible cuando un síntoma raro aparece.
 
 ## Operar el lab sin VS Code
 

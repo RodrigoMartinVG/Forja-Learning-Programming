@@ -2,7 +2,7 @@
 
 ## Contexto
 
-`verify-setup.sh` ha venido pasando hasta acá como una caja que, en condiciones normales, devuelve todo `[ok]`. Esa estabilidad es buena señal pero también esconde el comportamiento del script bajo fallo, que es el que más importa cuando algo realmente sale mal. El [capítulo 03](../chapters/03-verify-setup.md) y el [capítulo 05](../chapters/05-diagnostico.md) discutieron cómo se ve un fallo en abstracto. Este ejercicio lo provoca de manera controlada para verlo en concreto, y después restaura todo a su estado original.
+`verify-setup.sh` ha venido pasando hasta acá como una caja que, en condiciones normales, devuelve todo `[ok]`. Esa estabilidad es buena señal pero también esconde el comportamiento del script bajo fallo, que es el que más importa cuando algo sale mal. El [capítulo 03](../chapters/03-verify-setup.md) y el [capítulo 05](../chapters/05-diagnostico.md) discutieron cómo se ve un fallo en abstracto. Este ejercicio lo provoca de manera controlada para verlo en concreto, y después restaura todo a su estado original.
 
 El cambio que se va a introducir es trivial y reversible. La habilidad que se ejercita es disciplinada: provocar un fallo de manera tal que se sepa cómo deshacerlo antes de hacerlo.
 

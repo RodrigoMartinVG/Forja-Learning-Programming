@@ -59,7 +59,7 @@ Cambió: el `pc` (5 → 3, **hacia atrás**), `r0` (7 → 8), `r1` (3 → 10), `
 
 (Nota cuidadosa: el ejercicio dice "separados por dos pasos" para los snapshots. Pero la cantidad efectiva de pasos no se puede confirmar sólo mirando los snapshots: el `pc` final estando en 3 podría ser resultado de un único salto hacia atrás, o de un salto seguido de algunos pasos secuenciales y otro salto. Una respuesta cuidadosa menciona la ambigüedad.)
 
-Errores típicos que conviene anotar si aparecen:
+Errores típicos para anotar si aparecen:
 
 - Llamar "el programa cambió" a la diferencia entre snapshots. El programa —las instrucciones cargadas en memoria— no cambió. Lo que cambió es el estado del proceso.
 - Asumir que el `pc` siempre avanza. Especialmente en el caso C, si la respuesta interpreta el `pc = 3` final como "el proceso retrocedió en el código" sin reconocer que retroceder en el `pc` es un fenómeno legítimo (saltos hacia atrás), falta la lectura del flujo del [capítulo 06](../chapters/06-flujo-de-control.md).

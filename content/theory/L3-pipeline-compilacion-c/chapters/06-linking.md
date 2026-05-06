@@ -57,7 +57,7 @@ $ gcc main.o greet.o -o app
 $ nm app | head -20
 ```
 
-Comparando con `nm main.o` (donde `greet` y `puts` aparecían como `U`), en el ejecutable `app` esos símbolos ya no son `U`: `greet` se resolvió contra `greet.o` y aparece como `T`; `puts` se resolvió contra `libc` y aparece —según la versión de gcc— como símbolo de la biblioteca dinámica, marcado `U` con un punto de carga distinto, o resuelto por la PLT.
+Comparando con `nm main.o` (donde `greet` y `puts` aparecían como `U`), en el ejecutable `app` esos símbolos ya no son `U`. `greet` se resolvió contra `greet.o` y aparece como `T`. `puts` se resolvió contra `libc` y aparece —según la versión de gcc— como símbolo de la biblioteca dinámica, marcado `U` con un punto de carga distinto, o resuelto por la PLT.
 
 ## Asignación de direcciones
 
@@ -116,6 +116,6 @@ Cuatro confirmaciones:
 
 Una confusión frecuente es tratar al linker como "una etapa más del compilador". Funcionalmente es diferente: el compilador produce código a partir de C; el linker no produce ningún byte de código nuevo. Lo que el linker hace es **combinar y referenciar** bytes ya existentes. Si una función contiene un bug, el compilador es el responsable; el linker no puede corregirla porque no la entiende. Si dos `.o` definen el mismo símbolo, el linker reporta el problema pero no lo arregla.
 
-La consecuencia práctica es que muchos errores del linker no se solucionan tocando código C: se solucionan tocando **cómo se invoca el linker** (qué `.o` se pasan, en qué orden, contra qué bibliotecas) o **cómo se organizan los símbolos en los archivos** (qué es global, qué es `static`, qué se declara en headers vs en `.c`). Esos son problemas de **organización**, no de **lógica del programa**.
+La consecuencia práctica es que muchos errores del linker no se solucionan tocando código C. Se solucionan tocando **cómo se invoca el linker** (qué `.o` se pasan, en qué orden, contra qué bibliotecas) o **cómo se organizan los símbolos en los archivos** (qué es global, qué es `static`, qué se declara en headers vs en `.c`). Esos son problemas de **organización**, no de **lógica del programa**.
 
 A partir del próximo capítulo, el foco se desplaza al modo en que las bibliotecas externas —`libc` y otras— participan del linking, y al contraste entre incorporarlas estáticamente al ejecutable o dejarlas como dependencias dinámicas que se resuelven al cargar el proceso.

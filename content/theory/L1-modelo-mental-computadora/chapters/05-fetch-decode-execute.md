@@ -56,7 +56,7 @@ Ninguna pieza, leída por separado, contiene el programa. La CPU sin memoria no 
 
 ## Un ciclo paso a paso sobre la traza de juguete
 
-Para fijar la descomposición, conviene aplicarla a una traza concreta. Considerar el siguiente programa, con estado inicial `pc = 0`, `r0 = 0`, `mem[40] = 7`:
+Para fijar la descomposición, vale la pena aplicarla a una traza concreta. Considerar el siguiente programa, con estado inicial `pc = 0`, `r0 = 0`, `mem[40] = 7`:
 
 | dirección | contenido |
 | --------- | --------- |

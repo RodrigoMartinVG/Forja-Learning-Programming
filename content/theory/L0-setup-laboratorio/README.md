@@ -15,7 +15,7 @@ Ninguno técnico. El nivel parte de una persona que tiene VS Code instalado, Doc
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L0` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y al workspace como objeto de trabajo. `L0` empieza asumiendo ese contexto.
+Antes de empezar `L0`, vale la pena haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y al workspace como objeto de trabajo. `L0` empieza asumiendo ese contexto.
 
 ## Objetivo del nivel
 

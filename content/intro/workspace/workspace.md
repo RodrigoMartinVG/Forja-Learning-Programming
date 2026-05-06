@@ -25,7 +25,7 @@ La web sirve para hojear cómodamente. El repo es la fuente. Cualquier cosa que 
 
 `content/theory/` y `content/projects/` no son dos secciones separadas por organización: cumplen trabajos distintos.
 
-**Teoría** instala modelos, vocabulario preciso y errores que conviene desarmar temprano. Está organizada en niveles. Cada nivel cubre una sola distinción fuerte y la trabaja a fondo.
+**Teoría** instala modelos, vocabulario preciso y errores que vale la pena desarmar temprano. Está organizada en niveles. Cada nivel cubre una sola distinción fuerte y la trabaja a fondo.
 
 **Proyectos** fuerzan a usar esas distinciones en piezas reconocibles: shells, allocators, parsers, runtimes, linkers, contenedores, sistemas de red. Cada proyecto declara qué niveles requiere y qué niveles reabre cuando se vuelve más complejo.
 
@@ -67,7 +67,7 @@ Esa honestidad es deliberada. Ver el mapa entero, sabiendo qué parte ya está e
 
 ## Por dónde empezar
 
-1. Si todavía no leíste [¿qué es Forja?](../forja/forja.md), conviene empezar por ahí.
+1. Si todavía no leíste [¿qué es Forja?](../forja/forja.md), empezar por ahí.
 2. Abrir `L0-setup-laboratorio` y dejar el laboratorio operativo: devcontainer corriendo, toolchain de C y Rust verificada, scripts de chequeo verdes.
 3. Recorrer `L1`, `L2`, `L3` y `L4` en orden. Esa secuencia fija máquina, representación, pipeline y build system. Sin esa base, el resto del mapa se siente opaco.
 4. Recién después, decidir el resto del recorrido. La metadata (`metadata/paths.yaml`) declara rutas temáticas posibles, pero ningún recorrido es obligatorio una vez que el núcleo está firme.

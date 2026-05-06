@@ -14,7 +14,7 @@ Hay tres maneras habituales de acercarse a programación de sistemas, y ninguna 
 
 Forja apuesta por una cuarta vía: un mapa explícito donde la teoría prepara proyectos concretos, los proyectos devuelven presión sobre la teoría, y la transición entre ambos se ve sin esfuerzo dentro del mismo repo.
 
-## Qué hay efectivamente adentro
+## Qué hay adentro
 
 El track teórico arranca por una base dura y deliberadamente angosta:
 

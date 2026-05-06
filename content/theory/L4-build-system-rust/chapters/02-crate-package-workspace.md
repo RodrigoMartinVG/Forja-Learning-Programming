@@ -64,7 +64,7 @@ La distinción aparece apenas un package contiene **más de un crate**. Las regl
 
 - un package puede tener **a lo sumo un crate biblioteca** (con crate root en `src/lib.rs`);
 - un package puede tener **uno o más crates binarios**, declarados con `[[bin]]` en `Cargo.toml` o con archivos en `src/bin/`;
-- un package puede combinar el crate biblioteca y crates binarios en el mismo árbol, y eso es de hecho un patrón común: la lógica vive en `src/lib.rs` y los binarios en `src/bin/*.rs` la consumen como dependencia interna.
+- un package puede combinar el crate biblioteca y crates binarios en el mismo árbol, patrón común: la lógica vive en `src/lib.rs` y los binarios en `src/bin/*.rs` la consumen como dependencia interna.
 
 Un esqueleto típico de package que combina lib y bin:
 

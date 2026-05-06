@@ -31,13 +31,13 @@ La tabla siguiente compara cómo se almacena el mismo entero `0x12345678` bajo l
 
 El valor representado es **el mismo** en los dos casos: 305 419 896 en decimal. Lo que cambia es la disposición física en memoria. Un programa que escribe `0x12345678` en una variable `uint32_t` y otro que la lee en la misma máquina coinciden sin ningún problema, porque ambos usan la misma convención. Los problemas aparecen cuando los bytes cruzan máquinas con convenciones distintas —al transmitirse por red, al leerse de un archivo escrito en otra arquitectura— o cuando el código asume una convención y la opuesta es la activa.
 
-Los nombres "little" y "big" se refieren a qué extremo del valor —el menos significativo o el más significativo— viene primero (en la dirección de memoria más baja). En little-endian, el "extremo chico" viene primero. En big-endian, el "extremo grande" viene primero. Los nombres provienen de un ensayo satírico de Danny Cohen de 1980 que comparaba la disputa entre convenciones con la guerra entre los Lilliputienses por qué punta abrir los huevos cocidos en *Los viajes de Gulliver*. La metáfora cuajó y los términos se quedaron.
+Los nombres "little" y "big" se refieren a qué extremo del valor (el menos significativo o el más significativo) viene primero (en la dirección de memoria más baja). En little-endian, el "extremo chico" viene primero. En big-endian, el "extremo grande" viene primero. Los nombres provienen de un ensayo satírico de Danny Cohen de 1980 que comparaba la disputa entre convenciones con la guerra entre los Lilliputienses por qué punta abrir los huevos cocidos en *Los viajes de Gulliver*. La metáfora cuajó y los términos se quedaron.
 
 ## Por qué el dump muestra el orden y la pantalla no
 
 Cuando un programa imprime un entero con `printf("%d", x)` o un equivalente, lo que aparece en pantalla es el valor matemático, escrito con el orden lateral usual de la base elegida. El número 305 419 896 sale como `305419896` en decimal o como `0x12345678` en hex, sin importar la endianness de la máquina. La razón es que `printf` toma el valor entero del registro o de memoria —el procesador lo ensambla automáticamente respetando la convención— y lo convierte a una secuencia de caracteres para imprimir. La conversión no expone los bytes individuales; expone el valor.
 
-El dump hex —`xxd`, `hexdump`, una vista de memoria en un debugger— sí expone los bytes individuales en el orden físico en que están en memoria. Por eso, mirando un dump de una arquitectura little-endian, un entero de 32 bits aparece "al revés" comparado con su escritura en hex:
+El dump hex (`xxd`, `hexdump`, una vista de memoria en un debugger) sí expone los bytes individuales en el orden físico en que están en memoria. Por eso, mirando un dump de una arquitectura little-endian, un entero de 32 bits aparece "al revés" comparado con su escritura en hex:
 
 ```text
 00000100: 7856 3412                                xV4.
@@ -89,7 +89,7 @@ Los cuatro bytes consecutivos a partir de la dirección de `x` son `0x78`, `0x56
 
 ## Cómo se manifiesta el error de endianness
 
-El bug típico de endianness aparece cuando un programa escribe bytes en un archivo o por red asumiendo la convención local, y otro programa los lee asumiendo la convención opuesta. El síntoma observable es un valor "absurdo": demasiado grande, con signo invertido, o simplemente sin relación visible con el valor original.
+El bug típico de endianness aparece cuando un programa escribe bytes en un archivo o por red asumiendo la convención local, y otro programa los lee asumiendo la convención opuesta. El síntoma observable es un valor "absurdo": demasiado grande, con signo invertido, o sin relación visible con el valor original.
 
 Un ejemplo. Un programa en una máquina little-endian guarda el entero `0x00000001` en un archivo:
 

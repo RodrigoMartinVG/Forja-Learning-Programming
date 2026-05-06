@@ -40,7 +40,7 @@ $ echo "$PATH"
 
 Tres resultados posibles después de los tres comandos. Primero, el binario existe en disco y su directorio está en el `PATH`: `which` debería haberlo encontrado, así que algo más está mal (permisos del binario, sesión con `PATH` corrompido por un script de inicio). Segundo, el binario existe en disco pero su directorio no está en el `PATH`: el `Dockerfile` instaló la herramienta en un lugar que el shell no busca, lo que es un bug del `Dockerfile` que corregir. Tercero, el binario no existe en disco: la herramienta no quedó instalada en la imagen, y el problema está en la línea del `Dockerfile` que debería instalarla.
 
-**Acción correctiva mínima.** Para los dos primeros casos, ajustar el `PATH` es solución temporal aceptable, pero la corrección durable está en el `Dockerfile`. Para el tercero, no hay atajo: hay que corregir la instalación en el `Dockerfile` y reconstruir la imagen. Antes de reconstruir, conviene leer la línea del `Dockerfile` que debería haber instalado esa herramienta, identificar por qué falló (paquete renombrado, repositorio no agregado, dependencia faltante), y solo entonces ejecutar *"Rebuild Container"*. Reconstruir sin haber localizado la causa suele reproducir el mismo fallo.
+**Acción correctiva mínima.** Para los dos primeros casos, ajustar el `PATH` es solución temporal aceptable, pero la corrección durable está en el `Dockerfile`. Para el tercero, no hay atajo: hay que corregir la instalación en el `Dockerfile` y reconstruir la imagen. Antes de reconstruir, leer la línea del `Dockerfile` que debería haber instalado esa herramienta, identificar por qué falló (paquete renombrado, repositorio no agregado, dependencia faltante), y solo entonces ejecutar *"Rebuild Container"*. Reconstruir sin haber localizado la causa suele reproducir el mismo fallo.
 
 ## Escenario 3: cambié el `Dockerfile` pero el contenedor no lo refleja
 
@@ -73,9 +73,9 @@ $ realpath .
 $ mount | grep workspaces
 ```
 
-`pwd` y `realpath .` confirman dónde cree estar la sesión actual. `mount | grep workspaces` confirma si el directorio de trabajo del contenedor está efectivamente montado desde el host. Si el `mount` no muestra el bind correspondiente, el workspace no está conectado al host y los archivos del contenedor son una copia interna que no se sincroniza con nada.
+`pwd` y `realpath .` confirman dónde cree estar la sesión actual. `mount | grep workspaces` confirma si el directorio de trabajo del contenedor está montado desde el host. Si el `mount` no muestra el bind correspondiente, el workspace no está conectado al host y los archivos del contenedor son una copia interna que no se sincroniza con nada.
 
-Dos causas comunes de este síntoma cuando el mount sí está. Primera: VS Code está abierto sobre dos workspaces distintos (uno en el host, otro en el contenedor) que apuntan a directorios distintos. Lo que parece desincronización es en realidad que se están mirando dos lugares. Segunda: el archivo se creó en `/tmp` o en `/home/vscode` del contenedor, no en `/workspaces/...`, así que no está en el repo del host.
+Dos causas comunes de este síntoma cuando el mount sí está. Primera: VS Code está abierto sobre dos workspaces distintos (uno en el host, otro en el contenedor) que apuntan a directorios distintos. Lo que parece desincronización es estar mirando dos lugares distintos. Segunda: el archivo se creó en `/tmp` o en `/home/vscode` del contenedor, no en `/workspaces/...`, así que no está en el repo del host.
 
 **Acción correctiva mínima.** Si el workspace no está montado, cerrar y reabrir el contenedor desde *"Reopen in Container"* en la ventana correcta de VS Code. Si el problema es de ruta dentro del contenedor, mover el archivo al lugar correcto con `mv`. Antes de declarar bug del laboratorio, descartar siempre la posibilidad de que la confusión sea de ruta: es la causa más común y la menos sospechada.
 
@@ -87,16 +87,16 @@ Dos causas comunes de este síntoma cuando el mount sí está. Primera: VS Code 
 
 **Comprobación.** Reproducir el comando que falla con verbosidad aumentada o leyendo el mensaje de error con cuidado en lugar de descartarlo. Errores de compilación de C suelen ser muy descriptivos sobre qué archivo y qué línea fallan; errores de `cargo` suelen indicar el crate y la fase. Antes de sospechar del entorno, leer el error completo y aplicar el método de la regla 1: nunca cambiar dos capas. Si el error es de un proyecto puntual, intentar reproducirlo en un proyecto mínimo nuevo. Si el proyecto mínimo funciona, el problema vive en el proyecto puntual, no en el laboratorio.
 
-**Acción correctiva mínima.** Resistir el reflejo de reconstruir el contenedor. Casi siempre, este escenario se resuelve a nivel proyecto: limpiar la caché de build (`cargo clean`, `rm *.o`), revisar las dependencias, leer el error específico. Reconstruir el contenedor tiene chance de "arreglar" el síntoma por casualidad, pero a costa de no aprender qué lo causaba realmente, lo que casi garantiza que vuelva.
+**Acción correctiva mínima.** Resistir el reflejo de reconstruir el contenedor. Casi siempre, este escenario se resuelve a nivel proyecto: limpiar la caché de build (`cargo clean`, `rm *.o`), revisar las dependencias, leer el error específico. Reconstruir el contenedor tiene chance de "arreglar" el síntoma por casualidad, pero a costa de no aprender qué lo causaba, lo que casi garantiza que vuelva.
 
 ## Cuándo sí reconstruir y cuándo no
 
-Cerrar el capítulo conviene hacerlo con un mapa explícito de cuándo *"Rebuild Container"* es la herramienta correcta y cuándo es la trampa.
+El capítulo cierra con un mapa explícito de cuándo *"Rebuild Container"* es la herramienta correcta y cuándo es la trampa.
 
 Reconstruir es correcto cuando se modificó el `Dockerfile` o el `devcontainer.json` y se quiere que el cambio entre en efecto (escenario 3). También es correcto cuando se identificó un problema concreto en la imagen y se corrigió la instrucción del `Dockerfile` que lo causaba (escenario 2 con causa identificada). En ambos casos, el rebuild materializa una intención concreta de cambio.
 
 Reconstruir es trampa cuando se usa como reacción universal a cualquier síntoma raro, sin haber observado nada antes. Lo es porque destruye la evidencia, porque no garantiza nada (si el problema estaba en una instrucción del `Dockerfile` que sigue siendo la misma, va a reproducirse), y porque enseña a confiar en un botón en lugar de en la observación. Cada vez que aparece la tentación de reconstruir sin diagnóstico previo, la respuesta correcta es volver a la cadena del [capítulo 01](01-devcontainer.md), pasar por las cinco piezas, y solo después decidir.
 
-Lo que `L0` deja, después del nivel completo, es exactamente esa capacidad: ante cualquier síntoma del laboratorio, ubicar la pieza, comprobarla con un comando concreto, y elegir la acción correctiva mínima. El resto del track va a apoyarse en que esa capacidad esté instalada.
+Lo que `L0` deja, después del nivel completo, es esa capacidad: ante cualquier síntoma del laboratorio, ubicar la pieza, comprobarla con un comando concreto, y elegir la acción correctiva mínima. El resto del track va a apoyarse en que esa capacidad esté instalada.
 
-Para los casos en que un síntoma no termina de cerrarse desde dentro del contenedor —típicamente cuando la duda es si el bind mount está bien hecho, si la imagen activa es la que uno cree, o si quedaron contenedores viejos acumulados consumiendo disco—, el [capítulo opcional 06](06-laboratorio-desde-docker.md) muestra cómo mirar el lab desde el lado de Docker con `docker ps`, `docker images` y `docker inspect`. No es prerrequisito de nada, pero a veces es exactamente el ángulo que falta.
+Para los casos en que un síntoma no termina de cerrarse desde dentro del contenedor —típicamente cuando la duda es si el bind mount está bien hecho, si la imagen activa es la que uno cree, o si quedaron contenedores viejos acumulados consumiendo disco—, el [capítulo opcional 06](06-laboratorio-desde-docker.md) muestra cómo mirar el lab desde el lado de Docker con `docker ps`, `docker images` y `docker inspect`. No es prerrequisito de nada, pero a veces es el ángulo que falta.

@@ -66,7 +66,7 @@ La pregunta legítima es: si el preprocesador ya pegó `<stdio.h>` y el compilad
 
 La respuesta es que **declaración y definición son cosas distintas**. La declaración —la línea que aparece en `<stdio.h>`— le dice al compilador qué firma tiene `puts`: que toma un `const char *` y devuelve `int`. Con esa información, el compilador puede generar el código que llama a `puts` correctamente: pone el argumento en el registro adecuado, espera el resultado en el registro de retorno, sabe cuántos bytes ocupa el valor devuelto. Nada de eso requiere saber **dónde está** el cuerpo de `puts`.
 
-La definición —el cuerpo de la función, el código que de hecho imprime la línea— vive en `libc`, una biblioteca distinta del archivo del usuario. El `.c` del usuario nunca contiene el cuerpo de `puts`. El compilador genera un `call puts` con dirección hueca, marca `puts` como referencia en la tabla de símbolos, y el linker se encarga de resolver la dirección contra `libc` en una etapa posterior.
+La definición —el cuerpo de la función, el código que imprime la línea— vive en `libc`, una biblioteca distinta del archivo del usuario. El `.c` del usuario nunca contiene el cuerpo de `puts`. El compilador genera un `call puts` con dirección hueca, marca `puts` como referencia en la tabla de símbolos, y el linker se encarga de resolver la dirección contra `libc` en una etapa posterior.
 
 Esta separación es la que permite que `printf`, `puts`, `malloc`, `free` y todas las funciones de la biblioteca estándar de C estén "disponibles" sin que cada `.c` tenga que incluir el código de cada una. El programador escribe el `#include` para que el compilador conozca las firmas; las definiciones reales viven en `libc.so` (o `libc.a`) y el linker las conecta cuando construye el ejecutable.
 
@@ -106,7 +106,7 @@ Esto tiene dos consecuencias prácticas:
 - **Encapsulamiento sin namespaces**. C no tiene namespaces, pero `static` cumple un rol similar: una función `static foo` en `archivo1.c` no choca con una función `static foo` en `archivo2.c` porque ninguna de las dos es visible para el linker. Las dos coexisten sin conflicto.
 - **Detección temprana de funciones no usadas**. Si una función está declarada `static` y no se llama desde el archivo, gcc puede emitir un warning (con `-Wall`) o incluso eliminarla en optimización. Si fuera global, el linker tendría que conservarla por si algún otro `.o` la llama, aunque ninguno lo haga. La decisión de hacer una función `static` o no hacerla es una decisión sobre **a qué linker está dirigida la información**.
 
-El opuesto del conflicto es **double definition**: si dos `.o` definen un símbolo global con el mismo nombre, el linker no sabe cuál elegir y falla con un mensaje del tipo `multiple definition of 'foo'`. La defensa es hacer locales (con `static`) las funciones que no se quieren exportar; lo que queda global es lo que efectivamente forma parte del contrato del archivo.
+El opuesto del conflicto es **double definition**: si dos `.o` definen un símbolo global con el mismo nombre, el linker no sabe cuál elegir y falla con un mensaje del tipo `multiple definition of 'foo'`. La defensa es hacer locales (con `static`) las funciones que no se quieren exportar; lo que queda global es lo que forma parte del contrato del archivo.
 
 ## Predecir si dos `.o` enlazan
 

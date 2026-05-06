@@ -76,7 +76,7 @@ Doce pasos, dentro del límite de 20. El loop ejecuta el cuerpo tres veces (con 
 
 - **Uso incompleto de las clases**: si el programa no usa al menos una de las cuatro clases. Por ejemplo, programas que sólo hacen aritmética sobre registros sin usar memoria, o que no usan `MOV` aprovechando que `LOAD` puede sustituirlo en algunos casos.
 - **Loop sin condición de salida observable**: si el programa contiene un `JMP` hacia atrás sin condición, no hay manera de que termine (es un loop infinito). El loop tiene que estar cerrado con un `JNZ` (o equivalente) cuya condición eventualmente se vuelva falsa.
-- **Programa que no termina**: si la condición del `JNZ` nunca se vuelve falsa con los valores iniciales dados, la traza no termina y el ejercicio queda sin completar. Conviene verificar que el cuerpo del loop modifica el registro evaluado por el `JNZ`.
+- **Programa que no termina**: si la condición del `JNZ` nunca se vuelve falsa con los valores iniciales dados, la traza no termina y el ejercicio queda sin completar. Verificar que el cuerpo del loop modifica el registro evaluado por el `JNZ`.
 - **Traza inconsistente con el programa**: si la traza muestra cambios que las instrucciones aplicadas no producen, o si una columna cambia sin que la instrucción aplicada toque esa columna. Esto requiere volver a la taxonomía del [capítulo 04](../chapters/04-instrucciones-operandos.md).
 
 ## Criterio de finalización

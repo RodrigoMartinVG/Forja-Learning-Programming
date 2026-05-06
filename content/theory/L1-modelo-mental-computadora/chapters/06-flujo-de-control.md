@@ -14,7 +14,7 @@ La regla por defecto del `pc`, cuando ninguna instrucción interviene explícita
 
 Esa regla por defecto es lo que hace que un programa "fluya hacia abajo": el `pc` recorre las direcciones contiguas en orden, una tras otra, sin saltos ni vueltas. La gran mayoría de los pasos de cualquier programa siguen esta regla, incluso programas con loops complicados —los loops son la excepción, no la norma.
 
-La regla parece tan obvia que conviene insistir un momento en por qué importa explicitarla. Importa porque, cuando un programa se desvía, hay dos interpretaciones posibles del desvío: que el `pc` saltó (algo cambió el flujo deliberadamente) o que la próxima instrucción no era la que esperábamos (la dirección apuntada contiene otra cosa). La primera interpretación es flujo; la segunda es algo más raro y peligroso. Distinguirlas requiere tener internalizada la regla por defecto, y poder reconocer una violación sólo cuando *efectivamente* hay una instrucción de flujo aplicada.
+La regla parece tan obvia que vale la pena explicitarla un momento. Importa porque, cuando un programa se desvía, hay dos interpretaciones posibles del desvío: que el `pc` saltó (algo cambió el flujo deliberadamente) o que la próxima instrucción no era la que esperábamos (la dirección apuntada contiene otra cosa). La primera interpretación es flujo; la segunda es algo más raro y peligroso. Distinguirlas requiere tener internalizada la regla por defecto, y poder reconocer una violación sólo cuando *efectivamente* hay una instrucción de flujo aplicada.
 
 ## Saltos incondicionales
 

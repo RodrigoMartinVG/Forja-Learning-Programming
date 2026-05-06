@@ -17,7 +17,7 @@ Empezar por algo concreto. Una memoria, en el modelo de `L1`, se ve así:
 
 Seis filas, dos columnas. La columna *dirección* contiene los nombres de las posiciones; la columna *contenido* contiene lo que hay almacenado en cada una. Esto es la memoria entera, en este modelo. No hay capas, no hay celdas físicas, no hay distinción entre RAM y disco. Hay una secuencia de posiciones nombradas con direcciones, y cada posición tiene un valor.
 
-La idea central, que va a ser repetida varias veces a lo largo del capítulo: **una dirección es un nombre, no un valor especial**. La dirección 4 es el nombre de una posición específica. El número 4, escrito en cualquier otro contexto, no es esa posición; es simplemente el número 4. Que las direcciones suelan escribirse como números enteros es una convención de notación, no una propiedad mística. Podrían tener nombres arbitrarios y el modelo seguiría funcionando.
+La idea central, que va a ser repetida varias veces a lo largo del capítulo: **una dirección es un nombre, no un valor especial**. La dirección 4 es el nombre de una posición específica. El número 4, escrito en cualquier otro contexto, no es esa posición; es el número 4, sin más. Que las direcciones suelan escribirse como números enteros es una convención de notación, no una propiedad mística. Podrían tener nombres arbitrarios y el modelo seguiría funcionando.
 
 ## Contenido y dirección no son la misma cosa
 
@@ -25,7 +25,7 @@ Volviendo a la tabla anterior: la dirección 4 contiene el valor 200. Eso signif
 
 La distancia entre las dos puede ilustrarse con una pregunta: *"¿qué hay en la dirección 4?"*. La respuesta correcta es *"el valor 200"*. La respuesta incorrecta —pero recurrente— es *"el valor 4"*. Confundir el nombre con el contenido es un error que parece ridículo escrito así, pero que aparece con regularidad cuando los valores y las direcciones empiezan a parecerse, especialmente en programas donde una dirección se almacena como contenido de otra dirección. Esa configuración, central para los punteros del [nivel 9](../../L9-punteros), depende absolutamente de mantener firme la distinción.
 
-Un caso particular que conviene tratar acá. Considerar:
+Un caso particular vale la pena traer acá. Considerar:
 
 | dirección | contenido |
 | --------- | --------- |
@@ -33,7 +33,7 @@ Un caso particular que conviene tratar acá. Considerar:
 
 La dirección 40 contiene el valor 40. ¿Hay algo raro? No. La dirección y el contenido son cosas distintas que casualmente se escriben con el mismo símbolo. Eso pasa todo el tiempo en computadoras reales y no genera ninguna ambigüedad si la distinción está firme. Si en una traza aparece *"`LOAD r0, [40]`"*, esa instrucción dice: "cargar en `r0` el contenido de la posición cuyo nombre es 40". El primer 40 es una dirección. Lo que se carga es el valor 40 (el contenido). Después del `LOAD`, el registro `r0` vale 40 —porque el contenido era 40, no porque la dirección era 40.
 
-Esta clase de coincidencias visuales son uno de los lugares donde la lectura de trazas requiere atención. Casi todos los ejercicios del nivel van a poner alguna posición de memoria en condiciones donde dirección y contenido se pueden confundir, exactamente para que la distinción se afirme con la práctica.
+Esta clase de coincidencias visuales son uno de los lugares donde la lectura de trazas requiere atención. Casi todos los ejercicios del nivel van a poner alguna posición de memoria en condiciones donde dirección y contenido se pueden confundir, para que la distinción se afirme con la práctica.
 
 ## Lectura y escritura como operaciones distintas
 
@@ -45,13 +45,13 @@ Una **escritura** modifica el contenido. Después de una escritura, la posición
 
 La asimetría es importante. Una lectura es no destructiva, una escritura sí lo es. Si en una traza aparece un `STORE` sobre una posición y, varios pasos después, otra instrucción intenta leer el valor anterior de esa posición, no lo va a encontrar; la escritura lo borró. Este punto va a volverse central cuando aparezcan stack frames y memoria dinámica, pero la base se instala acá.
 
-Una observación menor, útil de tener desde ya: el `pc` es un caso especial. La CPU lo lee implícitamente al inicio de cada paso (para saber qué instrucción ejecutar) y lo escribe implícitamente al final (para señalar la próxima). Esa operación implícita es lo que el [capítulo 05](05-fetch-decode-execute.md) va a abrir bajo el ciclo `fetch-decode-execute`. Por ahora, conviene anotar que el `pc` también es una pieza de estado que se lee y se escribe, sólo que el agente que lo manipula no es siempre una instrucción explícita.
+Una observación menor, útil de tener desde ya: el `pc` es un caso especial. La CPU lo lee implícitamente al inicio de cada paso (para saber qué instrucción ejecutar) y lo escribe implícitamente al final (para señalar la próxima). Esa operación implícita es lo que el [capítulo 05](05-fetch-decode-execute.md) va a abrir bajo el ciclo `fetch-decode-execute`. Por ahora alcanza con anotar que el `pc` también es una pieza de estado que se lee y se escribe, sólo que el agente que lo manipula no es siempre una instrucción explícita.
 
 ## Memoria como soporte de instrucciones y de datos
 
 La traza del [capítulo 01](01-maquina-de-estado.md) puso instrucciones en las direcciones 0–2 y un dato en la dirección 40. La memoria entera era la misma; lo que cambiaba era el rol de cada posición en la ejecución. La distinción rol/interpretación, central del nivel, vive justo acá.
 
-Conviene hacerlo explícito con un ejemplo. Considerar la siguiente memoria:
+Un ejemplo lo hace explícito. Considerar la siguiente memoria:
 
 | dirección | contenido |
 | --------- | --------- |
@@ -70,7 +70,7 @@ Este escenario no es teórico. Es la base mecánica de los punteros a función, 
 
 ## Lo que el nivel todavía no asume sobre memoria
 
-Para que el alcance del modelo quede claro y no se sobre-interprete, conviene ser explícito sobre qué propiedades de la memoria real `L1` deliberadamente no asume.
+Para que el alcance del modelo quede claro y no se sobre-interprete, vale la pena ser explícito sobre qué propiedades de la memoria real `L1` deliberadamente no asume.
 
 `L1` no asume tamaños concretos. Las direcciones son nombres; cuántos bits ocupa una dirección o un contenido no se discute hasta `L2`. Las posiciones tienen un valor y eso alcanza para escribir trazas. Cuando el [nivel 2](../../L2-representacion-informacion/) abra la representación binaria, esa indefinición se va a resolver con bytes y bits.
 

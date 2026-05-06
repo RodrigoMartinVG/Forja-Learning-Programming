@@ -2,7 +2,7 @@
 
 ## La CPU como ejecutor del paso actual
 
-Hasta ahora la CPU apareció en las trazas pero no como pieza distinguible. Las instrucciones simplemente "se ejecutaban", y los valores cambiaban entre filas sin que nada en la tabla mostrara quién hacía esos cambios. Llegó el momento de poner a la CPU en el centro y darle un rol preciso, porque sin esa precisión la separación entre registros y memoria —que el resto del capítulo va a fijar— se vuelve arbitraria.
+Hasta ahora la CPU apareció en las trazas pero no como pieza distinguible. Las instrucciones "se ejecutaban", y los valores cambiaban entre filas sin que nada en la tabla mostrara quién hacía esos cambios. Llegó el momento de poner a la CPU en el centro y darle un rol preciso, porque sin esa precisión la separación entre registros y memoria —que el resto del capítulo va a fijar— se vuelve arbitraria.
 
 La CPU, en el modelo de `L1`, es el **ejecutor del paso actual**. Es la pieza que, en cada paso, lee el `pc`, accede a la posición de memoria que el `pc` señala, interpreta el contenido como una instrucción, y aplica la transformación que esa instrucción describe sobre el resto del estado. Cuando termina el paso, deja el estado modificado y el `pc` señalando la próxima instrucción. Lo que sucede dentro del paso —los tres subpasos `fetch / decode / execute`— es lo que el [capítulo 05](05-fetch-decode-execute.md) va a abrir.
 
@@ -41,7 +41,7 @@ La traza:
 
 Vale la pena leer las dos transiciones por separado. El paso 1 cambió `r1` y nada más: la instrucción `MOV r1, r0` copia el contenido de `r0` en `r1`, sin tocar memoria. La columna `mem[40]` queda igual. El paso 2 cambió `mem[40]` y nada más: la instrucción `STORE r1, [40]` copia el contenido de `r1` en la posición de memoria 40. La columna `r1` queda igual (la instrucción la lee, no la modifica).
 
-Esta clase de comparación entre dos pasos —uno que toca sólo registros, otro que toca memoria— es el ejercicio central del nivel. Una persona que mire la traza y pueda decir, sin titubear, dónde vivió el cambio en cada paso (sólo en `r1` en el primero, sólo en `mem[40]` en el segundo), tiene firme la distinción entre registro y memoria. Si esa lectura no es directa, conviene volver al capítulo y revisar las dos primeras secciones antes de seguir.
+Esta clase de comparación entre dos pasos —uno que toca sólo registros, otro que toca memoria— es el ejercicio central del nivel. Una persona que mire la traza y pueda decir, sin titubear, dónde vivió el cambio en cada paso (sólo en `r1` en el primero, sólo en `mem[40]` en el segundo), tiene firme la distinción entre registro y memoria. Si esa lectura no es directa, vale la pena releer las dos primeras secciones del capítulo antes de seguir.
 
 ## Cuántos registros y por qué este número no importa todavía
 
@@ -51,7 +51,7 @@ La respuesta corta es que no importa. La respuesta más larga es que `L1` asume 
 
 La pregunta tiene su importancia, pero su respuesta concreta es propiedad de cada ISA real, no del modelo mínimo. x86-64, por dar el dato sin entrar en el tema, tiene 16 registros enteros de propósito general. ARM64 tiene 31. Cada arquitectura elige un número distinto basándose en compromisos de diseño que `L7` va a discutir cuando corresponda. Mientras tanto, lo que `L1` afirma —que hay un puñado pequeño y nombrado— es cierto para cualquier ISA real, y eso alcanza para construir el modelo.
 
-Hay una propiedad relacionada que sí importa fijar acá: los registros son **pocos**. No son una mini-memoria que pueda reemplazar a la memoria; son demasiado escasos para eso. Cualquier programa no trivial necesita más espacio del que cabe en los registros, y por eso la memoria sigue siendo necesaria. La distribución de trabajo entre registros y memoria —qué se mantiene en registros, qué se va a memoria, cuándo conviene mover de un lado al otro— es un tema enorme que aparece bajo distintos nombres en niveles posteriores (calling conventions, register allocation en compiladores, tuning de performance). En `L1` queda apenas instalado: registros pocos y rápidos, memoria mucha y un escalón más cara de tocar.
+Hay una propiedad relacionada que sí importa fijar acá: los registros son **pocos**. No son una mini-memoria que pueda reemplazar a la memoria; son demasiado escasos para eso. Cualquier programa no trivial necesita más espacio del que cabe en los registros, y por eso la memoria sigue siendo necesaria. La distribución de trabajo entre registros y memoria —qué se mantiene en registros, qué se va a memoria, cuándo mover de un lado al otro— es un tema enorme que aparece bajo distintos nombres en niveles posteriores (calling conventions, register allocation en compiladores, tuning de performance). En `L1` queda apenas instalado: registros pocos y rápidos, memoria mucha y un escalón más cara de tocar.
 
 ## El `pc` como un registro especial
 

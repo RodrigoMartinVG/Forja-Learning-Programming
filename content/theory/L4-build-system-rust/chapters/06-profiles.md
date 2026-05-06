@@ -72,7 +72,7 @@ La elección no es ideológica, es operativa:
 
 - **`dev`** sirve para el ciclo iterativo de desarrollo: editar, compilar, correr, depurar. La compilación rápida y la información de debugging completa pesan más que el rendimiento del binario.
 - **`release`** sirve para distribuir el binario, para benchmarks reales y para tareas donde el tiempo de ejecución importa. La compilación más lenta es un costo aceptable porque se hace pocas veces.
-- Para **probar la corrección** del código en condiciones realistas, conviene correr la suite de tests en ambos profiles cada tanto: hay errores que solo aparecen con optimizaciones (orden de evaluación, races latentes) y otros que solo aparecen sin (overflows aritméticos enmascarados). `cargo test` usa el profile `test`, que es similar a `dev` pero distinto; `cargo test --release` usa `release`.
+- Para **probar la corrección** del código en condiciones realistas, vale la pena correr la suite de tests en ambos profiles cada tanto: hay errores que solo aparecen con optimizaciones (orden de evaluación, races latentes) y otros que solo aparecen sin (overflows aritméticos enmascarados). `cargo test` usa el profile `test`, que es similar a `dev` pero distinto; `cargo test --release` usa `release`.
 
 «Siempre usar `release`» es un consejo malo: los tiempos de compilación en proyectos no triviales lo vuelven impráctico para iteración, y la pérdida de debug info dificulta diagnosticar errores. «Nunca usar `release`» también es malo: el binario `dev` no debe distribuirse y no es representativo del rendimiento real.
 

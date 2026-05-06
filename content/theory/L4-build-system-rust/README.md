@@ -15,7 +15,7 @@
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L4` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md), y haber completado los capítulos centrales de `L3`. Este nivel no enseña Rust como lenguaje: enseña el **build system** que cualquier proyecto Rust usa, asumiendo que la toolchain ya está instalada (lo dejó verificado `L0`).
+Antes de empezar `L4`, vale la pena haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md), y haber completado los capítulos centrales de `L3`. Este nivel no enseña Rust como lenguaje: enseña el **build system** que cualquier proyecto Rust usa, asumiendo que la toolchain ya está instalada (lo dejó verificado `L0`).
 
 ## Objetivo del nivel
 

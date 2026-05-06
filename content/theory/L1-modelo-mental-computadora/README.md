@@ -15,7 +15,7 @@
 
 ## Bloque editorial de entrada recomendado
 
-Antes de empezar `L1` conviene haber leído [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y a este nivel como el punto donde se construye el modelo mental que el resto va a asumir disponible.
+Antes de empezar `L1`, leer [¿qué es Forja?](../../intro/forja/forja.md) y la [introducción al Workspace](../../intro/workspace/workspace.md). Esos dos archivos sitúan a Forja como track y a este nivel como el punto donde se construye el modelo mental que el resto va a asumir disponible.
 
 ## Objetivo del nivel
 

@@ -25,7 +25,7 @@ Una opción elegida (A, B, C o D) y un párrafo corto justificando la elección 
 
 La respuesta correcta es **C**. El razonamiento esperado: `verify-setup.sh` pasó (descarta A, porque el script verifica que `cargo` esté disponible); el sanity check manual confirmó el contenedor (debilita B, aunque no la descarta del todo si el rebuild se omitió y la imagen vieja casualmente también tenía `cargo`, lo que es poco probable); el síntoma —"cuelga sin imprimir nada durante varios minutos"— es consistente con `cargo` intentando descargar dependencias por red o resolver el registry (escenario 5 del capítulo de diagnóstico). D queda descartada porque `cargo new` mismo creó archivos visibles, lo que requiere workspace montado y escritura funcionando.
 
-Si la respuesta fue B, la lectura confunde "contenedor sano" con "contenedor reconstruido": el sanity check no asegura que la imagen activa sea la última construida, sólo que efectivamente hay un contenedor válido. Esa confusión es exactamente la que el [capítulo 05](../chapters/05-diagnostico.md) busca prevenir, y conviene releer el escenario 3.
+Si la respuesta fue B, la lectura confunde "contenedor sano" con "contenedor reconstruido": el sanity check no asegura que la imagen activa sea la última construida, sólo que hay un contenedor válido. Esa confusión es la que el [capítulo 05](../chapters/05-diagnostico.md) busca prevenir; releer el escenario 3 antes de seguir.
 
 Si la respuesta fue A o D, el ejercicio reveló una grieta entre el modelo de capas del [capítulo 01](../chapters/01-devcontainer.md) y la lectura del síntoma. Releer las primeras dos secciones de ese capítulo y volver a intentarlo.
 

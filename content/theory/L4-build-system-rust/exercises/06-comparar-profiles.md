@@ -12,7 +12,7 @@ El [capítulo 06](../chapters/06-profiles.md) presentó `dev` y `release` como d
 4. Medir tiempo de ejecución del binario en cada profile: `time ./target/debug/<bin>` y `time ./target/release/<bin>`. Anotar el tiempo `real`.
 5. Medir tiempo de compilación de cada profile, después de un `cargo clean`: `time cargo build` y `time cargo build --release`.
 6. Producir una tabla resumen con cuatro filas: *tamaño del binario*, *debug info presente*, *tiempo de compilación*, *tiempo de ejecución*; y dos columnas: `dev`, `release`.
-7. Para una tarea hipotética concreta —elegir una de las tres siguientes—, justificar qué profile conviene y por qué:
+7. Para una tarea hipotética concreta —elegir una de las tres siguientes—, justificar qué profile elegir y por qué:
    - iterar agregando funcionalidades nuevas, recompilando seguido;
    - distribuir el binario a usuarias finales;
    - depurar un crash con `gdb` paso a paso.

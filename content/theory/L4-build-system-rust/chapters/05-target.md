@@ -98,7 +98,7 @@ $ ls -lh target/debug/saludo target/release/saludo
 
 El mismo crate, el mismo código fuente, dos binarios con tamaños distintos: 4.2 MB en `dev`, 436 KB en `release`. La diferencia de un orden de magnitud es la consecuencia material de las flags de codegen distintas; ese es el contenido del próximo capítulo.
 
-`cargo run` invoca el binario de `target/debug/` por defecto y `cargo run --release` el de `target/release/`. Ninguno de los dos comandos copia el archivo a otro lugar: simplemente lo ejecuta desde `target/`. Distribuir el binario implica copiarlo afuera de `target/` por separado, o usar `cargo install` que lo copia a `~/.cargo/bin/`.
+`cargo run` invoca el binario de `target/debug/` por defecto y `cargo run --release` el de `target/release/`. Ninguno de los dos comandos copia el archivo a otro lugar: lo ejecuta desde `target/`. Distribuir el binario implica copiarlo afuera de `target/` por separado, o usar `cargo install` que lo copia a `~/.cargo/bin/`.
 
 ## `cargo clean` y reconstrucción desde cero
 

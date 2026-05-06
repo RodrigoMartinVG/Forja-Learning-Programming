@@ -53,7 +53,7 @@ Una secuencia de nueve líneas, agrupadas en tres bloques de tres, que describe 
 - Decode: clase aritmética; primer operando registro `r1` (lectura+escritura), segundo operando registro `r0` (lectura).
 - Execute: lee `r1` (vale 6) y `r0` (vale 4). Computa 6 + 4 = 10. Escribe 10 en `r1`. Incrementa el `pc` a 3.
 
-Errores recurrentes que conviene anotar si aparecen:
+Errores recurrentes para anotar si aparecen:
 
 - *Confundir fetch con decode*: escribir en la línea de fetch la clase de la instrucción. Fetch sólo trae el contenido; reconocer su clase es trabajo de decode.
 - *Confundir decode con execute*: escribir en la línea de decode los valores leídos del estado. Decode sólo identifica la clase y los operandos como nombres; los valores concretos se leen recién en execute.

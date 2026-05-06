@@ -121,7 +121,7 @@ $ ./hello_from_i
 hola, pipeline
 ```
 
-Esto da una herramienta práctica de diagnóstico: cuando un error reporta una línea que en el `.c` parece imposible —por ejemplo, "redefinition of struct foo" en una línea donde el `.c` no tiene ningún struct—, mirar el `.i` muestra qué fue lo que el compilador realmente vio. La mayoría de los errores extraños del compilador son consecuencias del preprocesado, no del código que el programador escribió.
+Esto da una herramienta práctica de diagnóstico: cuando un error reporta una línea que en el `.c` parece imposible —por ejemplo, "redefinition of struct foo" en una línea donde el `.c` no tiene ningún struct—, mirar el `.i` muestra qué fue lo que el compilador vio. La mayoría de los errores extraños del compilador son consecuencias del preprocesado, no del código que el programador escribió.
 
 ## Errores que nacen acá y se ven más adelante
 

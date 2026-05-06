@@ -21,7 +21,7 @@ $ ls
 content  CONVENTIONS.md  docs  README.md  scripts  templates  verify-setup.sh  web
 ```
 
-Pregunta que responde: *"¿la terminal está parada en la raíz del repo, dentro del contenedor?"*. Si `pwd` devuelve algo distinto de `/workspaces/...`, o si `ls` no muestra los archivos esperados de la raíz, hay un problema en cómo se montó el workspace y conviene detener la rutina acá hasta resolverlo.
+Pregunta que responde: *"¿la terminal está parada en la raíz del repo, dentro del contenedor?"*. Si `pwd` devuelve algo distinto de `/workspaces/...`, o si `ls` no muestra los archivos esperados de la raíz, hay un problema en cómo se montó el workspace; detener la rutina acá hasta resolverlo.
 
 **Paso 3 — Correr `verify-setup.sh`.** Desde la raíz del repo:
 
@@ -29,7 +29,7 @@ Pregunta que responde: *"¿la terminal está parada en la raíz del repo, dentro
 $ bash ./verify-setup.sh
 ```
 
-Pregunta que responde: *"¿la toolchain declarada por el repo está realmente disponible dentro del contenedor?"*. El detalle de cómo leer la salida está en el [capítulo 03](03-verify-setup.md). Para la rutina cotidiana, basta con observar el código de salida: si la última línea es `Setup verification passed`, el contrato del laboratorio se sostiene.
+Pregunta que responde: *"¿la toolchain declarada por el repo está disponible dentro del contenedor?"*. El detalle de cómo leer la salida está en el [capítulo 03](03-verify-setup.md). Para la rutina cotidiana, basta con observar el código de salida: si la última línea es `Setup verification passed`, el contrato del laboratorio se sostiene.
 
 **Paso 4 — Sanity check manual mínimo.** Tres comandos cortos cuya elección se justifica abajo:
 
@@ -56,7 +56,7 @@ Una pregunta razonable, llegado este punto, es por qué la rutina no se reduce a
 
 Conceptualmente, el script declara su alcance acotado. El cierre del [capítulo 03](03-verify-setup.md) listó exactamente lo que el script no comprueba: estado del workspace, identidad del contenedor activo, configuraciones de entorno, versiones contra mínimos. Cada una de esas zonas requiere su propia verificación. Pretender que el script las cubra rompería su simplicidad y volvería sus fallos más difíciles de leer.
 
-Empíricamente, hay un tipo de falla que se manifiesta exactamente en la grieta entre el script y la realidad: el contenedor cargado que parece estar bien pero que en realidad no es el correcto. Puede ocurrir, por ejemplo, si VS Code reabrió un contenedor viejo en lugar de construir uno nuevo, o si la terminal que parece estar dentro del contenedor en realidad quedó en una sesión del host. En esos casos, `verify-setup.sh` puede pasar (porque el host también tiene parte de la toolchain), o puede fallar de manera confusa, sin que el origen sea obvio. El sanity check manual del paso 4 pone evidencia adicional sobre la mesa antes de que el script corra.
+Empíricamente, hay un tipo de falla que se manifiesta exactamente en la grieta entre el script y la realidad: el contenedor cargado que parece estar bien pero no es el correcto. Puede ocurrir, por ejemplo, si VS Code reabrió un contenedor viejo en lugar de construir uno nuevo, o si la terminal que parece estar dentro del contenedor quedó en una sesión del host. En esos casos, `verify-setup.sh` puede pasar (porque el host también tiene parte de la toolchain), o puede fallar de manera confusa, sin que el origen sea obvio. El sanity check manual del paso 4 pone evidencia adicional sobre la mesa antes de que el script corra.
 
 ## Por qué tres comandos para el sanity check, y por qué estos tres
 
@@ -70,7 +70,7 @@ Empíricamente, hay un tipo de falla que se manifiesta exactamente en la grieta 
 
 Existen otras combinaciones razonables —por ejemplo, sumar `id` o cambiar `os-release` por `cat /etc/debian_version`— y los ejercicios del nivel exploran algunas. Lo central no es la elección exacta de comandos sino el principio: tres señales independientes son suficientes y no abrumadoras.
 
-## La evidencia que conviene conservar
+## La evidencia mínima a conservar
 
 El paso 5 puede sonar burocrático, pero tiene una función concreta. Cuando algún día algo deje de funcionar en un nivel posterior, la pregunta primera no es *"¿qué hice mal?"* sino *"¿qué cambió respecto del estado en que las cosas funcionaban?"*. Tener registrada la salida de los pasos 2, 3 y 4 del último día sano vuelve esa comparación trivial: se corren los mismos comandos, se contrastan las salidas, y la diferencia (si existe) es el primer lugar donde mirar.
 

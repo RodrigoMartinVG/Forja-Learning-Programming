@@ -110,7 +110,7 @@ Algunos patrones concretos en precisión simple:
 
 El cero negativo es un caso particular: existe, tiene un patrón distinto al cero positivo, pero la comparación `0.0f == -0.0f` da verdadero por convención de IEEE 754. Esto crea bugs sutiles en código que asume "si dos floats tienen los mismos bits, son iguales" o "si dos floats son iguales, tienen los mismos bits": ninguna de las dos implicaciones es válida en presencia de cero negativo.
 
-NaN es más raro todavía: comparar cualquier NaN consigo mismo da **falso**. Es decir, si una variable `x` contiene NaN, `x == x` es false. Esta propiedad permite detectar NaN —de hecho, la única manera portable de detectarlo es preguntar `x != x`—, pero rompe muchas asunciones implícitas sobre comparación de igualdad. En un sort sobre un array que contenga NaN, el algoritmo puede no terminar o producir resultados erráticos según la implementación.
+NaN es más raro todavía: comparar cualquier NaN consigo mismo da **falso**. Es decir, si una variable `x` contiene NaN, `x == x` es false. Esta propiedad permite detectar NaN —la única manera portable de detectarlo es preguntar `x != x`—, pero rompe muchas asunciones implícitas sobre comparación de igualdad. En un sort sobre un array que contenga NaN, el algoritmo puede no terminar o producir resultados erráticos según la implementación.
 
 Los **subnormales** ocupan el rango entre 0 y el menor número normal (que en simple precisión es $2^{-126}$). Su mantisa no tiene 1 implícito —el bit del frente vale 0—, lo que les permite representar valores cada vez más chicos a costa de perder precisión. Para los fines de este capítulo basta saber que existen y que llenan ese hueco; los detalles aritméticos son territorio de niveles más avanzados.
 
